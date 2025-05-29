@@ -30,4 +30,4 @@ class DIContainer(metaclass=Singleton):
 
     @classmethod
     def clear_cache(cls):
-        Singleton._instances.clear()
+        Singleton._instances.clear()  # di: skip

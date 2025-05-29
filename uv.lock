@@ -249,11 +249,11 @@ wheels = [
 
 [[package]]
 name = "di-linter"
-version = "1.0.2"
+version = "1.0.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/7d/9b/11b7d124aff742f21d39cba4298ff319112737f57e2f2c8f0440edefbe07/di_linter-1.0.2.tar.gz", hash = "sha256:4e89bac2fdaa27f3eb54049b1a8d0dd316e72a6996211ff5f33410e2c0897267", size = 719677 }
+sdist = { url = "https://files.pythonhosted.org/packages/b0/fe/1772716e6b93d1aa19f657ac83f8c7570234846c45c7c7681f3199af0742/di_linter-1.0.3.tar.gz", hash = "sha256:be0acb34ef83d4b06588685759032f1ce6a106ac96ed8c4793a2ad0d0118a0ef", size = 732083 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/89/32/769439269ae78c59574e876254bca39bb00ab8080217261d89492d4a349e/di_linter-1.0.2-py3-none-any.whl", hash = "sha256:cfa139313e0dea8f1111c4c1815a2bbc3b4c63cd60545ca7d98ea8a67f58c037", size = 5135 },
+    { url = "https://files.pythonhosted.org/packages/ad/b6/857087e1ac5a215c85d5ccde8c593ccc56ed63f8a263abb684f97381a98c/di_linter-1.0.3-py3-none-any.whl", hash = "sha256:0f4d0bd01e69e2a9523e67c11aad89ec4252a6ff134d3f585934b5894ba5b6d7", size = 10607 },
 ]
 
 [[package]]
@@ -1107,7 +1107,6 @@ source = { virtual = "." }
 dependencies = [
     { name = "aiohttp" },
     { name = "alembic" },
-    { name = "di-linter" },
     { name = "fastapi" },
     { name = "niquests" },
     { name = "orjson" },
@@ -1121,6 +1120,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "aioresponses" },
+    { name = "di-linter" },
     { name = "factory-boy" },
     { name = "freezegun" },
     { name = "httpx" },
@@ -1140,7 +1140,6 @@ dev = [
 requires-dist = [
     { name = "aiohttp", specifier = "~=3.11.14" },
     { name = "alembic", specifier = ">=1.15.2" },
-    { name = "di-linter", specifier = ">=1.0.2" },
     { name = "fastapi", specifier = "~=0.115.8" },
     { name = "niquests", specifier = ">=3.13.1" },
     { name = "orjson", specifier = "~=3.10.12" },
@@ -1154,6 +1153,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "aioresponses", specifier = "~=0.7.8" },
+    { name = "di-linter", specifier = ">=1.0.3" },
     { name = "factory-boy", specifier = "~=3.3.1" },
     { name = "freezegun", specifier = "~=1.5.1" },
     { name = "httpx", specifier = "~=0.28.1" },

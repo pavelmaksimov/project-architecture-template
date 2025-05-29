@@ -14,13 +14,13 @@ dependencies = [
     "aiohttp~=3.11.14",
     "niquests>=3.13.1",
     "pottery>=3.0.1",
-    "di-linter>=1.0.2",
     "alembic>=1.15.2",
 ]
 
 [dependency-groups]
 dev = [
     "aioresponses~=0.7.8",
+    "di-linter>=1.0.3",
     "factory-boy~=3.3.1",
     "freezegun~=1.5.1",
     "httpx~=0.28.1",

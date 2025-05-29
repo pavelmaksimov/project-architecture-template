@@ -19,11 +19,11 @@ class Repositories(metaclass=Singleton):
     @classmethod
     @contextmanager
     def transaction(cls) -> Generator[ORMSession, Any, None]:
-        with Transaction() as session:
+        with Transaction() as session:  # di: skip
             yield session
 
     @classmethod
     @contextmanager
     def current_transaction(cls) -> Generator[ORMSession, Any, None]:
-        with CurrentTransaction() as session:
+        with CurrentTransaction() as session:  # di: skip
             yield session

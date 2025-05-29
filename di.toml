@@ -1,0 +1,3 @@
+project-root = "project"
+exclude-objects = ["Settings", "DIContainer", "Repositories"]
+exclude-modules = ["endpoints.py", "database.py", "adatabase.py"]
