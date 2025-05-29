@@ -2,7 +2,6 @@ stages:
   - build
   - lint
   - tests
-  - deploy
 
 variables:
   ENV: feature
@@ -117,34 +116,3 @@ tests:
       - htmlcov/
     expire_in: 1 week
   coverage: '/TOTAL\s+\d+\s+\d+\s+\d+\s+(\d+%)/'
-
-.deploy_common:
-  stage: deploy
-  image: docker:27.3.1
-  services:
-    - docker:27.3.1-dind
-  script:
-    - |
-      if [[ "$ENV" == "prod" ]]; then
-        docker pull $IMAGE_ID:$IMAGE_TAG
-    - docker compose -f docker-compose.base.yaml -f docker-compose.${ENV}.yaml up -d
-    - |
-      if [[ "$ENV" == "stage" ]]; then
-        docker compose restart
-      fi
-
-deploy:stage:
-  extends: .deploy_common
-  environment: stage
-  rules:
-    - if: '($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web") && $CI_COMMIT_BRANCH == "stage"'
-      when: on_success
-    - when: never
-
-deploy:prod:
-  extends: .deploy_common
-  environment: prod
-  rules:
-    - if: '($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web") && $CI_COMMIT_BRANCH == "master"'
-      when: on_success
-    - when: never
