@@ -1,0 +1,49 @@
+services:
+  api:
+    image: app:1
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+    env_file:
+      - ./.env
+    volumes:
+      - ./logs:/logs
+    command: ["uvicorn", "project.presentation.api:app", "--host", "0.0.0.0", "--port", "8080"]
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    mem_limit: 250M
+
+  db:
+    image: postgres:17.2
+    env_file:
+      - ./.env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:10000:5432"
+    mem_limit: 2G
+
+volumes:
+  db_data:
+    # Указываем, что том уже существует
+    # external: true

@@ -1,0 +1,58 @@
+[project]
+name = "python-project-template"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "orjson~=3.10.12",
+    "pydantic-settings~=2.7.1",
+    "sqlalchemy~=2.0.37",
+    "fastapi~=0.115.8",
+    "uvicorn~=0.34.0",
+    "psycopg2-binary~=2.9.10",
+    "aiohttp~=3.11.14",
+    "niquests>=3.13.1",
+    "pottery>=3.0.1",
+    "di-linter>=1.0.2",
+    "alembic>=1.15.2",
+]
+
+[dependency-groups]
+dev = [
+    "aioresponses~=0.7.8",
+    "factory-boy~=3.3.1",
+    "freezegun~=1.5.1",
+    "httpx~=0.28.1",
+    "mypy~=1.15.0",
+    "pytest~=8.3.4",
+    "pytest-archon~=0.0.6",
+    "pytest-asyncio>=0.25.3",
+    "pytest-cov>=6.0.0",
+    "radon>=5.0",
+    "responses>=0.25.7",
+    "ruff~=0.8.2",
+    "wily>=1.25",
+    "xenon>=0.9.3",
+]
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+target-version = "py312"
+include = [
+    "project/*.py",
+    "tests/*.py",
+]
+
+[tool.ruff.format]
+line-ending = "lf"
+
+[tool.ruff.lint]
+ignore = ["E731"]
+
+[tool.ruff.lint.flake8-builtins]
+builtins-allowed-modules = ["id"]
+
+[tool.ruff.lint.flake8-copyright]
+author = "Ruff"

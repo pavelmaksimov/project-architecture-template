@@ -1,0 +1,29 @@
+services:
+  api:
+    environment:
+      - DB_USER=${PROD_DB_USER}
+      - DB_PASSWORD=${PROD_DB_PASSWORD}
+      - DB_NAME=${PROD_DB_NAME}
+    volumes:
+      - ./logs:/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    ports:
+      - "8000:8080"
+    mem_limit: 1G
+
+  db:
+    environment:
+      - POSTGRES_USER=${PROD_DB_USER}
+      - POSTGRES_PASSWORD=${PROD_DB_PASSWORD}
+      - POSTGRES_DB=${PROD_DB_NAME}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    mem_limit: 4G
+
+volumes:
+  db_data:

@@ -1,0 +1,24 @@
+services:
+  test:
+    image: ${IMAGE_ID}:${IMAGE_TAG}-test
+    command: pytest -v tests --junitxml=junit.xml --cov=./ --cov-report=xml --cov-report=html --cov-report=term
+    environment:
+      - SQLALCHEMY_DATABASE_DSN=postgresql+psycopg2://test:test@db:5432/test
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    image: ${IMAGE_ID}:${IMAGE_TAG}
+    environment:
+      - ACCESS_TOKEN=token
+      - SQLALCHEMY_DATABASE_DSN=postgresql+psycopg2://test:test@db:5432/test
+
+  db:
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=test
+      - DB_USER=test
+      - DB_PASSWORD=test
+      - DB_NAME=test

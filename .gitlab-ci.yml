@@ -1,0 +1,150 @@
+stages:
+  - build
+  - lint
+  - tests
+  - deploy
+
+variables:
+  ENV: feature
+  DOCKER_TLS_CERTDIR: "/certs"
+  IMAGE_ID: $CI_REGISTRY_IMAGE
+  IMAGE_TAG: $ENV-$CI_COMMIT_REF_SLUG
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "stage"
+      variables:
+        ENV: stage
+        IMAGE_TAG: $ENV
+    - if: $CI_COMMIT_BRANCH == "master"
+      variables:
+        ENV: prod
+        IMAGE_TAG: $ENV-$CI_COMMIT_SHORT_SHA
+
+    # Dedupicate pipeline if merge request exists.
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS != null'
+      when: never
+    - if: $CI_COMMIT_BRANCH
+  auto_cancel:
+    on_new_commit: interruptible
+
+before_script:
+  - docker login --username $DEPLOY_TOKEN_NAME --password $DEPLOY_TOKEN_PASSWORD $CI_REGISTRY
+
+after_script:
+  - docker logout
+
+build:
+  stage: build
+  interruptible: true
+  image: docker:27.3.1
+  services:
+    - docker:27.3.1-dind
+  script:
+    - docker build -t $IMAGE_ID:$IMAGE_TAG .
+    - docker build --target test -t $IMAGE_ID:$IMAGE_TAG-test .
+    - |
+      if [[ "$ENV" == "prod" ]]; then
+        docker push $IMAGE_ID:$IMAGE_TAG
+      fi
+
+lint-format:
+  stage: tests
+  interruptible: true
+  image: $IMAGE_ID:$IMAGE_TAG-test
+  before_script: []
+  script:
+    - ruff format --check --diff project tests
+  after_script: []
+
+lint-check:
+  stage: tests
+  interruptible: true
+  image: $IMAGE_ID:$IMAGE_TAG-test
+  before_script: []
+  script:
+    - ruff check
+  after_script: []
+
+lint-di-linter:
+  stage: tests
+  interruptible: true
+  image: $IMAGE_ID:$IMAGE_TAG-test
+  before_script: []
+  script:
+    - di-linter project
+  after_script: []
+
+lint-mypy:
+  stage: tests
+  interruptible: true
+  image: $IMAGE_ID:$IMAGE_TAG-test
+  before_script: []
+  script:
+    - mypy project
+  after_script: []
+
+lint-complexity:
+  stage: tests
+  interruptible: true
+  image: $IMAGE_ID:$IMAGE_TAG-test
+  before_script: []
+  script:
+    - xenon --max-absolute B --max-modules B --max-average B -c project
+  after_script: []
+
+tests:
+  stage: tests
+  interruptible: true
+  image: docker:27.3.1
+  services:
+    - docker:27.3.1-dind
+  needs:
+    - job: build
+      artifacts: true
+  script:
+    - docker-compose -f docker-compose.base.yaml -f docker-compose.test.yaml up --abort-on-container-exit --exit-code-from test
+  after_script:
+    - docker-compose -f docker-compose.base.yaml -f docker-compose.test.yaml down --rmi local --volumes --remove-orphans
+    - docker logout
+  artifacts:
+    reports:
+      junit: junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+    paths:
+      - htmlcov/
+    expire_in: 1 week
+  coverage: '/TOTAL\s+\d+\s+\d+\s+\d+\s+(\d+%)/'
+
+.deploy_common:
+  stage: deploy
+  image: docker:27.3.1
+  services:
+    - docker:27.3.1-dind
+  script:
+    - |
+      if [[ "$ENV" == "prod" ]]; then
+        docker pull $IMAGE_ID:$IMAGE_TAG
+    - docker compose -f docker-compose.base.yaml -f docker-compose.${ENV}.yaml up -d
+    - |
+      if [[ "$ENV" == "stage" ]]; then
+        docker compose restart
+      fi
+
+deploy:stage:
+  extends: .deploy_common
+  environment: stage
+  rules:
+    - if: '($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web") && $CI_COMMIT_BRANCH == "stage"'
+      when: on_success
+    - when: never
+
+deploy:prod:
+  extends: .deploy_common
+  environment: prod
+  rules:
+    - if: '($CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web") && $CI_COMMIT_BRANCH == "master"'
+      when: on_success
+    - when: never
