@@ -17,7 +17,7 @@ class ChatRepository(BaseRepository):
     QuestionModel = models.Question
 
     def get_history(self, user_id: int, *, limit: int):
-        with self.session() as session:
+        with self.get_session() as session:
             query = (
                 select(
                     self.QuestionModel.content.label("question"),
