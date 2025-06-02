@@ -4,13 +4,13 @@ from project.settings import Settings
 from project.datatypes import UserIdT, QuestionT
 
 if TYPE_CHECKING:
-    from project.infrastructure.container import Repositories
+    from project.infrastructure.container import AllRepositories
     from project.domains.chat.models import Answer
     from project.domains.chat.answer.service import AnswerService
 
 
 class ChatService:
-    def __init__(self, repository: "Repositories", answer_service: "AnswerService"):
+    def __init__(self, repository: "AllRepositories", answer_service: "AnswerService"):
         self.repo = repository
         self.answer_service = answer_service
 

@@ -14,7 +14,6 @@ def test_question_use_case(session):
 
     user = UserFactory()
 
-    DIContainer.clear_cache()
     container = DIContainer(generate_adapter=GenerateAdapter())
 
     answer = container.chat.ask(user_id=user.id, question="Foo")

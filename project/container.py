@@ -5,10 +5,10 @@ from project.domains.chat.service import ChatService
 from project.domains.chat.answer.service import AnswerService
 from project.infrastructure.container import Repositories
 from project.infrastructure.adapters.llm import LLMClient
-from project.utils.structures import Singleton
+from project.utils.structures import LazyInit
 
 
-class DIContainer(metaclass=Singleton):
+class DIContainer:
     """
     This is dependency injection container.
     For resolving dependencies.
@@ -28,6 +28,5 @@ class DIContainer(metaclass=Singleton):
         # Application dependencies:
         self.chat = ChatUseCase(self.repo, self._chat_service, self._auth_service, self._quota_service)  # di: skip
 
-    @classmethod
-    def clear_cache(cls):
-        Singleton._instances.clear()  # di: skip
+
+Container = LazyInit(DIContainer)

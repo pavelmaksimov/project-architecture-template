@@ -4,12 +4,12 @@ from project.datatypes import UserIdT, QuestionT, AnswerT
 
 if TYPE_CHECKING:
     from project.domains.chat.service import ChatService
-    from project.infrastructure.container import Repositories
+    from project.infrastructure.container import AllRepositories
     from project.domains.user.service import AuthService, QuotaService
 
 
 class ChatUseCase:
-    def __init__(self, repository: "Repositories", chat: "ChatService", auth: "AuthService", quota: "QuotaService"):
+    def __init__(self, repository: "AllRepositories", chat: "ChatService", auth: "AuthService", quota: "QuotaService"):
         self.repo = repository
         self.chat = chat
         self.auth = auth

@@ -6,10 +6,10 @@ from sqlalchemy.orm import Session as ORMSession
 from project.domains.chat.repositories import QuestionRepository, AnswerRepository, ChatRepository
 from project.domains.user.repository import UserRepository
 from project.infrastructure.adapters.database import Transaction, CurrentTransaction
-from project.utils.structures import Singleton
+from project.utils.structures import LazyInit
 
 
-class Repositories(metaclass=Singleton):
+class AllRepositories:
     def __init__(self):
         self.user = UserRepository()  # di: skip
         self.question = QuestionRepository()  # di: skip
@@ -27,3 +27,6 @@ class Repositories(metaclass=Singleton):
     def current_transaction(cls) -> Generator[ORMSession, Any, None]:
         with CurrentTransaction() as session:  # di: skip
             yield session
+
+
+Repositories = LazyInit(AllRepositories)
