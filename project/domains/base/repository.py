@@ -3,6 +3,7 @@ from typing import TypeVar, Any, Generator
 
 from sqlalchemy import delete, orm
 
+from project.domains.base.exception import NotFoundError, throw
 from project.infrastructure.adapters.database import Session, Transaction, CurrentTransaction
 from project.domains.base.models import Base
 
@@ -59,6 +60,9 @@ class Repository[T](BaseRepository):
     def get_or_none(cls, pk: Any) -> T | None:
         with cls.get_session() as session:
             return session.get(cls._model, pk)
+
+    def get(self, pk: Any) -> T:
+        return self.get_or_none(pk) or throw(NotFoundError, f"{self._model}.pk", pk)
 
     @classmethod
     def update_fields(cls, instance: T, **kwargs: Any) -> None:
