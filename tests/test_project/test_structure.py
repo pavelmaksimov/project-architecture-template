@@ -18,3 +18,9 @@ def test_module_names(modules_map):
     assert "endpoint" not in modules_map, "Must be endpoints.py"
     assert "exception" not in modules_map, "Must be exceptions.py"
     assert "handler" not in modules_map, "Must be handlers.py"
+    assert "test" not in modules_map, "It should be in the directory of tests"
+    assert "tests" not in modules_map, "It should be in the directory of tests"
+
+    for module in modules_map:
+        assert module.islower(), "Must be lowercase"
+        assert module.startswith("test_") or module.startswith("tests_"), "It should be in the directory of tests"
