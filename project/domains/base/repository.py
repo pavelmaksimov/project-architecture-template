@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from typing import TypeVar, Any, Generator
 
-from sqlalchemy import delete, orm
+from sqlalchemy import select, delete, orm
 
 from project.domains.base.exception import NotFoundError, throw
 from project.infrastructure.adapters.database import Session, Transaction, CurrentTransaction
@@ -63,6 +63,10 @@ class Repository[T](BaseRepository):
 
     def get(self, pk: Any) -> T:
         return self.get_or_none(pk) or throw(NotFoundError, f"{self._model}.pk", pk)
+
+    def all(self):
+        with self.get_session() as session:
+            return session.scalars(select(self._model)).all()
 
     @classmethod
     def update_fields(cls, instance: T, **kwargs: Any) -> None:

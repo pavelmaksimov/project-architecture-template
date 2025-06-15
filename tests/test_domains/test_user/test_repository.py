@@ -19,6 +19,15 @@ class TestUserRepository:
 
         assert repo.get_or_none(user.id).id == user.id
 
+    def test_all_user(self, session):
+        UserFactory()
+        UserFactory()
+        UserFactory()
+        repo = UserRepository()
+        result = repo.all()
+
+        assert len(result) == 3
+
     def test_get_nonexistent_user(self, session):
         repo = UserRepository()
         assert repo.get_or_none(0) is None
