@@ -1,7 +1,9 @@
+import pytest
+
 from project.domains.base.exception import NotFoundError
 from project.domains.user.repository import UserRepository
 from tests.factories import UserFactory
-import pytest
+
 
 class TestUserRepository:
     def test_not_found_error_user(self, session):
