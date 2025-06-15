@@ -32,6 +32,7 @@ dev = [
     "radon>=5.0",
     "responses>=0.25.7",
     "ruff~=0.8.2",
+    "testcontainers>=4.10.0",
     "wily>=1.25",
     "xenon>=0.9.3",
 ]

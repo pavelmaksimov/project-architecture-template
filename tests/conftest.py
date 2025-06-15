@@ -2,27 +2,25 @@ import asyncio
 import os
 import pathlib
 
+import pytest
 import pytest_asyncio
 import responses as mock_responses
-import pytest
 from aioresponses import aioresponses
 from starlette.testclient import TestClient
+from testcontainers.postgres import PostgresContainer
 
 import project.domains.base.models
-from project.infrastructure.adapters import database
 from project.infrastructure.adapters import adatabase
+from project.infrastructure.adapters import database
 from project.infrastructure.adapters import keycloak
-from project.logger import setup_logging
 from project.infrastructure.api import app
+from project.logger import setup_logging
 from project.settings import Settings
 from project.utils.log import logging_disabled
 
 default_test_settings = {
     "ENV": "TEST",
     "ACCESS_TOKEN": "token",
-    "SQLALCHEMY_DATABASE_DSN": os.environ.get(
-        "SQLALCHEMY_DATABASE_DSN", "postgresql+psycopg2://postgres:postgres@localhost:15432/test"
-    ),
 }
 
 
@@ -33,7 +31,7 @@ def settings():
 
 @pytest.fixture(autouse=True, scope="session")
 def setup(settings):
-    setup_logging("DEV")
+    setup_logging("TEST")
 
     os.environ.update(**default_test_settings)
 
@@ -43,12 +41,19 @@ def setup(settings):
 
 @pytest.fixture(scope="session")
 def init_database(setup):
-    engine = database.engine_factory()
+    with PostgresContainer("postgres:17.2") as postgres:
+        os.environ["SQLALCHEMY_DATABASE_DSN"] = postgres.get_connection_url()
 
-    with logging_disabled():
-        project.domains.base.models.public_schema.create_all(bind=engine, checkfirst=True)
+        engine = database.engine_factory()
 
-    engine.dispose()
+        try:
+            with logging_disabled():
+                project.domains.base.models.public_schema.create_all(bind=engine, checkfirst=True)
+
+            yield engine
+
+        finally:
+            engine.dispose()
 
 
 @pytest.fixture(scope="function")
