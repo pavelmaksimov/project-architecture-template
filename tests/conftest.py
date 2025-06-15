@@ -13,7 +13,7 @@ from project.infrastructure.adapters import database
 from project.infrastructure.adapters import adatabase
 from project.infrastructure.adapters import keycloak
 from project.logger import setup_logging
-from project.presentation.api import app
+from project.infrastructure.api import app
 from project.settings import Settings
 from project.utils.log import logging_disabled
 
