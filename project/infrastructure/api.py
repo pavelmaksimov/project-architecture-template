@@ -9,7 +9,6 @@ from fastapi.responses import ORJSONResponse
 from starlette.requests import Request
 from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 
-from project.infrastructure.adapters.database import init_database
 from project.logger import setup_logging
 from project.settings import Settings
 from project.domains.chat.endpoints import router as chat_router
@@ -31,7 +30,6 @@ async def lifespan(app: FastAPI):
     setup_logging(Settings().ENV)  # di: skip
 
     logger.info("Connecting to database")
-    init_database()  # di: skip
 
     yield
 
