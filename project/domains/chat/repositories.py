@@ -1,7 +1,7 @@
 from sqlalchemy import select
 
 from project.domains.chat import models
-from project.domains.base.repository import Repository, BaseRepository
+from project.domains.base.repositories import Repository, BaseRepository
 
 
 class QuestionRepository(Repository):

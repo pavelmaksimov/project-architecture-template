@@ -1,4 +1,4 @@
-from project.domains.base.repository import Repository
+from project.domains.base.repositories import Repository
 from project.domains.user import models
 
 
