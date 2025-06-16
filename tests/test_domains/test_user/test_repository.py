@@ -1,7 +1,7 @@
 import pytest
 
-from project.domains.base.exception import NotFoundError
-from project.domains.user.repository import UserRepository
+from project.domains.base.exceptions import NotFoundError
+from project.domains.user.repositories import UserRepository
 from tests.factories import UserFactory
 
 

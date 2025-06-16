@@ -3,7 +3,7 @@ from typing import TypeVar, Any, Generator
 
 from sqlalchemy import select, delete, orm
 
-from project.domains.base.exception import NotFoundError, throw
+from project.domains.base.exceptions import NotFoundError, throw
 from project.infrastructure.adapters.database import Session, Transaction, CurrentTransaction
 from project.domains.base.models import Base
 
