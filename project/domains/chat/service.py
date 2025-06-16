@@ -4,7 +4,7 @@ from project.settings import Settings
 from project.datatypes import UserIdT, QuestionT
 
 if TYPE_CHECKING:
-    from project.infrastructure.container import AllRepositories
+    from project.container import AllRepositories
     from project.domains.chat.models import Answer
     from project.domains.chat.answer.service import AnswerService
 

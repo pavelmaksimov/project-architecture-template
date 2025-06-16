@@ -1,11 +1,42 @@
-from project.domains.user.service import AuthService, QuotaService
-from project.domains.chat.interfaces import IGenerateGateway
-from project.domains.chat.use_cases import ChatUseCase
-from project.domains.chat.service import ChatService
+from contextlib import contextmanager
+from typing import Generator, Any, TYPE_CHECKING
+
 from project.domains.chat.answer.service import AnswerService
-from project.infrastructure.container import Repositories
+from project.domains.chat.interfaces import IGenerateGateway
+from project.domains.chat.repositories import QuestionRepository, AnswerRepository, ChatRepository
+from project.domains.chat.service import ChatService
+from project.domains.chat.use_cases import ChatUseCase
+from project.domains.user.repositories import UserRepository
+from project.domains.user.service import AuthService, QuotaService
+from project.infrastructure.adapters.database import Transaction, CurrentTransaction
 from project.infrastructure.adapters.llm import LLMClient
 from project.utils.structures import LazyInit
+
+if TYPE_CHECKING:
+    from sqlalchemy.orm import Session as ORMSession
+
+
+class AllRepositories:
+    def __init__(self):
+        self.user = UserRepository()  # di: skip
+        self.question = QuestionRepository()  # di: skip
+        self.answer = AnswerRepository()  # di: skip
+        self.chat = ChatRepository()  # di: skip
+
+    @classmethod
+    @contextmanager
+    def transaction(cls) -> Generator["ORMSession", Any, None]:
+        with Transaction() as session:  # di: skip
+            yield session
+
+    @classmethod
+    @contextmanager
+    def current_transaction(cls) -> Generator["ORMSession", Any, None]:
+        with CurrentTransaction() as session:  # di: skip
+            yield session
+
+
+Repositories = LazyInit(AllRepositories)
 
 
 class DIContainer:
