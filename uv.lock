@@ -570,11 +570,11 @@ wheels = [
 
 [[package]]
 name = "layers-linter"
-version = "3.0.0"
+version = "3.1.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/60/1f/41de8bbbaab34a4dcf2ea2aabf2dc0f7156a6b5fc0d154f9b9dd5250e770/layers_linter-3.0.0.tar.gz", hash = "sha256:566d534d5c4a38746a60e6f950110c309044b5f2962587d9318cf3e3fff7044c", size = 10060 }
+sdist = { url = "https://files.pythonhosted.org/packages/1e/a5/17c7c3311f3d0f695eede29839e34fddbe78fec7e582545749cbcbba732c/layers_linter-3.1.0.tar.gz", hash = "sha256:2713b4aadb1696edca040e4238370860073ddfdf1cfe3c7fb7fafd4326ed7d71", size = 10509 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/45/c7/20e260e6a8f99672c067b895c8f57e12f0a3069bc8cfc2be77485527d9d0/layers_linter-3.0.0-py3-none-any.whl", hash = "sha256:07998117826f6e88be5749bb0da9cd7bbb2341be38b275e0f0b48fa4a5c83224", size = 9167 },
+    { url = "https://files.pythonhosted.org/packages/8e/4b/46d9caceec2d2e8613a8323f0147f9fda5853ba6793fa3499249433fb4e0/layers_linter-3.1.0-py3-none-any.whl", hash = "sha256:99688f86564fe28e29b206776542c63869bf010f347f300c4b59ad04c73d1eb1", size = 9332 },
 ]
 
 [[package]]
@@ -1182,7 +1182,7 @@ dev = [
     { name = "factory-boy", specifier = "~=3.3.1" },
     { name = "freezegun", specifier = "~=1.5.1" },
     { name = "httpx", specifier = "~=0.28.1" },
-    { name = "layers-linter", specifier = ">=3.0.0" },
+    { name = "layers-linter", specifier = ">=3.1.0" },
     { name = "mypy", specifier = "~=1.15.0" },
     { name = "pytest", specifier = "~=8.3.4" },
     { name = "pytest-archon", specifier = "~=0.0.6" },
