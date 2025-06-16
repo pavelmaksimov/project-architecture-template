@@ -19,6 +19,7 @@ ruff format
 ruff check --fix
 mypy project
 di-linter project
+layers-linter project
 pytest --cov=project tests/
 ```
 
@@ -140,7 +141,7 @@ class AskUseCase:
     def __init__(self):
         # Жесткая связка с реализацией, внутри этого класса, могут быть еще много зависимостей.
         self.chat = ChatService(...)
-        
+
     def ask(self, user_id: int, question: str) -> str:
         # Тестирование потребует моков.
         repo = DatabaseRepository()  # прямое создание зависимости
@@ -220,11 +221,11 @@ def test_ask_use_case():
     class TestRepo:
         def get(self):
             return user_id
-        
+
     class TestChatService:
         def create_answer(self, user_id, question):
             return expected_answer
-        
+
     use_case = AskUseCase(
         repository=TestRepo(),
         chat=TestChatService(),
@@ -244,10 +245,28 @@ def test_ask_use_case():
 Видео про эту проблему https://www.youtube.com/watch?v=3Z_3yCgVKkM
 
 ## Фичи
-### Проверка архитектурных границ
-Проверяется через тесты, пакет [pytest-archon](https://github.com/jwbargsten/pytest-archon)
 
-Можно найти их в [test_project](tests/test_project)
+### Проверка слоистой архитектуры с layers-linter
+Проект использует [layers-linter](https://github.com/pavelmaksimov/layers-linter) 
+для автоматической проверки соблюдения архитектурных границ между слоями.
+
+Конфигурация находится в файле [layers.toml](layers.toml), где определены:
+- Слои приложения (dicontainer, usecases, services, repo, orm, adapters и т.д.)
+- Модули, которые входят в каждый слой
+- Направление зависимостей между слоями (перечисление разрешенных слоев для импорта для каждого слоя)
+- Ограничения на использование некоторых внешних библиотек в слоях
+
+Запуск проверки:
+```bash
+layers-linter project
+```
+
+Линтер анализирует импорты в коде и выявляет нарушения архитектурных границ:
+1. Когда модуль из одного слоя импортирует модуль из слоя, от которого ему не разрешено зависеть
+2. Когда модуль использует внешнюю библиотеку, которую для него не разрешено использовать
+
+Это помогает поддерживать чистоту архитектуры и предотвращает появление нежелательных зависимостей между слоями.
+
 
 ### Проверка переусложнение кода
 Используется метод "Цикломатическая сложность", через пакет [xenon](https://github.com/rubik/xenon),
