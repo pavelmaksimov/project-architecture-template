@@ -61,12 +61,14 @@ class Repository[T](BaseRepository):
         with cls.get_session() as session:
             return session.get(cls._model, pk)
 
-    def get(self, pk: Any) -> T:
-        return self.get_or_none(pk) or throw(NotFoundError, f"{self._model}.pk", pk)
+    @classmethod
+    def get(cls, pk: Any) -> T:
+        return cls.get_or_none(pk) or throw(NotFoundError, f"{cls._model}.pk", pk)
 
-    def all(self):
-        with self.get_session() as session:
-            return session.scalars(select(self._model)).all()
+    @classmethod
+    def all(cls):
+        with cls.get_session() as session:
+            return session.scalars(select(cls._model)).all()
 
     @classmethod
     def update_fields(cls, instance: T, **kwargs: Any) -> None:
