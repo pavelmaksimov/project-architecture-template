@@ -258,11 +258,11 @@ wheels = [
 
 [[package]]
 name = "di-linter"
-version = "1.2.0"
+version = "1.3.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/27/6e/301abc1bdc2ccafffe8be02725c8c8d51c5f9bc9dd546c46749989cac259/di_linter-1.2.0.tar.gz", hash = "sha256:df7026f07c54559dc94a342cc806b916bdc920039ebd3dd2b3b1a188e73f994c", size = 735967 }
+sdist = { url = "https://files.pythonhosted.org/packages/82/c5/f685727acaf68bc22ecf655a7ee8d4f4e2bae1522d2e1a0d290e5c68b19c/di_linter-1.3.0.tar.gz", hash = "sha256:6c06493a22a838d0c1ca3d845d71b998806871ffce3c27e9a49b73eb43c66e6d", size = 738053 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0b/7f/22681d55b8db079e775ac647f3dff7b6fc575c07910eee619a4197a206bf/di_linter-1.2.0-py3-none-any.whl", hash = "sha256:6b075333ce21119eca7e597f2b83c7b2ba9711436bddea4d3b6353b5ba50b956", size = 16886 },
+    { url = "https://files.pythonhosted.org/packages/4e/80/e02a71bccabf0e5b7f9f7fd7c37e130dab5bf3ac55f0bf0e8e4a11eac3ae/di_linter-1.3.0-py3-none-any.whl", hash = "sha256:d180bf79786dbeb97fdc584469dae786ef4d984a6d6182b5b69642a362034ee3", size = 17980 },
 ]
 
 [[package]]
@@ -1240,7 +1240,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "aioresponses", specifier = "~=0.7.8" },
-    { name = "di-linter", specifier = ">=1.2.0" },
+    { name = "di-linter", specifier = "==1.3.0" },
     { name = "factory-boy", specifier = "~=3.3.1" },
     { name = "freezegun", specifier = "~=1.5.1" },
     { name = "httpx", specifier = "~=0.28.1" },
