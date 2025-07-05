@@ -65,7 +65,7 @@ line-ending = "lf"
 
 [tool.ruff.lint]
 ignore = [
-    "E731", "A002", "PYI001", "SIM117", "ARG001", "E731", "E741", "UP035", "UP028", "RET504", "S101"
+    "E731", "PYI001", "SIM117", "ARG001", "E731", "E741", "UP035", "UP028", "RET504", "S101"
 ]
 select = [
     "E", "E4", "E7", "E9", "F", "B", "ERA", "FAST", "YTT", "UP", "FURB", "RUF", "PLC", "PLE",
@@ -78,6 +78,50 @@ select = [
     "TD004", "TD005", "TD006", "TD007",
     # "W", "DOC", "D", "PGH, "DJ", "EXE", "FIX", "DTZ", "CPY", "I", "PD", "ANN", "PLR", PLW
 ]
+flake8-import-conventions.banned-from = [ "datetime", "typing" ]
+[flake8-import-conventions.aliases]
+datetime = "dt"
+typing = "t"
 
 [tool.ruff.lint.flake8-builtins]
-builtins-allowed-modules = ["id"]
+builtins-ignorelist = ["id", "type", "filter"]
+
+[tool.mypy]
+# The mypy configurations: http://bit.ly/2zEl9WI
+ignore_missing_imports = true
+strict = true
+local_partial_types = true
+warn_unreachable = true
+
+enable_error_code = [
+  "truthy-bool",
+  "truthy-iterable",
+  "redundant-expr",
+  "unused-awaitable",
+  # "ignore-without-code",
+  "possibly-undefined",
+  "redundant-self",
+  # "explicit-override",
+  # "mutable-override",
+  "unimported-reveal",
+  "deprecated",
+]
+
+disable_error_code = [
+  "no-untyped-def",
+]
+
+[[tool.mypy.overrides]]
+module = "wemake_python_styleguide.compat.nodes"
+# We allow explicit `Any` only in this file, because of the compatibility:
+disallow_any_explicit = false
+
+[[tool.mypy.overrides]]
+module = "wemake_python_styleguide.compat.packaging"
+# We allow unused `ignore` comments, because we cannot sync it between versions:
+warn_unused_ignores = false
+
+#[tool.ruff.flake8-tidy-imports]
+#banned-module-level-imports = []
+#banned-api = []
+#ban-relative-imports = []
