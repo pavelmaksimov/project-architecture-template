@@ -1,3 +1,4 @@
+from itertools import chain
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -13,6 +14,6 @@ class AnswerService:
 
     def make(self, question: "Question", chat_history) -> str:
         message = self.PROMPT.format(text=question.content)
-        content = self.generate_adapter.generate(chat_history + [message])
+        content = self.generate_adapter.generate(chain([chat_history], message))
 
         return content

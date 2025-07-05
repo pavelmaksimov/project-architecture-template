@@ -1,6 +1,6 @@
 from sqlalchemy import text
 
-from project.infrastructure.adapters.database import Session, Transaction, CurrentTransaction
+from project.infrastructure.adapters.database import Session, transaction, current_transaction
 
 
 def test_session_fixture(session):
@@ -16,36 +16,36 @@ def test_session():
 
 
 def test_transaction():
-    with Transaction() as s:
+    with transaction() as s:
         assert s.execute(text("SELECT 1")).scalar() == 1
 
 
 def test_nested_transaction():
-    with Transaction() as s0:
+    with transaction() as s0:
         assert s0.execute(text("SELECT 1")).scalar() == 1
 
-        with Transaction() as s:
+        with transaction() as s:
             assert s.execute(text("SELECT 1")).scalar() == 1
 
-        with Transaction() as s:
-            with CurrentTransaction() as s:
-                with Transaction() as s:
-                    with CurrentTransaction() as s:
-                        with Session() as s:
-                            assert s.execute(text("SELECT 1")).scalar() == 1
+        with transaction() as s:
+            with current_transaction():
+                with transaction():
+                    with current_transaction():
+                        with Session() as s4:
+                            assert s4.execute(text("SELECT 1")).scalar() == 1
 
             assert s.execute(text("SELECT 1")).scalar() == 1
 
         assert s0.execute(text("SELECT 1")).scalar() == 1
 
     with Session():
-        with Transaction() as s1:
+        with transaction() as s1:
             assert s1.execute(text("SELECT 1")).scalar() == 1
 
-            with Transaction() as s:
+            with transaction() as s:
                 assert s.execute(text("SELECT 1")).scalar() == 1
 
-            with Transaction() as s:
+            with transaction() as s:
                 assert s.execute(text("SELECT 1")).scalar() == 1
 
             assert s1.execute(text("SELECT 1")).scalar() == 1

@@ -1,7 +1,7 @@
 import threading
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Annotated, Literal, Type
+from typing import Annotated, Literal
 
 from pydantic import PostgresDsn, AfterValidator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -11,7 +11,8 @@ __all__ = ["Settings"]
 
 def not_empty_validator(value):
     if not value:
-        raise ValueError("Field cannot be empty")
+        error_msg = "Field cannot be empty"
+        raise ValueError(error_msg)
     return value
 
 
@@ -55,8 +56,8 @@ class LazySettings[T]:
         assert Settings().MY_PARAM == 1
     """
 
-    def __init__(self, settings_class: Type[T]):
-        self._settings_class: Type[T] = settings_class
+    def __init__(self, settings_class: type[T]):
+        self._settings_class: type[T] = settings_class
         self.__thread_local_storage = threading.local()  # Thread-Local storage
 
     def __call__(self) -> T:

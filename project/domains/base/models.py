@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime as dt
 
 from sqlalchemy import func, MetaData
 from sqlalchemy.orm import (
@@ -12,5 +12,5 @@ Base = declarative_base(metadata=public_schema)
 
 
 class TimeMixin:
-    created_at: Mapped[datetime] = mapped_column(nullable=False, server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(nullable=False, server_default=func.now(), onupdate=func.now())
+    created_at: Mapped[dt.datetime] = mapped_column(nullable=False, server_default=func.now())
+    updated_at: Mapped[dt.datetime] = mapped_column(nullable=False, server_default=func.now(), onupdate=func.now())

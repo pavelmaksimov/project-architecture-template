@@ -17,5 +17,5 @@ class LazyInit[T]:
         raise AttributeError(
             f"{error}\n{self._klass.__name__}.{item}() -> {self._klass.__name__}().{item}()"
             if is_method
-            else f"{error}\n{self._klass.__name__}.{item} -> {self._klass.__name__}().{item}"
+            else f"{error}\n{self._klass.__name__}.{item} -> {self._klass.__name__}().{item}",
         )

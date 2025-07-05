@@ -8,7 +8,7 @@ from project.domains.chat.service import ChatService
 from project.domains.chat.use_cases import ChatUseCase
 from project.domains.user.repositories import UserRepository
 from project.domains.user.service import AuthService, QuotaService
-from project.infrastructure.adapters.database import Transaction, CurrentTransaction
+from project.infrastructure.adapters.database import transaction, current_transaction
 from project.infrastructure.adapters.llm import LLMClient
 from project.utils.structures import LazyInit
 
@@ -26,13 +26,13 @@ class AllRepositories:
     @classmethod
     @contextmanager
     def transaction(cls) -> Generator["ORMSession", Any, None]:
-        with Transaction() as session:  # di: skip
+        with transaction() as session:  # di: skip
             yield session
 
     @classmethod
     @contextmanager
     def current_transaction(cls) -> Generator["ORMSession", Any, None]:
-        with CurrentTransaction() as session:  # di: skip
+        with current_transaction() as session:  # di: skip
             yield session
 
 

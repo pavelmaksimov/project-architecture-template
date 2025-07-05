@@ -53,7 +53,8 @@ class KeycloakAsyncClient:
         if "access_token" in response:
             return response["access_token"]
 
-        raise KeycloakApiError("No access token in response", response)
+        error_msg = "No access token in response"
+        raise KeycloakApiError(error_msg, response)
 
 
 class KeycloakSyncClient:
@@ -84,4 +85,5 @@ class KeycloakSyncClient:
         if "access_token" in response:
             return response["access_token"]
 
-        raise KeycloakApiError("No access token in response", response)
+        error_msg = "No access token in response"
+        raise KeycloakApiError(error_msg, response)

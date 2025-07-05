@@ -4,7 +4,7 @@ from typing import TypeVar, Any, Generator
 from sqlalchemy import select, delete, orm
 
 from project.domains.base.exceptions import NotFoundError, throw
-from project.infrastructure.adapters.database import Session, Transaction, CurrentTransaction
+from project.infrastructure.adapters.database import Session, transaction, current_transaction
 from project.domains.base.models import Base
 
 T = TypeVar("T", bound=Base)
@@ -26,13 +26,13 @@ class BaseRepository[T]:
     @classmethod
     @contextmanager
     def get_transaction(cls) -> Generator[orm.Session, Any, None]:
-        with Transaction() as session:  # di: skip
+        with transaction() as session:  # di: skip
             yield session
 
     @classmethod
     @contextmanager
     def get_current_transaction(cls) -> Generator[orm.Session, Any, None]:
-        with CurrentTransaction() as session:  # di: skip
+        with current_transaction() as session:  # di: skip
             yield session
 
 

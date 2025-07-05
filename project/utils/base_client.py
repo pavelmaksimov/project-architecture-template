@@ -72,7 +72,13 @@ class AsyncApi:
 
         async with session or self.session or ClientSession() as session:
             async with session.request(
-                method, url, params=params, data=data, json=json, headers=headers, **settings
+                method,
+                url,
+                params=params,
+                data=data,
+                json=json,
+                headers=headers,
+                **settings,
             ) as response:
                 return await self.process_response(response)
 
@@ -86,20 +92,20 @@ class AsyncApi:
         if 200 <= response.status < 300:
             return None
 
-        elif 400 <= response.status < 500:
+        if 400 <= response.status < 500:
             raise self.ClientError(response, response.status, response.reason, response_data)
 
-        elif response.status >= 500:
+        if response.status >= 500:
             raise self.ServerError(response, response_data)
 
-        else:
-            return False
+        return False
 
     async def process_response(self, response: ClientResponse) -> Any:
         response_data = await self.response_to_native(response)
 
         if self.error_handling(response, response_data) is False:
-            raise self.ApiError("UnknownError", response)
+            error_msg = "UnknownError"
+            raise self.ApiError(error_msg, response)
 
         return response_data
 
@@ -154,25 +160,26 @@ class SyncApi:
 
     def error_handling(self, response: niquests.Response, response_data: Any) -> bool | None:
         if response.status_code is None:
-            raise self.ApiError("Not response status", response)
+            error_msg = "Not response status"
+            raise self.ApiError(error_msg, response)
 
         if 200 <= response.status_code < 300:
             return None
 
-        elif 400 <= response.status_code < 500:
+        if 400 <= response.status_code < 500:
             raise self.ClientError(response, response.status_code, response.reason, response_data)
 
-        elif response.status_code >= 500:
+        if response.status_code >= 500:
             raise self.ServerError(response, response_data)
 
-        else:
-            return False
+        return False
 
     def process_response(self, response: niquests.Response) -> Any:
         response_data = self.response_to_native(response)
 
         if self.error_handling(response, response_data) is False:
-            raise self.ApiError("UnknownError", response)
+            error_msg = "UnknownError"
+            raise self.ApiError(error_msg, response)
 
         return response_data
 

@@ -3,7 +3,7 @@ import pytest
 from project.utils.base_client import AsyncApi, ApiError, ClientError, ServerError
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def api():
     return AsyncApi(api_root="http://example.com", headers={"Authorization": "Bearer token"})
 

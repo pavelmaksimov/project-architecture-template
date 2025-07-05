@@ -26,7 +26,7 @@ default_test_settings = {
 
 @pytest.fixture(scope="session")
 def settings():
-    yield Settings
+    return Settings
 
 
 @pytest.fixture(autouse=True, scope="session")
@@ -56,7 +56,7 @@ def init_database(setup):
             engine.dispose()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def session(init_database):
     with database.Session() as session:
         with session.begin() as t:
@@ -76,7 +76,7 @@ def event_loop():
     loop.close()
 
 
-@pytest_asyncio.fixture(scope="function")
+@pytest_asyncio.fixture
 async def asession(init_database):
     async with adatabase.asession() as asession:
         async with asession.begin() as t:
@@ -86,9 +86,9 @@ async def asession(init_database):
             await t.rollback()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def api_client(settings, session):
-    yield TestClient(app, headers={"Access-Token": settings().ACCESS_TOKEN})
+    return TestClient(app, headers={"Access-Token": settings().ACCESS_TOKEN})
 
 
 @pytest.fixture(scope="session")
@@ -108,21 +108,21 @@ def mock_niquests():
     modules["requests.packages.urllib3"] = urllib3
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def responses(mock_niquests):
     """Fixture for mocking asynchronous requests."""
     with mock_responses.RequestsMock() as mock:
         yield mock
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def aresponses():
     """Fixture for mocking asynchronous requests."""
     with aioresponses() as mock:
         yield mock
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def keycloak_client(settings):
     with settings.local(
         KEYCLOAK_URL="http://keycloak.example.com/auth",
@@ -138,7 +138,7 @@ def keycloak_client(settings):
         )
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def mock_keycloak(responses):
     responses.add(
         responses.POST,
@@ -148,7 +148,7 @@ def mock_keycloak(responses):
     )
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def mock_async_keycloak(aresponses):
     aresponses.add(
         "http://keycloak.example.com/auth",
@@ -158,7 +158,7 @@ def mock_async_keycloak(aresponses):
     )
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def keycloak_aclient(settings):
     with settings.local(
         KEYCLOAK_URL="http://keycloak.example.com/auth",

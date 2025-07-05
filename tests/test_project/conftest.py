@@ -44,7 +44,7 @@ def domains_map(project_dir):
     :return: {"domain": ["module", ...]}
     """
     result = {}
-    for domain, module, full_path in iter_domain_modules(project_dir):
+    for domain, _, full_path in iter_domain_modules(project_dir):
         result.setdefault(domain, []).append(full_path)
     return result
 
@@ -55,7 +55,7 @@ def modules_map(project_dir):
     :return: {"module": ["domain", ...]}
     """
     result = defaultdict(list)
-    for domain, module, full_path in iter_domain_modules(project_dir):
+    for _, module, full_path in iter_domain_modules(project_dir):
         result[module].append(full_path)
     return result
 

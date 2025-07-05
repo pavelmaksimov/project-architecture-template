@@ -29,12 +29,12 @@ def scoped_session_factory() -> scoped_session:
             autoflush=False,
             expire_on_commit=False,
             autobegin=True,
-        )
+        ),
     )
 
 
 @contextmanager
-def Session() -> Generator[ORMSession, Any, None]:
+def Session() -> Generator[ORMSession, Any, None]:  # noqa: N802
     """
     This function ensures that a session is reused if one already exists,
     otherwise it creates a new session.
@@ -45,7 +45,8 @@ def Session() -> Generator[ORMSession, Any, None]:
     if current_session:
         yield current_session
     else:
-        ScopedSession = scoped_session_factory()
+        ScopedSession = scoped_session_factory()  # noqa: N806
+
         with ScopedSession() as session:
             token = session_storage.set(session)
             try:
@@ -55,7 +56,7 @@ def Session() -> Generator[ORMSession, Any, None]:
 
 
 @contextmanager
-def Transaction() -> Generator[ORMSession, Any, None]:
+def transaction() -> Generator[ORMSession, Any, None]:
     """
     During the call, a transaction is created,
     and with an nested call inside another transaction,
@@ -64,24 +65,17 @@ def Transaction() -> Generator[ORMSession, Any, None]:
     current_session = session_storage.get()
 
     if current_session:
-        if current_session.in_transaction():
-            with current_session.begin_nested():
-                yield current_session
-        else:
-            with current_session.begin():
-                yield current_session
+        nested = current_session.in_transaction()
+
+        with current_session.begin(nested):
+            yield current_session
     else:
-        with Session() as current_session:
-            if current_session.in_transaction():
-                with current_session.begin_nested():
-                    yield current_session
-            else:
-                with current_session.begin():
-                    yield current_session
+        with Session() as session, session.begin():
+            yield session
 
 
 @contextmanager
-def CurrentTransaction() -> Generator[ORMSession, Any, None]:
+def current_transaction() -> Generator[ORMSession, Any, None]:
     """
     With a repeated opening of the transaction, a new transaction is not created,
     but an early open transaction is used.
@@ -89,18 +83,13 @@ def CurrentTransaction() -> Generator[ORMSession, Any, None]:
     current_session = session_storage.get()
 
     if current_session:
-        if current_session.in_transaction():
+        nested = current_session.in_transaction()
+
+        with current_session.begin(nested):
             yield current_session
-        else:
-            with current_session.begin():
-                yield current_session
     else:
-        with Session() as current_session:
-            if current_session.in_transaction():
-                yield current_session
-            else:
-                with current_session.begin():
-                    yield current_session
+        with Session() as session, session.begin():
+            yield session
 
 
 def init_database():

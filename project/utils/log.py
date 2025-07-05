@@ -14,6 +14,8 @@ def logging_disabled(level="CRITICAL"):
 @contextmanager
 def timer() -> Generator[Callable[[], float], Any, None]:
     """
+    Example:
+
     with timer() as get_elapsed:
 
     time.sleep(1)
@@ -32,7 +34,7 @@ def timer() -> Generator[Callable[[], float], Any, None]:
 
     yield update_elapsed
 
-    update_elapsed()
+    update_elapsed()  # di: skip
 
 
 @contextmanager

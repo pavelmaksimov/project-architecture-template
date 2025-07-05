@@ -23,4 +23,4 @@ def test_module_names(modules_map):
 
     for module in modules_map:
         assert module.islower(), "Must be lowercase"
-        assert module.startswith("test_") or module.startswith("tests_"), "It should be in the directory of tests"
+        assert module.startswith(("test_", "tests_")), "It should be in the directory of tests"

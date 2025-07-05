@@ -1,11 +1,11 @@
 import logging.config
-import os
 from functools import lru_cache
+from pathlib import Path
 
 
 @lru_cache
 def setup_logging(mode: str):
-    LOGGING_CONFIG: dict = {
+    config = {
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {
@@ -36,10 +36,10 @@ def setup_logging(mode: str):
     }
 
     if mode == "PROD":
-        os.makedirs("logs", exist_ok=True)
+        Path("logs").mkdir(parents=True, exist_ok=True)
 
         error_handler_name = "errors_file"
-        LOGGING_CONFIG["handlers"][error_handler_name] = {
+        config["handlers"][error_handler_name] = {
             "class": "logging.handlers.RotatingFileHandler",
             "level": "ERROR",
             "formatter": "default",
@@ -48,10 +48,10 @@ def setup_logging(mode: str):
             "backupCount": 1,
             "encoding": "utf8",
         }
-        LOGGING_CONFIG["root"]["handlers"].append(error_handler_name)
+        config["root"]["handlers"].append(error_handler_name)
 
         info_handler_name = "info_file"
-        LOGGING_CONFIG["handlers"][info_handler_name] = {
+        config["handlers"][info_handler_name] = {
             "class": "logging.handlers.TimedRotatingFileHandler",
             "level": "INFO",
             "formatter": "default",
@@ -62,13 +62,13 @@ def setup_logging(mode: str):
             "encoding": "utf8",
             "delay": True,
         }
-        LOGGING_CONFIG["root"]["handlers"].append(info_handler_name)
+        config["root"]["handlers"].append(info_handler_name)
 
         # Добавляем файловые обработчики в специфические логгеры
-        LOGGING_CONFIG["loggers"]["uvicorn"]["handlers"].append("info_file")
-        LOGGING_CONFIG["loggers"]["uvicorn.error"]["handlers"].extend(["errors_file", "info_file"])
-        LOGGING_CONFIG["loggers"]["uvicorn.access"]["handlers"].append("info_file")
-        LOGGING_CONFIG["loggers"]["uvicorn.asgi"]["handlers"].append("info_file")
-        LOGGING_CONFIG["loggers"]["sqlalchemy.engine"]["handlers"].append("info_file")
+        config["loggers"]["uvicorn"]["handlers"].append("info_file")
+        config["loggers"]["uvicorn.error"]["handlers"].extend(["errors_file", "info_file"])
+        config["loggers"]["uvicorn.access"]["handlers"].append("info_file")
+        config["loggers"]["uvicorn.asgi"]["handlers"].append("info_file")
+        config["loggers"]["sqlalchemy.engine"]["handlers"].append("info_file")
 
-    logging.config.dictConfig(LOGGING_CONFIG)
+    logging.config.dictConfig(config)
