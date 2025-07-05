@@ -1,10 +1,10 @@
-import threading
-from contextlib import contextmanager
 from pathlib import Path
 import typing as t
 
 from pydantic import PostgresDsn, AfterValidator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from project.utils.structures import SafeLazyInit
 
 __all__ = ["Settings"]
 
@@ -36,44 +36,4 @@ class SettingsValidator(BaseSettings):
     model_config = SettingsConfigDict(env_file=Path(__file__).parent.parent / ".env", extra="allow")
 
 
-class LazySettings[T]:
-    """
-    Creates settings in lazy manner and allows parameters to be replaced if an instance has already been created.
-
-    Base example:
-        Settings = SettingsFactory(MY_PARAM=1)
-        assert Settings().MY_PARAM == 1
-
-        Settings.replace_params(MY_PARAM=2)
-        assert Settings().MY_PARAM == 2
-
-    Example with local param values:
-        Settings = SettingsFactory(MY_PARAM=1)
-
-        with Settings.local(MY_PARAM=2):
-            assert Settings().MY_PARAM == 2
-
-        assert Settings().MY_PARAM == 1
-    """
-
-    def __init__(self, settings_class: type[T]):
-        self._settings_class: type[T] = settings_class
-        self.__thread_local_storage = threading.local()  # Thread-Local storage
-
-    def __call__(self) -> T:
-        if not hasattr(self.__thread_local_storage, "settings"):
-            self.__thread_local_storage.settings = self._settings_class()
-        return self.__thread_local_storage.settings
-
-    @contextmanager
-    def local(self, **kwargs):
-        previous_settings = getattr(self.__thread_local_storage, "settings", None)
-
-        self.__thread_local_storage.settings = self._settings_class(**kwargs)
-        try:
-            yield
-        finally:
-            self.__thread_local_storage.settings = previous_settings
-
-
-Settings = LazySettings(SettingsValidator)
+Settings = SafeLazyInit(SettingsValidator)

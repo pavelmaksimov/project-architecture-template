@@ -1,5 +1,4 @@
 import asyncio
-import os
 import pathlib
 
 import pytest
@@ -18,11 +17,6 @@ from project.logger import setup_logging
 from project.settings import Settings
 from project.utils.log import logging_disabled
 
-default_test_settings = {
-    "ENV": "TEST",
-    "ACCESS_TOKEN": "token",
-}
-
 
 @pytest.fixture(scope="session")
 def settings():
@@ -33,27 +27,25 @@ def settings():
 def setup(settings):
     setup_logging("TEST")
 
-    os.environ.update(**default_test_settings)
-
-    with settings.local(**default_test_settings):
+    with settings.local(ENV="TEST", ACCESS_TOKEN="token"):
         yield
 
 
 @pytest.fixture(scope="session")
-def init_database(setup):
+def init_database(settings, setup):
     with PostgresContainer("postgres:17.2") as postgres:
-        os.environ["SQLALCHEMY_DATABASE_DSN"] = postgres.get_connection_url()
+        with settings.local(SQLALCHEMY_DATABASE_DSN=postgres.get_connection_url()):
 
-        engine = database.engine_factory()
+            engine = database.engine_factory()
 
-        try:
-            with logging_disabled():
-                project.domains.base.models.public_schema.create_all(bind=engine, checkfirst=True)
+            try:
+                with logging_disabled():
+                    project.domains.base.models.public_schema.create_all(bind=engine, checkfirst=True)
 
-            yield engine
+                yield engine
 
-        finally:
-            engine.dispose()
+            finally:
+                engine.dispose()
 
 
 @pytest.fixture
