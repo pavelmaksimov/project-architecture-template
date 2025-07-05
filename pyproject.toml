@@ -4,6 +4,15 @@ version = "0.1.0"
 description = ""
 readme = "README.md"
 requires-python = ">=3.12"
+license = {text = "MIT"}
+authors = [
+  {name = "Pavel Maksimov", email = "vur21@ya.ru"}
+]
+keywords = [
+  "project-template",
+  "styleguide",
+]
+
 dependencies = [
     "orjson~=3.10.12",
     "pydantic-settings~=2.7.1",
@@ -38,6 +47,10 @@ dev = [
     "wily>=1.25",
     "xenon>=0.9.3",
 ]
+
+[project.urls]
+Homepage = "https://github.com/pavelmaksimov/project-architecture-template"
+Repository = "https://github.com/pavelmaksimov/project-architecture-template"
 
 [tool.ruff]
 line-length = 120
