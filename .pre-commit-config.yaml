@@ -1,0 +1,75 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        stages: [pre-commit]
+      - id: end-of-file-fixer
+        stages: [pre-commit]
+      - id: check-yaml
+        stages: [pre-commit]
+      - id: check-toml
+        stages: [pre-commit]
+      - id: check-json
+        stages: [pre-commit]
+      - id: debug-statements
+        stages: [pre-commit]
+
+  - repo: local
+    hooks:
+      - id: ruff-check
+        stages: [pre-commit]
+        name: ruff linter
+        entry: ruff
+        language: python
+        args: [check, --fix, project]
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: ruff-check-tests
+        stages: [pre-commit]
+        name: ruff linter for tests
+        entry: ruff
+        language: python
+        args: [check, --fix, tests, --config, tests/ruff-tests.toml]
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: ruff-format
+        stages: [pre-commit]
+        name: ruff format
+        entry: ruff
+        language: python
+        args: [format, project, tests]
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: la-linter
+        stages: [pre-commit, pre-push]
+        name: Checking isolation layers and direction of dependencies
+        entry: la-linter
+        language: python
+        args: [project]
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: di-linter
+        stages: [pre-commit]
+        name: Checking dependency injections
+        entry: di-linter
+        language: python
+        args: [project]
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: update-deps
+        stages: [pre-commit, pre-push]
+        name: Update requirements.txt
+        entry: uv export --no-dev --no-hashes -o requirements.txt
+        language: system
+        pass_filenames: false

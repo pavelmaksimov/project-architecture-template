@@ -26,6 +26,7 @@ dev = [
     "httpx~=0.28.1",
     "layers-linter>=3.1.0",
     "mypy~=1.15.0",
+    "pre-commit>=4.2.0",
     "pytest~=8.3.4",
     "pytest-archon~=0.0.6",
     "pytest-asyncio>=0.25.3",
@@ -44,7 +45,6 @@ indent-width = 4
 target-version = "py312"
 include = [
     "project/*.py",
-    "tests/*.py",
 ]
 
 [tool.ruff.format]
@@ -52,7 +52,7 @@ line-ending = "lf"
 
 [tool.ruff.lint]
 ignore = [
-    "E731", "A002", "PYI001", "SIM117", "ARG001", "E731", "E741", "UP035", "UP028", "RET504"
+    "E731", "A002", "PYI001", "SIM117", "ARG001", "E731", "E741", "UP035", "UP028", "RET504", "S101"
 ]
 select = [
     "E", "E4", "E7", "E9", "F", "B", "ERA", "FAST", "YTT", "UP", "FURB", "RUF", "PLC", "PLE",
@@ -68,6 +68,3 @@ select = [
 
 [tool.ruff.lint.flake8-builtins]
 builtins-allowed-modules = ["id"]
-
-[tool.ruff.lint.flake8-copyright]
-author = "Ruff"
