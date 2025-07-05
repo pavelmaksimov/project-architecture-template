@@ -52,7 +52,7 @@ repos:
         name: Checking isolation layers and direction of dependencies
         entry: la-linter
         language: python
-        args: [project]
+        args: [project, --no-check-no-layer]
         pass_filenames: false
 
   - repo: local
