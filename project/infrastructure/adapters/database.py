@@ -22,7 +22,7 @@ def engine_factory() -> Engine:
 
 @lru_cache
 def scoped_session_factory() -> scoped_session:
-    engine = engine_factory()  # di: skip
+    engine = engine_factory()
     return scoped_session(
         sessionmaker(
             engine,
@@ -45,7 +45,7 @@ def Session() -> Generator[ORMSession, Any, None]:
     if current_session:
         yield current_session
     else:
-        ScopedSession = scoped_session_factory()  # di: skip
+        ScopedSession = scoped_session_factory()
         with ScopedSession() as session:
             token = session_storage.set(session)
             try:
@@ -104,5 +104,5 @@ def CurrentTransaction() -> Generator[ORMSession, Any, None]:
 
 
 def init_database():
-    engine = engine_factory()  # di: skip
+    engine = engine_factory()
     public_schema.create_all(bind=engine)

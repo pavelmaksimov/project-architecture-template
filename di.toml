@@ -1,3 +1,6 @@
 project-root = "project"
-exclude-objects = ["Settings", "DIContainer", "Repositories"]
-exclude-modules = ["endpoints.py", "database.py", "adatabase.py"]
+exclude-objects = ["Settings", "DIContainer", "Container", "*Error", "throw"]
+exclude-modules = [
+    "project.infrastructure.adapters.database",
+    "project.infrastructure.adapters.adatabase",
+]
