@@ -1,7 +1,7 @@
 import logging
 import time
 from contextlib import contextmanager
-from typing import Callable, Any, Generator
+import typing as t
 
 
 @contextmanager
@@ -12,7 +12,7 @@ def logging_disabled(level="CRITICAL"):
 
 
 @contextmanager
-def timer() -> Generator[Callable[[], float], Any, None]:
+def timer() -> t.Generator[t.Callable[[], float], t.Any, None]:
     """
     Example:
 

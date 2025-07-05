@@ -1,4 +1,4 @@
-from typing import Callable
+import typing as t
 
 
 class LazyInit[T]:
@@ -12,7 +12,7 @@ class LazyInit[T]:
         return self._instance
 
     def __getattr__(self, item):
-        is_method = isinstance(getattr(self._klass, item), Callable)
+        is_method = isinstance(getattr(self._klass, item), t.Callable)
         error = "Access to attributes and methods of this class is carried out through a class call."
         raise AttributeError(
             f"{error}\n{self._klass.__name__}.{item}() -> {self._klass.__name__}().{item}()"

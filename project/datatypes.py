@@ -1,5 +1,5 @@
-from typing import NewType
+import typing as t
 
-UserIdT = NewType("UserIdT", int)
-AnswerT = NewType("AnswerT", str)
-QuestionT = NewType("QuestionT", str)
+UserIdT = t.NewType("UserIdT", int)
+AnswerT = t.NewType("AnswerT", str)
+QuestionT = t.NewType("QuestionT", str)

@@ -1,4 +1,4 @@
-from typing import Any
+import typing as t
 
 
 def throw(exc: type[Exception], *args, **kwargs):
@@ -10,7 +10,7 @@ class AppError(Exception):
 
 
 class NotFoundError(AppError, ValueError):
-    def __init__(self, object_name: str, id: Any):
+    def __init__(self, object_name: str, id: t.Any):
         super().__init__()
         self.object_name = object_name
         self.id = id

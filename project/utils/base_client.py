@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Protocol, ClassVar
+import typing as t
 
 import niquests
 import orjson
@@ -63,7 +63,7 @@ class AsyncApi:
         json: dict | list | None = None,
         settings: dict | None = None,
         session: ClientSession | None = None,
-    ) -> Any:
+    ) -> t.Any:
         url = self.api_root
         if resource:
             url = f"{self.api_root}/{resource}"
@@ -82,13 +82,13 @@ class AsyncApi:
             ) as response:
                 return await self.process_response(response)
 
-    async def response_to_native(self, response: ClientResponse) -> Any:
+    async def response_to_native(self, response: ClientResponse) -> t.Any:
         try:
             return await response.json(loads=orjson.loads, content_type=None)
         except ValueError:
             return await response.text()
 
-    def error_handling(self, response: ClientResponse, response_data: Any) -> bool | None:
+    def error_handling(self, response: ClientResponse, response_data: t.Any) -> bool | None:
         if 200 <= response.status < 300:
             return None
 
@@ -100,7 +100,7 @@ class AsyncApi:
 
         return False
 
-    async def process_response(self, response: ClientResponse) -> Any:
+    async def process_response(self, response: ClientResponse) -> t.Any:
         response_data = await self.response_to_native(response)
 
         if self.error_handling(response, response_data) is False:
@@ -137,7 +137,7 @@ class SyncApi:
         json: dict | list | None = None,
         settings: dict | None = None,
         session: niquests.Session | None = None,
-    ) -> Any:
+    ) -> t.Any:
         url = self.api_root
         if resource:
             url = f"{self.api_root}/{resource}"
@@ -149,7 +149,7 @@ class SyncApi:
             response = sess.request(method, url, params=params, data=data, json=json, headers=headers, **settings)
             return self.process_response(response)
 
-    def response_to_native(self, response: niquests.Response) -> Any:
+    def response_to_native(self, response: niquests.Response) -> t.Any:
         if not response.content:
             return response.text
 
@@ -158,7 +158,7 @@ class SyncApi:
         except ValueError:
             return response.text
 
-    def error_handling(self, response: niquests.Response, response_data: Any) -> bool | None:
+    def error_handling(self, response: niquests.Response, response_data: t.Any) -> bool | None:
         if response.status_code is None:
             error_msg = "Not response status"
             raise self.ApiError(error_msg, response)
@@ -174,7 +174,7 @@ class SyncApi:
 
         return False
 
-    def process_response(self, response: niquests.Response) -> Any:
+    def process_response(self, response: niquests.Response) -> t.Any:
         response_data = self.response_to_native(response)
 
         if self.error_handling(response, response_data) is False:
@@ -184,7 +184,7 @@ class SyncApi:
         return response_data
 
 
-class IClient(Protocol):
+class IClient(t.Protocol):
     """
     class MyClient:
         Api = AsyncApi
@@ -207,6 +207,6 @@ class IClient(Protocol):
     await client.my_endpoint()
     """
 
-    Api: ClassVar[type[AsyncApi | SyncApi]]
+    Api: t.ClassVar[type[AsyncApi | SyncApi]]
     api_root: str
     api: AsyncApi | SyncApi

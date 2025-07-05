@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import Generator, Any, TYPE_CHECKING
+import typing as t
 
 from project.domains.chat.answer.service import AnswerService
 from project.domains.chat.interfaces import IGenerateGateway
@@ -12,7 +12,7 @@ from project.infrastructure.adapters.database import transaction, current_transa
 from project.infrastructure.adapters.llm import LLMClient
 from project.utils.structures import LazyInit
 
-if TYPE_CHECKING:
+if t.TYPE_CHECKING:
     from sqlalchemy.orm import Session as ORMSession
 
 
@@ -25,13 +25,13 @@ class AllRepositories:
 
     @classmethod
     @contextmanager
-    def transaction(cls) -> Generator["ORMSession", Any, None]:
+    def transaction(cls) -> t.Generator["ORMSession", t.Any, None]:
         with transaction() as session:  # di: skip
             yield session
 
     @classmethod
     @contextmanager
-    def current_transaction(cls) -> Generator["ORMSession", Any, None]:
+    def current_transaction(cls) -> t.Generator["ORMSession", t.Any, None]:
         with current_transaction() as session:  # di: skip
             yield session
 

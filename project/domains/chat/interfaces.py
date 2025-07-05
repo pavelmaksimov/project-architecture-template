@@ -1,5 +1,5 @@
-from typing import Protocol, Iterable
+import typing as t
 
 
-class IGenerateGateway(Protocol):
-    def generate(self, messages: Iterable[str]) -> str: ...
+class IGenerateGateway(t.Protocol):
+    def generate(self, messages: t.Iterable[str]) -> str: ...

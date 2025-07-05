@@ -1,7 +1,7 @@
 from itertools import chain
-from typing import TYPE_CHECKING
+import typing as t
 
-if TYPE_CHECKING:
+if t.TYPE_CHECKING:
     from project.domains.chat.interfaces import IGenerateGateway
     from project.domains.chat.models import Question
 

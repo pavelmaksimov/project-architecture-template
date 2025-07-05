@@ -1,4 +1,4 @@
-from typing import Annotated
+import typing as t
 
 from fastapi import APIRouter, Query
 
@@ -12,7 +12,7 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 @router.get("/v1/history/{user_id}")
 def get_chat_history_v1(
     user_id: int,
-    limit: Annotated[int, Query(ge=1)] = 10,
+    limit: t.Annotated[int, Query(ge=1)] = 10,
 ):
     """Getting the story of a user chat."""
     return Container().repo.chat.get_history(user_id=user_id, limit=limit)

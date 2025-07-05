@@ -1,9 +1,9 @@
-from typing import TYPE_CHECKING
+import typing as t
 
 from project.settings import Settings
 from project.datatypes import UserIdT, QuestionT
 
-if TYPE_CHECKING:
+if t.TYPE_CHECKING:
     from project.container import AllRepositories
     from project.domains.chat.models import Answer
     from project.domains.chat.answer.service import AnswerService

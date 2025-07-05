@@ -1,7 +1,7 @@
 import contextvars
 from contextlib import contextmanager
 from functools import lru_cache
-from typing import Any, Generator
+import typing as t
 
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import sessionmaker, Session as ORMSession, scoped_session
@@ -34,7 +34,7 @@ def scoped_session_factory() -> scoped_session:
 
 
 @contextmanager
-def Session() -> Generator[ORMSession, Any, None]:  # noqa: N802
+def Session() -> t.Generator[ORMSession, t.Any, None]:  # noqa: N802
     """
     This function ensures that a session is reused if one already exists,
     otherwise it creates a new session.
@@ -56,7 +56,7 @@ def Session() -> Generator[ORMSession, Any, None]:  # noqa: N802
 
 
 @contextmanager
-def transaction() -> Generator[ORMSession, Any, None]:
+def transaction() -> t.Generator[ORMSession, t.Any, None]:
     """
     During the call, a transaction is created,
     and with an nested call inside another transaction,
@@ -75,7 +75,7 @@ def transaction() -> Generator[ORMSession, Any, None]:
 
 
 @contextmanager
-def current_transaction() -> Generator[ORMSession, Any, None]:
+def current_transaction() -> t.Generator[ORMSession, t.Any, None]:
     """
     With a repeated opening of the transaction, a new transaction is not created,
     but an early open transaction is used.
