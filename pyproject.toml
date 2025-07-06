@@ -44,6 +44,7 @@ dev = [
     "responses>=0.25.7",
     "ruff~=0.8.2",
     "testcontainers>=4.10.0",
+    "vulture>=2.14",
     "wily>=1.25",
     "xenon>=0.9.3",
 ]
@@ -120,6 +121,16 @@ disallow_any_explicit = false
 module = "wemake_python_styleguide.compat.packaging"
 # We allow unused `ignore` comments, because we cannot sync it between versions:
 warn_unused_ignores = false
+
+[tool.vulture]
+exclude = ["interfaces.py", "llm.py"]
+ignore_decorators = ["@app.route", "@require_*"]
+ignore_names = ["visit_*", "do_*"]
+make_whitelist = false
+min_confidence = 100
+paths = ["project", "whitelist.py"]
+sort_by_size = true
+verbose = false
 
 #[tool.ruff.flake8-tidy-imports]
 #banned-module-level-imports = []

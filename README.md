@@ -20,6 +20,7 @@ ruff check --fix
 mypy project
 di-linter project
 layers-linter project
+vulture myscript.py --min-confidence 100
 pytest --cov=project tests/
 ```
 
@@ -299,6 +300,12 @@ wily diff project -r master
 
 Этот инструмент на самом деле вычисляет, насколько сложным «выглядит» код,
 а не насколько сложным он «является» на самом деле.
+
+```shell
+vulture project
+```
+
+[Vulture](https://github.com/jendrikseipp/vulture) находит неиспользуемый код
 
 ### Шаблон клиента для взаимодействия с внешними API
 Находится в [base_client.py](project/utils/base_client.py)
