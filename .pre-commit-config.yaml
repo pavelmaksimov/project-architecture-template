@@ -69,8 +69,17 @@ repos:
     hooks:
       - id: xenon
         stages: [pre-commit]
-        name: Xenon - сode complexity index for support
+        name: Xenon - cyclomic complexity
         entry: xenon --max-absolute B --max-modules B --max-average B project
+        language: system
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: radon
+        stages: [pre-commit]
+        name: Radon - сode complexity index for support
+        entry: radon mi --min C project
         language: system
         pass_filenames: false
 

@@ -274,7 +274,7 @@ layers-linter project
 Встроен в [CI/CD](.gitlab-ci.yml)
 
 ```shell
-xenon --max-absolute B --max-modules B --max-average B
+xenon --max-absolute B --max-modules B --max-average B project
 ```
 
 Этот индекс говорит нам о том, насколько сложно будет поддерживать или редактировать кусок программы.
