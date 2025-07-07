@@ -5,7 +5,7 @@ from pathlib import Path
 
 @lru_cache
 def setup_logging(mode: str):
-    config = {
+    config: dict = {
         "version": 1,
         "disable_existing_loggers": False,
         "formatters": {

@@ -6,7 +6,7 @@ from contextvars import ContextVar
 class LazyInit[T]:
     def __init__(self, klass: type[T]):
         self._klass: type[T] = klass
-        self._instance: T = None
+        self._instance: T = None  # type: ignore
 
     def __call__(self) -> T:
         if not self._instance:
@@ -25,7 +25,7 @@ class LazyInit[T]:
 
 class SafeLazyInit[T]:
     """
-    Simple lazy initialization using contextvars instead of threading.local().
+    Simple lazy initialization using contextvars.
 
     Example:
         Settings = LazyContextVar(SettingsClass)
