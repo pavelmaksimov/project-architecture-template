@@ -6,28 +6,25 @@
 приложение. Параметры определяются в [settings.py](project/settings.py).
 
 ### Разработка
-#### Форматирование кода
-Перед комитом запускайте форматирование кода [ruff](https://github.com/astral-sh/ruff).
-Настройки форматирования в [pyproject.toml](pyproject.toml)
 
+Форматирование кода и линтеры выполняется автоматически при коммите через pre-commit хуки.
+Настройки линтеров находятся в [pyproject.toml](pyproject.toml).
+Настройки линтеров для тестов находятся в [ruff-tests.toml](tests/ruff-tests.toml).
+
+При коммите автоматически выполняются:
+- ruff check --fix (линтер)
+- ruff format (форматирование)
+- mypy (проверка типов)
+- di-linter (проверка инъекций зависимостей)
+- la-linter (проверка архитектурных слоев)
+- xenon (проверка цикломатической сложности)
+- radon (индекс сложности кода)
+- vulture (поиск мертвого кода)
+- обновление requirements.txt
+
+Для запуска тестов используйте:
 ```bash
-ruff format
-#### Линтеры и Тесты
-Перед комитом запускайте линтер [ruff](https://github.com/astral-sh/ruff).
-Настройки линтера в [pyproject.toml](pyproject.toml)
-
-ruff check --fix
-mypy project
-di-linter project
-layers-linter project
-vulture myscript.py --min-confidence 100
 pytest --cov=project tests/
-```
-
-Проверки сложности кода:
-```bash
-xenon --max-absolute B --max-modules B --max-average B -c project
-radon mi --min C project
 ```
 
 Следуйте [соглашению](https://www.conventionalcommits.org/en/v1.0.0/) именования комитов.
