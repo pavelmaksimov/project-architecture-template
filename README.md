@@ -291,21 +291,21 @@ radon mi --min C project
 Посмотреть изменение метрик после комита по сравнению с версией кода в ветке `master`,
 через [wily](https://github.com/tonybaloney/wily).
 
-```shell
-wily build project
-wily diff project -r master
-```
-
 Об этих метриках можно почитать в [тут](https://habr.com/ru/articles/456150/)
 
 Этот инструмент на самом деле вычисляет, насколько сложным «выглядит» код,
 а не насколько сложным он «является» на самом деле.
 
 ```shell
-vulture project
+wily build project
+wily diff project -r master
 ```
 
 [Vulture](https://github.com/jendrikseipp/vulture) находит неиспользуемый код
+
+```shell
+vulture project
+```
 
 ### Шаблон клиента для взаимодействия с внешними API
 Находится в [base_client.py](project/utils/base_client.py)
