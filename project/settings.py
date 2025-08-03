@@ -35,6 +35,11 @@ class SettingsValidator(BaseSettings):
     SQLALCHEMY_DATABASE_DSN: PostgresDsn  # Example: postgresql+psycopg2://user:password@localhost:5432/database
     DATABASE_PRE_PING: t.Annotated[bool, "Checks and creates connection if closed before requesting"] = False
 
+    # Redis
+    REDIS_HOST: str = ""
+    REDIS_PORT: str = ""
+    REDIS_DB: str = ""
+
     # Loading local settings for development environment.
     model_config = SettingsConfigDict(env_file=Path(__file__).parent.parent / ".env", extra="allow")
 

@@ -7,6 +7,7 @@ import responses as mock_responses
 from aioresponses import aioresponses
 from starlette.testclient import TestClient
 from testcontainers.postgres import PostgresContainer
+from testcontainers.redis import RedisContainer, AsyncRedisContainer
 
 import project.domains.base.models
 from project.infrastructure.adapters import adatabase
@@ -46,6 +47,46 @@ def init_database(settings, setup):
 
             finally:
                 engine.dispose()
+
+
+@pytest.fixture(scope="session")
+def init_redis(settings, setup):
+    with RedisContainer("redis") as redis_container:
+        client = redis_container.get_client()
+        connection_kwargs = client.get_connection_kwargs()
+        with settings.local(
+            REDIS_HOST=connection_kwargs["host"],
+            REDIS_PORT=connection_kwargs["port"],
+            REDIS_DB=str(connection_kwargs["db"]),
+        ):
+            yield client
+
+
+@pytest.fixture
+def redis(init_redis):
+    yield init_redis
+    init_redis.reset()
+    init_redis.flushdb()
+
+
+@pytest_asyncio.fixture(scope="session")
+async def async_init_redis(settings, setup):
+    with AsyncRedisContainer("redis") as redis_container:
+        client = await redis_container.get_async_client()
+        connection_kwargs = client.get_connection_kwargs()
+        with settings.local(
+            REDIS_HOST=connection_kwargs["host"],
+            REDIS_PORT=connection_kwargs["port"],
+            REDIS_DB=str(connection_kwargs["db"]),
+        ):
+            yield client
+
+
+@pytest_asyncio.fixture
+async def async_redis(async_init_redis):
+    yield async_init_redis
+    await async_init_redis.reset()
+    await async_init_redis.flushdb()
 
 
 @pytest.fixture
