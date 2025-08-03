@@ -8,6 +8,11 @@
 ### Разработка
 
 Форматирование кода и линтеры выполняется автоматически при коммите через pre-commit хуки.
+Чтобы активировать pre-commit, выполните:
+```bash
+pre-commit install
+```
+
 Настройки линтеров находятся в [pyproject.toml](pyproject.toml).
 Настройки линтеров для тестов находятся в [ruff-tests.toml](tests/ruff-tests.toml).
 
