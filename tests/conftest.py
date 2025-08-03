@@ -35,7 +35,12 @@ def setup(settings):
 @pytest.fixture(scope="session")
 def init_database(settings, setup):
     with PostgresContainer("postgres:17.2") as postgres:
-        with settings.local(SQLALCHEMY_DATABASE_DSN=postgres.get_connection_url()):
+        with settings.local(
+            **{
+                **settings().model_dump(exclude_unset=True),
+                "SQLALCHEMY_DATABASE_DSN": postgres.get_connection_url(),
+            },
+        ):
 
             engine = database.engine_factory()
 
@@ -55,9 +60,13 @@ def init_redis(settings, setup):
         client = redis_container.get_client()
         connection_kwargs = client.get_connection_kwargs()
         with settings.local(
-            REDIS_HOST=connection_kwargs["host"],
-            REDIS_PORT=connection_kwargs["port"],
-            REDIS_DB=str(connection_kwargs["db"]),
+            **{
+                **settings().model_dump(exclude_unset=True),
+                    "REDIS_HOST": connection_kwargs["host"],
+                    "REDIS_PORT": connection_kwargs["port"],
+                    "REDIS_DB": str(connection_kwargs["db"])
+                ,
+            },
         ):
             yield client
 
@@ -75,9 +84,13 @@ async def async_init_redis(settings, setup):
         client = await redis_container.get_async_client()
         connection_kwargs = client.get_connection_kwargs()
         with settings.local(
-            REDIS_HOST=connection_kwargs["host"],
-            REDIS_PORT=connection_kwargs["port"],
-            REDIS_DB=str(connection_kwargs["db"]),
+            **{
+                **settings().model_dump(exclude_unset=True),
+                    "REDIS_HOST": connection_kwargs["host"],
+                    "REDIS_PORT": connection_kwargs["port"],
+                    "REDIS_DB": str(connection_kwargs["db"])
+                ,
+            },
         ):
             yield client
 
@@ -98,8 +111,11 @@ def session(init_database):
                 # For the database to be clean, in the end the created data roll back.
             t.rollback()
 
+    database.engine_factory.cache_clear()
+    database.scoped_session_factory.cache_clear()
 
-@pytest.fixture(scope="session")
+
+@pytest.fixture
 def event_loop():
     """
     This corrects the problem with sessions from the database, you need to run all the tests in one event loop.
@@ -117,6 +133,9 @@ async def asession(init_database):
                 yield asession
                 # For the database to be clean, in the end the created data roll back.
             await t.rollback()
+
+    adatabase.aengine_factory.cache_clear()
+    adatabase.async_sessionmaker_factory.cache_clear()
 
 
 @pytest.fixture
@@ -158,6 +177,7 @@ def aresponses():
 @pytest.fixture
 def keycloak_client(settings):
     with settings.local(
+        **settings().model_dump(exclude_unset=True),
         KEYCLOAK_URL="http://keycloak.example.com/auth",
         KEYCLOAK_CLIENT_ID="KEYCLOAK_CLIENT_ID",
         KEYCLOAK_USERNAME="KEYCLOAK_USERNAME",
@@ -194,6 +214,7 @@ def mock_async_keycloak(aresponses):
 @pytest.fixture
 def keycloak_aclient(settings):
     with settings.local(
+        **settings().model_dump(exclude_unset=True),
         KEYCLOAK_URL="http://keycloak.example.com/auth",
         KEYCLOAK_CLIENT_ID="KEYCLOAK_CLIENT_ID",
         KEYCLOAK_USERNAME="KEYCLOAK_USERNAME",
