@@ -80,10 +80,11 @@ select = [
     "TD004", "TD005", "TD006", "TD007",
     # "W", "DOC", "D", "PGH, "DJ", "EXE", "FIX", "DTZ", "CPY", "I", "PD", "ANN", "PLR", PLW
 ]
-flake8-import-conventions.banned-from = [ "datetime", "typing" ]
-[flake8-import-conventions.aliases]
-datetime = "dt"
-typing = "t"
+
+#flake8-import-conventions.banned-from = [ "datetime", "typing" ]
+#[flake8-import-conventions.aliases]
+#datetime = "dt"
+#typing = "t"
 
 [tool.ruff.lint.flake8-builtins]
 builtins-ignorelist = ["id", "type", "filter"]

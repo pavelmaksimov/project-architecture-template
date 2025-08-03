@@ -7,7 +7,7 @@ line-ending = "lf"
 
 [lint]
 ignore = [
-    "E731", "A002", "PYI001", "SIM117", "E731", "E741", "UP035", "UP028", "S101", "RUF015"
+    "E731", "A002", "PYI001", "SIM117", "E741", "UP035", "UP028", "S101", "RUF015", "E711"
 ]
 select = [
     "E", "E4", "E7", "E9", "F", "B", "ERA", "FAST", "YTT", "UP", "FURB", "RUF", "PLC", "PLE",

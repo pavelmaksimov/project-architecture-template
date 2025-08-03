@@ -3,4 +3,6 @@ exclude-objects = ["Settings", "DIContainer", "Container", "*Error", "throw"]
 exclude-modules = [
     "project.infrastructure.adapters.database",
     "project.infrastructure.adapters.adatabase",
+    "project.infrastructure.adapters.cache",
+    "project.infrastructure.adapters.acache",
 ]

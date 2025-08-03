@@ -20,16 +20,19 @@ NotEmptyStrT = t.Annotated[str, AfterValidator(not_empty_validator)]
 
 
 class SettingsValidator(BaseSettings):
+    # Application
     ENV: t.Literal["DEV", "PROD", "TEST"] = "PROD"
     ACCESS_TOKEN: NotEmptyStrT
-    SQLALCHEMY_DATABASE_DSN: PostgresDsn  # Example: postgresql+psycopg2://user:password@localhost:5432/database
     HISTORY_WINDOW: int = 20
 
+    # Keycloak
     KEYCLOAK_URL: str = ""
     KEYCLOAK_CLIENT_ID: str = ""
     KEYCLOAK_USERNAME: str = ""
     KEYCLOAK_PASSWORD: str = ""
 
+    # Database
+    SQLALCHEMY_DATABASE_DSN: PostgresDsn  # Example: postgresql+psycopg2://user:password@localhost:5432/database
     DATABASE_PRE_PING: t.Annotated[bool, "Checks and creates connection if closed before requesting"] = False
 
     # Loading local settings for development environment.
