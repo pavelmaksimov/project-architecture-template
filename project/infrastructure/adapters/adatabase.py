@@ -65,7 +65,7 @@ async def atransaction():
             async with current_session.begin():
                 yield current_session
     else:
-        async with asession() as session:
+        async with asession() as session, session.begin():
             yield session
 
 
@@ -83,5 +83,5 @@ async def current_atransaction():
             async with current_session.begin():
                 yield current_session
     else:
-        async with asession() as session:
+        async with asession() as session, session.begin():
             yield session
