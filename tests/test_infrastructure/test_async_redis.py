@@ -62,3 +62,14 @@ async def test_async_context_with_local_transaction(async_redis):
         assert await async_redis.get("foo") == None
 
     assert await async_redis.get("foo") == b"bar"
+
+
+@pytest.mark.asyncio
+async def test_delete(async_redis):
+    await async_redis.set("foo", "bar")
+    assert await async_redis.get("foo") == b"bar"
+
+    async with local_redis_async_transaction() as tr:
+        await tr.delete("foo")
+
+    assert await async_redis.get("foo") == None
