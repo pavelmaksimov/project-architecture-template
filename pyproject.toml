@@ -28,6 +28,9 @@ dependencies = [
 ]
 
 [dependency-groups]
+voice = [
+    "pydub>=0.25.1",
+]
 dev = [
     "aioresponses~=0.7.8",
     "di-linter==1.3.0",
