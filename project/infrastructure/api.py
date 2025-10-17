@@ -20,7 +20,7 @@ health_response = {"status": "ok"}
 
 
 def auth_by_token(auth_token: str = Header(alias="Access-Token")):
-    if auth_token != Settings().ACCESS_TOKEN:
+    if auth_token != Settings().ACCESS_TOKEN.get_secret_value():
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token")
     return auth_token
 

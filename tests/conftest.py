@@ -140,7 +140,7 @@ async def asession(init_database):
 
 @pytest.fixture
 def api_client(settings, session):
-    return TestClient(app, headers={"Access-Token": settings().ACCESS_TOKEN})
+    return TestClient(app, headers={"Access-Token": settings().ACCESS_TOKEN.get_secret_value()})
 
 
 @pytest.fixture(scope="session")
@@ -187,7 +187,7 @@ def keycloak_client(settings):
             keycloak_url=settings().KEYCLOAK_URL,
             client_id=settings().KEYCLOAK_CLIENT_ID,
             username=settings().KEYCLOAK_USERNAME,
-            password=settings().KEYCLOAK_PASSWORD,
+            password=settings().KEYCLOAK_PASSWORD.get_secret_value(),
         )
 
 
@@ -224,7 +224,7 @@ def keycloak_aclient(settings):
             keycloak_url=settings().KEYCLOAK_URL,
             client_id=settings().KEYCLOAK_CLIENT_ID,
             username=settings().KEYCLOAK_USERNAME,
-            password=settings().KEYCLOAK_PASSWORD,
+            password=settings().KEYCLOAK_PASSWORD.get_secret_value(),
         )
 
 

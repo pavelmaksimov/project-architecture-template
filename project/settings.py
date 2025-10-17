@@ -1,7 +1,7 @@
 from pathlib import Path
 import typing as t
 
-from pydantic import PostgresDsn, AfterValidator
+from pydantic import PostgresDsn, AfterValidator, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from project.utils.structures import SafeLazyInit
@@ -22,14 +22,14 @@ NotEmptyStrT = t.Annotated[str, AfterValidator(not_empty_validator)]
 class SettingsValidator(BaseSettings):
     # Application
     ENV: t.Literal["DEV", "PROD", "TEST"] = "PROD"
-    ACCESS_TOKEN: NotEmptyStrT
+    ACCESS_TOKEN: SecretStr
     HISTORY_WINDOW: int = 20
 
     # Keycloak
     KEYCLOAK_URL: str = ""
     KEYCLOAK_CLIENT_ID: str = ""
     KEYCLOAK_USERNAME: str = ""
-    KEYCLOAK_PASSWORD: str = ""
+    KEYCLOAK_PASSWORD: SecretStr | None = None
 
     # Database
     SQLALCHEMY_DATABASE_DSN: PostgresDsn  # Example: postgresql+psycopg2://user:password@localhost:5432/database
