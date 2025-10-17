@@ -17,12 +17,11 @@ def timer() -> t.Generator[t.Callable[[], float], t.Any, None]:
     Example:
 
     with timer() as get_elapsed:
+        time.sleep(1)
+        print(f"Time has passed: {get_elapsed()} sec.")
 
-    time.sleep(1)
-    print(f"Time has passed: {get_elapsed()} sec.")
-
-    time.sleep(1)
-    print(f"Time has passed: {get_elapsed()} sec.")
+        time.sleep(1)
+        print(f"Time has passed: {get_elapsed()} sec.")
     """
     begin = time.perf_counter()
     yield lambda: round(time.perf_counter() - begin, 3)
