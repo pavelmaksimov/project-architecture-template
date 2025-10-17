@@ -1,6 +1,7 @@
 import pytest
 
-from project.utils.base_client import AsyncApi, ApiError, ClientError, ServerError
+from project.utils.base_client import AsyncApi
+from project.infrastructure.exceptions import ApiError, ServerError, ClientError
 
 
 @pytest.fixture

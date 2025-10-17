@@ -1,15 +1,16 @@
+import project.infrastructure.exceptions
 from project.utils import base_client as base
 
 
-class KeycloakApiError(base.ApiError):
+class KeycloakApiError(project.infrastructure.exceptions.ApiError):
     pass
 
 
-class KeycloakServerError(base.ServerError):
+class KeycloakServerError(project.infrastructure.exceptions.ServerError):
     pass
 
 
-class KeycloakClientError(base.ClientError):
+class KeycloakClientError(project.infrastructure.exceptions.ClientError):
     pass
 
 
