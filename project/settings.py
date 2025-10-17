@@ -1,5 +1,6 @@
-from pathlib import Path
 import typing as t
+from enum import Enum
+from pathlib import Path
 
 from pydantic import PostgresDsn, AfterValidator, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -17,12 +18,21 @@ def not_empty_validator(value):
 
 
 NotEmptyStrT = t.Annotated[str, AfterValidator(not_empty_validator)]
+NotEmptySecretStrT = t.Annotated[SecretStr, AfterValidator(not_empty_validator)]
+
+
+class Envs(Enum):
+    PROD = "PROD"  # to work at a prod stand
+    LAMBDA = "LAMBDA"  # to work at a stable stand
+    SANDBOX = "SANDBOX"  # to work on a test stand
+    TEST = "TEST"  # for run testing
+    LOCAL = "LOCAL"  # for local development
 
 
 class SettingsValidator(BaseSettings):
     # Application
     ENV: t.Literal["DEV", "PROD", "TEST"] = "PROD"
-    ACCESS_TOKEN: SecretStr
+    ACCESS_TOKEN: NotEmptySecretStrT
     HISTORY_WINDOW: int = 20
 
     # Keycloak
@@ -40,8 +50,27 @@ class SettingsValidator(BaseSettings):
     REDIS_PORT: str = ""
     REDIS_DB: str = ""
 
+    # LLM
+    LLM_MODEL: NotEmptyStrT
+    LLM_API_KEY: NotEmptySecretStrT
+    LLM_MIDDLE_PROXY_URL: str = ""
+    LLM_TEMPERATURE: float = 0.3
+    LLM_MAX_TOKENS: int = 8192
+
     # Loading local settings for development environment.
     model_config = SettingsConfigDict(env_file=Path(__file__).parent.parent / ".env", extra="allow")
+
+    def is_local(self):
+        return self.ENV == Envs.LOCAL
+
+    def is_production(self):
+        return self.ENV == Envs.PROD
+
+    def is_testable(self):
+        return self.ENV in (Envs.LAMBDA, Envs.SANDBOX)
+
+    def is_any_stand(self):
+        return self.ENV in (Envs.PROD, Envs.LAMBDA, Envs.SANDBOX)
 
 
 Settings = SafeLazyInit(SettingsValidator)

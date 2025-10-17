@@ -5,4 +5,5 @@ exclude-modules = [
     "project.infrastructure.adapters.adatabase",
     "project.infrastructure.adapters.cache",
     "project.infrastructure.adapters.acache",
+    "project.settings",
 ]

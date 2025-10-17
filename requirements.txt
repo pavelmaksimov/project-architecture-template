@@ -24,6 +24,7 @@ multidict==6.3.2
 niquests==3.14.0
 orjson==3.10.16
 pottery==3.0.1
+prometheus-client==0.23.1
 propcache==0.3.1
 psycopg2-binary==2.9.10
 pydantic==2.11.2

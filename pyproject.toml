@@ -24,6 +24,7 @@ dependencies = [
     "niquests>=3.13.1",
     "pottery>=3.0.1",
     "alembic>=1.15.2",
+    "prometheus-client>=0.23.1",
 ]
 
 [dependency-groups]
@@ -47,6 +48,12 @@ dev = [
     "vulture>=2.14",
     "wily>=1.25",
     "xenon>=0.9.3",
+]
+llm = [
+    "langchain-openai>=0.3.35",
+    "langgraph>=0.6.10",
+    "llm-common>=2.1.2",
+    "openai>=2.4.0",
 ]
 
 [project.urls]
