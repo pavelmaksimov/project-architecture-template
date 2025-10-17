@@ -7,10 +7,11 @@ line-ending = "lf"
 
 [lint]
 ignore = [
-    "E731", "A002", "PYI001", "SIM117", "E741", "UP035", "UP028", "S101", "RUF015", "E711", "EM101"
+    "E731", "A002", "PYI001", "SIM117", "E741", "UP035", "UP028", "S101", "RUF015", "E711", "EM101",
+    "RUF002",
 ]
 select = [
-    "E", "E4", "E7", "E9", "F", "B", "ERA", "FAST", "YTT", "UP", "FURB", "RUF", "PLC", "PLE",
+    "E", "E4", "E7", "E9", "F", "B", "ERA", "FAST", "YTT", "UP", "FURB", "PLC", "PLE",
     "ASYNC", "BLE", "FBT", "A", "COM", "C", "EM", "FA", "INT", "ISC", "ICN", "LOG", "G", "INP", "PIE", "T20",
     "PYI", "PT", "Q", "RSE", "SLF", "SIM", "SLOT", "TID", "TC", "PTH", "FLY", "C90", "NPY", "N", "PERF",
     "D201", "D204", "D206", "D207", "D208", "D209", "D210", "D211", "D213", "D300", "D402", "D403", "D418", "D419",
