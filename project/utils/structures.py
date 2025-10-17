@@ -4,13 +4,14 @@ from contextvars import ContextVar
 
 
 class LazyInit[T]:
-    def __init__(self, klass: type[T]):
+    def __init__(self, klass: type[T], kwargs_func: t.Callable[[], dict] | None = None):
         self._klass: type[T] = klass
+        self._kwargs_func: t.Callable[[], dict] = kwargs_func or (dict)
         self._instance: T = None  # type: ignore
 
     def __call__(self) -> T:
         if not self._instance:
-            self._instance = self._klass()
+            self._instance = self._klass(**self._kwargs_func())
         return self._instance
 
     def __getattr__(self, item):
@@ -21,6 +22,18 @@ class LazyInit[T]:
             if is_method
             else f"{error}\n{self._klass.__name__}.{item} -> {self._klass.__name__}().{item}",
         )
+
+    @contextmanager
+    def local(self, **kwargs):
+        """Simple context manager for parameter overrides."""
+        origin = self._instance
+
+        try:
+            self._instance = self._klass(**(self._kwargs_func() | kwargs))
+            yield
+        finally:
+            # Restore previous instance
+            self._instance = origin
 
 
 class SafeLazyInit[T]:
@@ -35,21 +48,22 @@ class SafeLazyInit[T]:
             instance = Settings()  # Uses overridden parameters
     """
 
-    def __init__(self, klass: type[T]):
+    def __init__(self, klass: type[T], kwargs_func: t.Callable[[], dict] | None = None):
         self._klass: type[T] = klass
+        self._kwargs_func: t.Callable[[], dict] = kwargs_func or (dict)
         self._context_var: ContextVar[T | None] = ContextVar(f"{klass.__name__}_instance", default=None)
 
     def __call__(self) -> T:
         instance = self._context_var.get()
         if instance is None:
-            instance = self._klass()
+            instance = self._klass(**self._kwargs_func())
             self._context_var.set(instance)
         return instance
 
     @contextmanager
     def local(self, **kwargs):
         """Simple context manager for parameter overrides."""
-        token = self._context_var.set(self._klass(**kwargs))
+        token = self._context_var.set(self._klass(**(self._kwargs_func() | kwargs)))
 
         try:
             yield
