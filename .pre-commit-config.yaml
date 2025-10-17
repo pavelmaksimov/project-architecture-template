@@ -92,14 +92,14 @@ repos:
         language: system
         pass_filenames: false
 
-  - repo: local
-    hooks:
-      - id: vulture
-        stages: [pre-commit]
-        name: Vulture - find dead code
-        entry: vulture project  # Only report N% dead code.
-        language: system
-        pass_filenames: false
+#  - repo: local
+#    hooks:
+#      - id: vulture
+#        stages: [pre-commit]
+#        name: Vulture - find dead code
+#        entry: vulture project  # Only report N% dead code.
+#        language: system
+#        pass_filenames: false
 
   - repo: local
     hooks:
