@@ -63,7 +63,8 @@ depends_on = ["cli", "libs", "dicontainer", "usecases", "repo"]
 [layers.rest]
 description = "REST API layer that handles HTTP requests and responses, exposing application functionality through web endpoints"
 contains_modules = [
-    "project.infrastructure.api",
+    "project.infrastructure.apps.api",
+    "project.infrastructure.apps.flask",
     "project.domains.*.endpoints",
 ]
 depends_on = ["rest", "libs", "dicontainer", "usecases"]

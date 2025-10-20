@@ -20,6 +20,9 @@ def not_empty_validator(value):
 NotEmptyStrT = t.Annotated[str, AfterValidator(not_empty_validator)]
 NotEmptySecretStrT = t.Annotated[SecretStr, AfterValidator(not_empty_validator)]
 
+MONITORING_APP_NAME = "<project_name>"
+API_ROOT_PATH = "/api"
+
 
 class Envs(Enum):
     PROD = "PROD"  # to work at a prod stand
@@ -31,7 +34,7 @@ class Envs(Enum):
 
 class SettingsValidator(BaseSettings):
     # Application
-    ENV: t.Literal["DEV", "PROD", "TEST"] = "PROD"
+    ENV: Envs = Envs.LOCAL
     ACCESS_TOKEN: NotEmptySecretStrT
     HISTORY_WINDOW: int = 20
 

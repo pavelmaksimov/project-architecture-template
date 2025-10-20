@@ -6,16 +6,16 @@ from fastapi import FastAPI, Depends, Header, status
 from fastapi.exception_handlers import request_validation_exception_handler, http_exception_handler
 from fastapi.exceptions import RequestValidationError, StarletteHTTPException, HTTPException
 from fastapi.responses import ORJSONResponse
+from llm_common.prometheus import fastapi_tracking_middleware, fastapi_endpoint_for_prometheus
 from starlette.requests import Request
 from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 
-from project.logger import setup_logging
-from project.settings import Settings
 from project.domains.chat.endpoints import router as chat_router
+from project.logger import setup_logging
+from project.settings import Settings, API_ROOT_PATH
 
 logger = getLogger(__name__)
 
-API_ROOT_PATH = "/api"
 health_response = {"status": "ok"}
 
 
@@ -36,6 +36,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(root_path=API_ROOT_PATH, lifespan=lifespan, dependencies=[Depends(auth_by_token)])
 app.include_router(chat_router)
+
+app.middleware("http")(fastapi_tracking_middleware)
+
+app.get("/prometheus")(fastapi_endpoint_for_prometheus)
 
 
 @app.exception_handler(Exception)

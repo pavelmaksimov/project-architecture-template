@@ -2,9 +2,11 @@ import logging.config
 from functools import lru_cache
 from pathlib import Path
 
+from project.settings import Envs
+
 
 @lru_cache
-def setup_logging(mode: str):
+def setup_logging(mode: Envs):
     config: dict = {
         "version": 1,
         "disable_existing_loggers": False,
@@ -35,7 +37,7 @@ def setup_logging(mode: str):
         "root": {"level": "INFO", "handlers": ["stdout", "stderr"]},
     }
 
-    if mode == "PROD":
+    if mode == Envs.PROD:
         Path("logs").mkdir(parents=True, exist_ok=True)
 
         error_handler_name = "errors_file"

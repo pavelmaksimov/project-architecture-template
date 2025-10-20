@@ -11,15 +11,15 @@ import project.domains.base.models
 from project.infrastructure.adapters import adatabase
 from project.infrastructure.adapters import database
 from project.infrastructure.adapters import keycloak
-from project.infrastructure.api import app
+from project.infrastructure.apps.api import app
 from project.logger import setup_logging
-from project.settings import Settings
+from project.settings import Settings, Envs
 from project.utils.log import logging_disabled
 
 
 @pytest.fixture(autouse=True, scope="session")
 def setup():
-    setup_logging("TEST")
+    setup_logging(Envs.TEST)
 
     with Settings.local(
         ENV="TEST",
@@ -60,10 +60,9 @@ def init_redis(setup):
         with Settings.local(
             **{
                 **Settings().model_dump(exclude_unset=True),
-                    "REDIS_HOST": connection_kwargs["host"],
-                    "REDIS_PORT": connection_kwargs["port"],
-                    "REDIS_DB": str(connection_kwargs["db"])
-                ,
+                "REDIS_HOST": connection_kwargs["host"],
+                "REDIS_PORT": connection_kwargs["port"],
+                "REDIS_DB": str(connection_kwargs["db"]),
             },
         ):
             yield client
@@ -84,10 +83,9 @@ async def async_init_redis(setup):
         with Settings.local(
             **{
                 **Settings().model_dump(exclude_unset=True),
-                    "REDIS_HOST": connection_kwargs["host"],
-                    "REDIS_PORT": connection_kwargs["port"],
-                    "REDIS_DB": str(connection_kwargs["db"])
-                ,
+                "REDIS_HOST": connection_kwargs["host"],
+                "REDIS_PORT": connection_kwargs["port"],
+                "REDIS_DB": str(connection_kwargs["db"]),
             },
         ):
             yield client
