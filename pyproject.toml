@@ -143,3 +143,12 @@ verbose = false
 #banned-module-level-imports = []
 #banned-api = []
 #ban-relative-imports = []
+
+
+[[tool.mypy.overrides]]
+module = [
+    "project.infrastructure.adapters.voice",
+]
+disable_error_code = [
+    "redundant-expr",
+]

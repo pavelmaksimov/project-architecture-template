@@ -1,16 +1,34 @@
 import asyncio
+import io
 from io import BytesIO
 
-from llm_common.prometheus import action_tracking_decorator
 import openai
+from llm_common.prometheus import action_tracking_decorator
 from pydub import AudioSegment
 
+from project.utils.retry import retry_unless_exception
 
-class STTAdapter:
-    def __init__(self, client: openai.AsyncClient, model: str = "gpt-4o-mini-transcribe", lang: str = "ru"):
+exclude_exceptions_from_retry = (
+    openai.BadRequestError,
+    openai.RateLimitError,
+    openai.AuthenticationError,
+    openai.PermissionDeniedError,
+    openai.NotFoundError,
+    openai.ConflictError,
+    openai.UnprocessableEntityError,
+)
+
+
+class VoiceAdapter:
+    def __init__(
+        self,
+        client: openai.AsyncClient,
+        stt_model: str = "gpt-4o-mini-transcribe",
+        tts_model: str = "gpt-4o-mini-tts",
+    ):
         self.client = client
-        self.model = model
-        self.lang = lang
+        self.stt_model = stt_model
+        self.tts_model = tts_model
 
     def convert_ogg_to_wav_bytes(self, ogg_data: bytes) -> BytesIO:
         """
@@ -27,16 +45,17 @@ class STTAdapter:
 
         return wav_buffer
 
-    async def transcriptions(self, wav_buffer):
+    async def transcriptions(self, wav_buffer, lang: str = "ru"):
         resp = await self.client.audio.transcriptions.create(
-            model=self.model,  # TODO: move settings
+            model=self.stt_model,
             file=wav_buffer,
-            language=self.lang,
+            language=lang,
             response_format="text",
         )
 
         return resp if isinstance(resp, str) else getattr(resp, "text", str(resp))
 
+    @retry_unless_exception(exclude_exceptions_from_retry, max_attempts=6, backoff=3)  # di: skip
     @action_tracking_decorator("voice_to_text")
     async def voice_to_text(self, voice: bytes | bytearray) -> str:
         """
@@ -49,3 +68,25 @@ class STTAdapter:
         """
         wav_buffer = await asyncio.to_thread(self.convert_ogg_to_wav_bytes, bytes(voice))
         return await self.transcriptions(wav_buffer)
+
+    @retry_unless_exception(exclude_exceptions_from_retry, max_attempts=6, backoff=3)  # di: skip
+    @action_tracking_decorator("voice_from_text")
+    async def text_to_voice(
+        self,
+        text: str,
+        instructions: str,
+        voice: str = "alloy",
+        **kwargs,
+    ) -> io.BytesIO:
+        response = await self.client.audio.speech.create(
+            model=self.tts_model,
+            voice=voice,
+            input=text,
+            instructions=instructions,
+            **kwargs,
+        )
+        file = io.BytesIO(response.content)
+        file.name = "voice.mp3"
+        file.seek(0)
+
+        return file
