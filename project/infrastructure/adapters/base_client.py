@@ -1,13 +1,13 @@
 import logging
 import typing as t
 
-import niquests
+import httpx
 import orjson
 from aiohttp import ClientResponse, ClientSession
 
 from project.infrastructure.exceptions import ApiError, ServerError, ClientError
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 class AsyncApi:
@@ -94,7 +94,7 @@ class SyncApi:
         api_root: str,
         headers: dict | None = None,
         settings: dict | None = None,
-        session: niquests.Session | None = None,
+        session: httpx.Client | None = None,
     ):
         self.api_root = api_root
         self.settings = settings or {}
@@ -107,10 +107,10 @@ class SyncApi:
         method: str = "GET",
         params: dict | None = None,
         headers: dict | None = None,
-        data: dict | list | None = None,
+        data: t.Mapping[str, t.Any] | None = None,
         json: dict | list | None = None,
         settings: dict | None = None,
-        session: niquests.Session | None = None,
+        session: httpx.Client | None = None,
     ) -> t.Any:
         url = self.api_root
         if resource:
@@ -119,11 +119,11 @@ class SyncApi:
         headers = {**self.headers, **(headers or {})}
         settings = {**self.settings, **(settings or {})}
 
-        with session or self.session or niquests.Session() as sess:
+        with session or self.session or httpx.Client() as sess:
             response = sess.request(method, url, params=params, data=data, json=json, headers=headers, **settings)
             return self.process_response(response)
 
-    def response_to_native(self, response: niquests.Response) -> t.Any:
+    def response_to_native(self, response: httpx.Response) -> t.Any:
         if not response.content:
             return response.text
 
@@ -132,23 +132,19 @@ class SyncApi:
         except ValueError:
             return response.text
 
-    def error_handling(self, response: niquests.Response, response_data: t.Any) -> bool | None:
-        if response.status_code is None:
-            error_msg = "Not response status"
-            raise self.ApiError(error_msg, response)
-
+    def error_handling(self, response: httpx.Response, response_data: t.Any) -> bool | None:
         if 200 <= response.status_code < 300:
             return None
 
         if 400 <= response.status_code < 500:
-            raise self.ClientError(response, response.status_code, response.reason, response_data)
+            raise self.ClientError(response, response.status_code, response.reason_phrase, response_data)
 
         if response.status_code >= 500:
             raise self.ServerError(response, response_data)
 
         return False
 
-    def process_response(self, response: niquests.Response) -> t.Any:
+    def process_response(self, response: httpx.Response) -> t.Any:
         response_data = self.response_to_native(response)
 
         if self.error_handling(response, response_data) is False:

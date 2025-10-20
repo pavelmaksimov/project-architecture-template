@@ -1,9 +1,7 @@
-import asyncio
 import pathlib
 
 import pytest
 import pytest_asyncio
-import responses as mock_responses
 from aioresponses import aioresponses
 from starlette.testclient import TestClient
 from testcontainers.postgres import PostgresContainer
@@ -19,25 +17,25 @@ from project.settings import Settings
 from project.utils.log import logging_disabled
 
 
-@pytest.fixture(scope="session")
-def settings():
-    return Settings
-
-
 @pytest.fixture(autouse=True, scope="session")
-def setup(settings):
+def setup():
     setup_logging("TEST")
 
-    with settings.local(ENV="TEST", ACCESS_TOKEN="token"):
+    with Settings.local(
+        ENV="TEST",
+        ACCESS_TOKEN="token",
+        LLM_MODEL="LLM_MODEL",
+        LLM_API_KEY="LLM_API_KEY",
+    ):
         yield
 
 
 @pytest.fixture(scope="session")
-def init_database(settings, setup):
+def init_database(setup):
     with PostgresContainer("postgres:17.2") as postgres:
-        with settings.local(
+        with Settings.local(
             **{
-                **settings().model_dump(exclude_unset=True),
+                **Settings().model_dump(exclude_unset=True),
                 "SQLALCHEMY_DATABASE_DSN": postgres.get_connection_url(),
             },
         ):
@@ -55,13 +53,13 @@ def init_database(settings, setup):
 
 
 @pytest.fixture(scope="session")
-def init_redis(settings, setup):
+def init_redis(setup):
     with RedisContainer("redis") as redis_container:
         client = redis_container.get_client()
         connection_kwargs = client.get_connection_kwargs()
-        with settings.local(
+        with Settings.local(
             **{
-                **settings().model_dump(exclude_unset=True),
+                **Settings().model_dump(exclude_unset=True),
                     "REDIS_HOST": connection_kwargs["host"],
                     "REDIS_PORT": connection_kwargs["port"],
                     "REDIS_DB": str(connection_kwargs["db"])
@@ -79,13 +77,13 @@ def redis(init_redis):
 
 
 @pytest_asyncio.fixture(scope="session")
-async def async_init_redis(settings, setup):
+async def async_init_redis(setup):
     with AsyncRedisContainer("redis") as redis_container:
         client = await redis_container.get_async_client()
         connection_kwargs = client.get_connection_kwargs()
-        with settings.local(
+        with Settings.local(
             **{
-                **settings().model_dump(exclude_unset=True),
+                **Settings().model_dump(exclude_unset=True),
                     "REDIS_HOST": connection_kwargs["host"],
                     "REDIS_PORT": connection_kwargs["port"],
                     "REDIS_DB": str(connection_kwargs["db"])
@@ -115,16 +113,6 @@ def session(init_database):
     database.scoped_session_factory.cache_clear()
 
 
-@pytest.fixture
-def event_loop():
-    """
-    This corrects the problem with sessions from the database, you need to run all the tests in one event loop.
-    """
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
-
-
 @pytest_asyncio.fixture
 async def asession(init_database):
     async with adatabase.asession() as asession:
@@ -139,32 +127,40 @@ async def asession(init_database):
 
 
 @pytest.fixture
-def api_client(settings, session):
-    return TestClient(app, headers={"Access-Token": settings().ACCESS_TOKEN.get_secret_value()})
-
-
-@pytest.fixture(scope="session")
-def mock_niquests():
-    """https://niquests.readthedocs.io/en/stable/community/extensions.html"""
-    from sys import modules
-    import niquests
-    from niquests.packages import urllib3
-
-    # responses is tied to Requests
-    # and Niquests is entirely compatible with it.
-    # we can fool it without effort.
-    modules["requests"] = niquests
-    modules["requests.adapters"] = niquests.adapters
-    modules["requests.models"] = niquests.models
-    modules["requests.exceptions"] = niquests.exceptions
-    modules["requests.packages.urllib3"] = urllib3
+def api_client(session):
+    return TestClient(app, headers={"Access-Token": Settings().ACCESS_TOKEN.get_secret_value()})
 
 
 @pytest.fixture
-def responses(mock_niquests):
-    """Fixture for mocking asynchronous requests."""
-    with mock_responses.RequestsMock() as mock:
-        yield mock
+def responses():
+    """Fixture for mocking httpx requests using respx with a 'responses'-like API."""
+    import httpx
+    import respx
+
+    class _ResponsesWrapper:
+        # Method aliases for compatibility with tests
+        GET = "GET"
+        POST = "POST"
+        PUT = "PUT"
+        PATCH = "PATCH"
+        DELETE = "DELETE"
+        HEAD = "HEAD"
+        OPTIONS = "OPTIONS"
+
+        def __init__(self, router: respx.Router):
+            self._router = router
+
+        def add(self, method, url, json=None, status=200, headers=None):
+            # Register a route and set a mock response
+            route = self._router.request(method, url)
+            if json is not None:
+                route.mock(return_value=httpx.Response(status, json=json, headers=headers))
+            else:
+                route.mock(return_value=httpx.Response(status, headers=headers))
+            return route
+
+    with respx.mock as router:
+        yield _ResponsesWrapper(router)
 
 
 @pytest.fixture
@@ -175,19 +171,19 @@ def aresponses():
 
 
 @pytest.fixture
-def keycloak_client(settings):
-    with settings.local(
-        **settings().model_dump(exclude_unset=True),
+def keycloak_client():
+    with Settings.local(
+        **Settings().model_dump(exclude_unset=True),
         KEYCLOAK_URL="http://keycloak.example.com/auth",
         KEYCLOAK_CLIENT_ID="KEYCLOAK_CLIENT_ID",
         KEYCLOAK_USERNAME="KEYCLOAK_USERNAME",
         KEYCLOAK_PASSWORD="KEYCLOAK_PASSWORD",
     ):
         yield keycloak.KeycloakSyncClient(
-            keycloak_url=settings().KEYCLOAK_URL,
-            client_id=settings().KEYCLOAK_CLIENT_ID,
-            username=settings().KEYCLOAK_USERNAME,
-            password=settings().KEYCLOAK_PASSWORD.get_secret_value(),
+            keycloak_url=Settings().KEYCLOAK_URL,
+            client_id=Settings().KEYCLOAK_CLIENT_ID,
+            username=Settings().KEYCLOAK_USERNAME,
+            password=Settings().KEYCLOAK_PASSWORD.get_secret_value(),
         )
 
 
@@ -212,19 +208,19 @@ def mock_async_keycloak(aresponses):
 
 
 @pytest.fixture
-def keycloak_aclient(settings):
-    with settings.local(
-        **settings().model_dump(exclude_unset=True),
+def keycloak_aclient():
+    with Settings.local(
+        **Settings().model_dump(exclude_unset=True),
         KEYCLOAK_URL="http://keycloak.example.com/auth",
         KEYCLOAK_CLIENT_ID="KEYCLOAK_CLIENT_ID",
         KEYCLOAK_USERNAME="KEYCLOAK_USERNAME",
         KEYCLOAK_PASSWORD="KEYCLOAK_PASSWORD",
     ):
         yield keycloak.KeycloakAsyncClient(
-            keycloak_url=settings().KEYCLOAK_URL,
-            client_id=settings().KEYCLOAK_CLIENT_ID,
-            username=settings().KEYCLOAK_USERNAME,
-            password=settings().KEYCLOAK_PASSWORD.get_secret_value(),
+            keycloak_url=Settings().KEYCLOAK_URL,
+            client_id=Settings().KEYCLOAK_CLIENT_ID,
+            username=Settings().KEYCLOAK_USERNAME,
+            password=Settings().KEYCLOAK_PASSWORD.get_secret_value(),
         )
 
 

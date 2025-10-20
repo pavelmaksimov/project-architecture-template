@@ -1,6 +1,6 @@
 import pytest
 
-from project.utils.base_client import AsyncApi
+from project.infrastructure.adapters.base_client import AsyncApi
 from project.infrastructure.exceptions import ApiError, ServerError, ClientError
 
 
