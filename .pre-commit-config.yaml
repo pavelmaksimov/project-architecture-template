@@ -1,20 +1,4 @@
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
-    hooks:
-      - id: trailing-whitespace
-        stages: [pre-commit]
-      - id: end-of-file-fixer
-        stages: [pre-commit]
-      - id: check-yaml
-        stages: [pre-commit]
-      - id: check-toml
-        stages: [pre-commit]
-      - id: check-json
-        stages: [pre-commit]
-      - id: debug-statements
-        stages: [pre-commit]
-
   - repo: local
     hooks:
       - id: ruff-check
@@ -64,42 +48,6 @@ repos:
         language: python
         args: [project]
         pass_filenames: false
-
-  - repo: local
-    hooks:
-      - id: mypy
-        stages: [pre-commit, pre-push]
-        name: MyPy
-        entry: mypy project
-        language: system
-        pass_filenames: false
-
-  - repo: local
-    hooks:
-      - id: xenon
-        stages: [pre-commit]
-        name: Xenon - cyclomic complexity
-        entry: xenon --max-absolute B --max-modules B --max-average B project
-        language: system
-        pass_filenames: false
-
-  - repo: local
-    hooks:
-      - id: radon
-        stages: [pre-commit]
-        name: Radon - сode complexity index for support
-        entry: radon mi --min C project
-        language: system
-        pass_filenames: false
-
-#  - repo: local
-#    hooks:
-#      - id: vulture
-#        stages: [pre-commit]
-#        name: Vulture - find dead code
-#        entry: vulture project  # Only report N% dead code.
-#        language: system
-#        pass_filenames: false
 
   - repo: local
     hooks:

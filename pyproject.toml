@@ -37,20 +37,15 @@ dev = [
     "factory-boy~=3.3.1",
     "freezegun~=1.5.1",
     "layers-linter>=3.2.2",
-    "mypy~=1.15.0",
     "pre-commit>=4.2.0",
     "pytest~=8.3.4",
     "pytest-archon~=0.0.6",
     "pytest-asyncio>=0.25.3",
     "pytest-cov>=6.0.0",
-    "radon>=5.0",
     "responses>=0.25.7",
     "respx>=0.21.1",
     "ruff~=0.8.2",
     "testcontainers>=4.10.0",
-    "vulture>=2.14",
-    "wily>=1.25",
-    "xenon>=0.9.3",
 ]
 llm = [
     "langchain-openai>=0.3.35",
@@ -91,64 +86,5 @@ select = [
     # "W", "DOC", "D", "PGH, "DJ", "EXE", "FIX", "DTZ", "CPY", "I", "PD", "ANN", "PLR", PLW
 ]
 
-#flake8-import-conventions.banned-from = [ "datetime", "typing" ]
-#[flake8-import-conventions.aliases]
-#datetime = "dt"
-#typing = "t"
-
 [tool.ruff.lint.flake8-builtins]
 builtins-ignorelist = ["id", "type", "filter"]
-
-[tool.mypy]
-# The mypy configurations: http://bit.ly/2zEl9WI
-mypy_path = "project"
-python_version = "3.12"
-pretty = true
-show_traceback = true
-color_output = true
-ignore_missing_imports = true
-strict = false
-local_partial_types = true
-warn_unreachable = true
-enable_error_code = [
-    "truthy-bool",
-    "truthy-iterable",
-    "redundant-expr",
-    "unused-awaitable",
-    # "ignore-without-code",
-    "possibly-undefined",
-    "redundant-self",
-    # "explicit-override",
-    # "mutable-override",
-    "unimported-reveal",
-    "deprecated",
-]
-
-disable_error_code = [
-    "no-untyped-def",
-    "no-untyped-call"
-]
-
-[tool.vulture]
-exclude = ["interfaces.py", "llm.py"]
-ignore_decorators = ["@app.route", "@require_*"]
-ignore_names = ["visit_*", "do_*"]
-make_whitelist = false
-min_confidence = 100
-paths = ["project", "whitelist.py"]
-sort_by_size = true
-verbose = false
-
-#[tool.ruff.flake8-tidy-imports]
-#banned-module-level-imports = []
-#banned-api = []
-#ban-relative-imports = []
-
-
-[[tool.mypy.overrides]]
-module = [
-    "project.infrastructure.adapters.voice",
-]
-disable_error_code = [
-    "redundant-expr",
-]
