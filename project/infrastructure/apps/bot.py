@@ -4,7 +4,7 @@ from llm_common.clients.telegram_client import TelegramHTTPXTransportWithMonitor
 from telegram.ext import AIORateLimiter, ApplicationBuilder
 from telegram.request import HTTPXRequest
 
-from project.domains.base.handlers import register_training_handlers
+from project.domains.base.handlers import register_base_handlers
 from project.settings import Settings
 
 logger = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ def run_bot_app() -> None:
 
     application = application_builder.build()
 
-    register_training_handlers(application)
+    register_base_handlers(application)
 
     application.job_queue.run_repeating(reminder_job, interval=300, first=10)
 

@@ -17,7 +17,7 @@ def get_log_id(user_id):
 
 async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    message = "Привет!"
+    message = "Привет! Это пример обработчика Телеграм!"
 
     try:
         with action_tracking("start_handler"):
@@ -30,5 +30,5 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"Произошла ошибка. Код ошибки для отладки {log_id}")
 
 
-def register_training_handlers(application) -> None:
+def register_base_handlers(application) -> None:
     application.add_handler(CommandHandler("start", start_handler))
