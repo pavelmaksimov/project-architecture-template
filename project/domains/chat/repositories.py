@@ -1,18 +1,18 @@
 from sqlalchemy import select
 
 from project.domains.chat import models
-from project.domains.base.repositories import Repository, BaseRepository
+from project.domains.base.repositories import ORMModelRepository, ORMRepository
 
 
-class QuestionRepository(Repository[models.Question]):
+class QuestionRepository(ORMModelRepository[models.Question]):
     _model = models.Question
 
 
-class AnswerRepository(Repository[models.Answer]):
+class AnswerRepository(ORMModelRepository[models.Answer]):
     _model = models.Answer
 
 
-class ChatRepository(BaseRepository):
+class ChatRepository(ORMRepository):
     AnswerModel = models.Answer
     QuestionModel = models.Question
 

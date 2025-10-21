@@ -10,7 +10,7 @@ from project.domains.base.models import Base
 T = t.TypeVar("T", bound=Base)
 
 
-class BaseRepository(t.Generic[T]):
+class ORMRepository(t.Generic[T]):
     """
     Separates infrastructure from ORM.
     """
@@ -36,7 +36,7 @@ class BaseRepository(t.Generic[T]):
             yield session
 
 
-class Repository(BaseRepository[T]):
+class ORMModelRepository(ORMRepository[T]):
     """
     Separates infrastructure from ORM.
     """
