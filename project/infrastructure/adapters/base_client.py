@@ -62,9 +62,9 @@ class AsyncApi:
         except ValueError:
             return await response.text()
 
-    def error_handling(self, response: ClientResponse, response_data: t.Any) -> bool | None:
+    async def error_handling(self, response: ClientResponse, response_data: t.Any) -> None:
         if 200 <= response.status < 300:
-            return None
+            return
 
         if 400 <= response.status < 500:
             raise self.ClientError(response, response.status, response.reason, response_data)
@@ -72,15 +72,13 @@ class AsyncApi:
         if response.status >= 500:
             raise self.ServerError(response, response_data)
 
-        return False
+        response.raise_for_status()
+
+        raise self.ApiError(response_data, response)
 
     async def process_response(self, response: ClientResponse) -> t.Any:
         response_data = await self.response_to_native(response)
-
-        if self.error_handling(response, response_data) is False:
-            error_msg = "UnknownError"
-            raise self.ApiError(error_msg, response)
-
+        await self.error_handling(response, response_data)
         return response_data
 
 
@@ -132,9 +130,9 @@ class SyncApi:
         except ValueError:
             return response.text
 
-    def error_handling(self, response: httpx.Response, response_data: t.Any) -> bool | None:
+    def error_handling(self, response: httpx.Response, response_data: t.Any) -> None:
         if 200 <= response.status_code < 300:
-            return None
+            return
 
         if 400 <= response.status_code < 500:
             raise self.ClientError(response, response.status_code, response.reason_phrase, response_data)
@@ -142,15 +140,13 @@ class SyncApi:
         if response.status_code >= 500:
             raise self.ServerError(response, response_data)
 
-        return False
+        response.raise_for_status()
+
+        raise self.ApiError(response_data, response)
 
     def process_response(self, response: httpx.Response) -> t.Any:
         response_data = self.response_to_native(response)
-
-        if self.error_handling(response, response_data) is False:
-            error_msg = "UnknownError"
-            raise self.ApiError(error_msg, response)
-
+        self.error_handling(response, response_data)
         return response_data
 
 
