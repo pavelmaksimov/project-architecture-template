@@ -73,7 +73,7 @@ depends_on = ["rest", "libs", "dicontainer", "usecases"]
 [layers.bot]
 description = "Bot interface layer that handles interactions with messaging platforms"
 contains_modules = [
-    "project.infrastructure.bot",
+    "project.infrastructure.apps.bot",
     "project.domains.*.handlers",
 ]
 depends_on = ["bot", "libs", "dicontainer", "usecases"]
@@ -114,6 +114,12 @@ allowed_in = ["libs"]
 
 [libs.fastapi]
 allowed_in = ["rest"]
+
+[libs.flask]
+allowed_in = ["rest"]
+
+[libs.telegram]
+allowed_in = ["bot"]
 
 [libs.argparse]
 allowed_in = ["cli"]
