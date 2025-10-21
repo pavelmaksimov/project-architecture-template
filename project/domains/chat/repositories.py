@@ -4,11 +4,11 @@ from project.domains.chat import models
 from project.domains.base.repositories import Repository, BaseRepository
 
 
-class QuestionRepository(Repository):
+class QuestionRepository(Repository[models.Question]):
     _model = models.Question
 
 
-class AnswerRepository(Repository):
+class AnswerRepository(Repository[models.Answer]):
     _model = models.Answer
 
 
