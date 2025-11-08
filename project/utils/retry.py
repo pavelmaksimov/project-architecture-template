@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def retry_on_exception(
-    exceptions: type[Exception] | Iterable[type[Exception]],
+    exceptions: type[Exception] | Iterable[type[Exception]] | None = None,
     max_attempts: int = 3,
     delay: float = 1.0,
     backoff: float = 1.0,
@@ -24,6 +24,9 @@ def retry_on_exception(
         backoff: Множитель для увеличения задержки после каждой неудачной попытки
         on_retry: Функция обратного вызова, вызываемая при каждой повторной попытке
     """
+    if not exceptions:
+        exceptions = (Exception,)
+
     if isinstance(exceptions, type):
         exceptions = (exceptions,)
 
