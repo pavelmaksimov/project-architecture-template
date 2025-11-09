@@ -5,6 +5,8 @@ from contextlib import asynccontextmanager
 import httpx
 import orjson
 from aiohttp import ClientResponse, ClientSession, typedefs
+from llm_common.clients.aiohttp_client import ClientSessionWithMonitoring
+from llm_common.clients.httpx_client import HttpxClientWithMonitoring
 
 from project.infrastructure.exceptions import ApiError, ServerError, ClientError
 
@@ -33,7 +35,7 @@ class AsyncApi:
         if self.session:
             yield self.session
         else:
-            async with ClientSession() as session:
+            async with ClientSessionWithMonitoring() as session:
                 yield session
 
     async def call_endpoint(
@@ -53,7 +55,7 @@ class AsyncApi:
         headers = self.headers | (headers or {})
         settings = self.settings | (settings or {})
 
-        async with session or self.session or ClientSession() as sess:
+        async with session or self.session or ClientSessionWithMonitoring() as sess:
             async with sess.request(
                 method,
                 url,
@@ -124,7 +126,7 @@ class SyncApi:
         headers = self.headers | (headers or {})
         settings = self.settings | (settings or {})
 
-        with session or self.session or httpx.Client() as sess:
+        with session or self.session or HttpxClientWithMonitoring() as sess:
             response = sess.request(method, url, params=params, data=data, json=json, headers=headers, **settings)
             return self.process_response(response)
 
@@ -157,6 +159,7 @@ class IClient(t.Protocol):
     class MyClient:
         Api = AsyncApi
         api_root = "http://example.com/api"
+        name_for_monitoring = "servicename_api"
 
         def __init__(
             self,
@@ -182,3 +185,4 @@ class IClient(t.Protocol):
     Api: t.ClassVar[type[AsyncApi | SyncApi]]
     api_root: str
     api: AsyncApi | SyncApi
+    name_for_monitoring: str
