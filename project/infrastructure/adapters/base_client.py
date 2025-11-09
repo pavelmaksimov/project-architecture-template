@@ -1,9 +1,10 @@
 import logging
 import typing as t
+from contextlib import asynccontextmanager
 
 import httpx
 import orjson
-from aiohttp import ClientResponse, ClientSession
+from aiohttp import ClientResponse, ClientSession, typedefs
 
 from project.infrastructure.exceptions import ApiError, ServerError, ClientError
 
@@ -27,14 +28,22 @@ class AsyncApi:
         self.headers = headers or {}
         self.session = session
 
+    @asynccontextmanager
+    async def Session(self):  # noqa: N802
+        if self.session:
+            yield self.session
+        else:
+            async with ClientSession() as session:
+                yield session
+
     async def call_endpoint(
         self,
         resource: str,
         method: str = "GET",
-        params: dict | None = None,
-        headers: dict | None = None,
-        data: dict | list | None = None,
-        json: dict | list | None = None,
+        params: typedefs.Query = None,
+        headers: typedefs.LooseHeaders | None = None,
+        data: t.Any = None,
+        json: t.Any = None,
         settings: dict | None = None,
         session: ClientSession | None = None,
     ) -> t.Any:
@@ -44,8 +53,8 @@ class AsyncApi:
         headers = self.headers | (headers or {})
         settings = self.settings | (settings or {})
 
-        async with session or self.session or ClientSession() as session:
-            async with session.request(
+        async with session or self.session or ClientSession() as sess:
+            async with sess.request(
                 method,
                 url,
                 params=params,
@@ -71,8 +80,6 @@ class AsyncApi:
 
         if response.status >= 500:
             raise self.ServerError(response, response_data)
-
-        response.raise_for_status()
 
         raise self.ApiError(response_data, response)
 
@@ -105,8 +112,8 @@ class SyncApi:
         method: str = "GET",
         params: dict | None = None,
         headers: dict | None = None,
-        data: t.Mapping[str, t.Any] | None = None,
-        json: dict | list | None = None,
+        data: t.Any = None,
+        json: t.Any = None,
         settings: dict | None = None,
         session: httpx.Client | None = None,
     ) -> t.Any:
@@ -114,17 +121,14 @@ class SyncApi:
         if resource:
             url = f"{self.api_root}/{resource}"
 
-        headers = {**self.headers, **(headers or {})}
-        settings = {**self.settings, **(settings or {})}
+        headers = self.headers | (headers or {})
+        settings = self.settings | (settings or {})
 
         with session or self.session or httpx.Client() as sess:
             response = sess.request(method, url, params=params, data=data, json=json, headers=headers, **settings)
             return self.process_response(response)
 
     def response_to_native(self, response: httpx.Response) -> t.Any:
-        if not response.content:
-            return response.text
-
         try:
             return orjson.loads(response.content)
         except ValueError:
@@ -139,8 +143,6 @@ class SyncApi:
 
         if response.status_code >= 500:
             raise self.ServerError(response, response_data)
-
-        response.raise_for_status()
 
         raise self.ApiError(response_data, response)
 
@@ -171,6 +173,10 @@ class IClient(t.Protocol):
 
     client = MyClient("token")
     await client.my_endpoint()
+
+    # with session
+    async with client.api.Session():
+        await client.my_endpoint()
     """
 
     Api: t.ClassVar[type[AsyncApi | SyncApi]]
