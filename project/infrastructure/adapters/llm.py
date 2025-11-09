@@ -10,7 +10,7 @@ from project.settings import Settings
 
 
 @cache
-def chat_client():
+def llm_chat_client():
     """Client with prometheus monitoring."""
     return ChatOpenAI(
         api_key=Settings().LLM_API_KEY.get_secret_value(),
@@ -24,7 +24,7 @@ def chat_client():
 
 
 @cache
-def aclient() -> AsyncClient:
+def llm_aclient() -> AsyncClient:
     """Client with prometheus monitoring."""
     return AsyncClient(
         api_key=Settings().LLM_API_KEY.get_secret_value(),
