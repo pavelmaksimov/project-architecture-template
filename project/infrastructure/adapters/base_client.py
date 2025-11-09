@@ -9,6 +9,7 @@ from llm_common.clients.aiohttp_client import ClientSessionWithMonitoring
 from llm_common.clients.httpx_client import HttpxClientWithMonitoring
 
 from project.infrastructure.exceptions import ApiError, ServerError, ClientError
+from project.utils.log import timer
 
 logger = logging.getLogger(__name__)
 
@@ -24,11 +25,15 @@ class AsyncApi:
         headers: dict | None = None,
         settings: dict | None = None,
         session: ClientSession | None = None,
+        log_level: int | str = logging.INFO,
     ):
         self.api_root = api_root
         self.settings = settings or {}
         self.headers = headers or {}
         self.session = session
+        self.log_level = log_level
+        if isinstance(self.log_level, str):
+            self.log_level = logging.getLevelNamesMapping()[self.log_level.upper()]
 
     @asynccontextmanager
     async def Session(self):  # noqa: N802
@@ -56,16 +61,32 @@ class AsyncApi:
         settings = self.settings | (settings or {})
 
         async with session or self.session or ClientSessionWithMonitoring() as sess:
-            async with sess.request(
-                method,
-                url,
-                params=params,
-                data=data,
-                json=json,
-                headers=headers,
-                **settings,
-            ) as response:
-                return await self.process_response(response)
+            logger.log(self.log_level, "Call endpoint: %s %s", method, url)
+
+            if self.log_level <= logging.DEBUG:
+                if headers:
+                    logger.debug("Headers: %s", headers)
+                if params:
+                    logger.debug("Params: %s", params)
+                if data:
+                    logger.debug("Data: %s", data)
+                if json:
+                    logger.debug("Json: %s", json)
+
+            with timer() as get_elapsed:
+                async with sess.request(
+                    method,
+                    url,
+                    params=params,
+                    data=data,
+                    json=json,
+                    headers=headers,
+                    **settings,
+                ) as response:
+                    elapsed = get_elapsed()
+                    logger.debug("End call endpoint: %s %s, duration %s ", method, url, elapsed)
+
+                    return await self.process_response(response)
 
     async def response_to_native(self, response: ClientResponse) -> t.Any:
         try:
@@ -102,11 +123,15 @@ class SyncApi:
         headers: dict | None = None,
         settings: dict | None = None,
         session: httpx.Client | None = None,
+        log_level: int | str = logging.INFO,
     ):
         self.api_root = api_root
         self.settings = settings or {}
         self.headers = headers or {}
         self.session = session
+        self.log_level = log_level
+        if isinstance(self.log_level, str):
+            self.log_level = logging.getLevelNamesMapping()[self.log_level.upper()]
 
     def call_endpoint(
         self,
@@ -127,7 +152,22 @@ class SyncApi:
         settings = self.settings | (settings or {})
 
         with session or self.session or HttpxClientWithMonitoring() as sess:
+            logger.log(self.log_level, "Call endpoint: %s %s", method, url)
+
+            if self.log_level <= logging.DEBUG:
+                if headers:
+                    logger.debug("Headers: %s", headers)
+                if params:
+                    logger.debug("Params: %s", params)
+                if data:
+                    logger.debug("Data: %s", data)
+                if json:
+                    logger.debug("Json: %s", json)
+
             response = sess.request(method, url, params=params, data=data, json=json, headers=headers, **settings)
+
+            logger.debug("End call endpoint: %s %s, duration %s ", method, url, response.elapsed)
+
             return self.process_response(response)
 
     def response_to_native(self, response: httpx.Response) -> t.Any:
