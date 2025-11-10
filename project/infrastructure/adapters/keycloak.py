@@ -14,20 +14,11 @@ class KeycloakClientError(project.infrastructure.exceptions.ClientError):
     pass
 
 
-class KeycloakAsyncApi(base.AsyncApi):
-    ApiError = KeycloakApiError
-    ServerError = KeycloakServerError
-    ClientError = KeycloakClientError
-
-
-class KeycloakSyncApi(base.SyncApi):
-    ApiError = KeycloakApiError
-    ServerError = KeycloakServerError
-    ClientError = KeycloakClientError
-
-
 class KeycloakAsyncClient:
-    Api = KeycloakAsyncApi
+    class Api(base.AsyncApi):
+        ApiError = KeycloakApiError
+        ServerError = KeycloakServerError
+        ClientError = KeycloakClientError
 
     def __init__(
         self,
@@ -59,7 +50,10 @@ class KeycloakAsyncClient:
 
 
 class KeycloakSyncClient:
-    Api = KeycloakSyncApi
+    class Api(base.SyncApi):
+        ApiError = KeycloakApiError
+        ServerError = KeycloakServerError
+        ClientError = KeycloakClientError
 
     def __init__(
         self,
