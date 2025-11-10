@@ -1,6 +1,5 @@
 import project.exceptions
-import project.infrastructure.exceptions
-from project.infrastructure.adapters import base_client as base
+from project.infrastructure.utils import base_client as base
 
 
 class KeycloakApiError(project.exceptions.ApiError):

@@ -2,7 +2,7 @@ from functools import cache
 
 from llm_common.clients.auth_client import AuthHttpClient
 
-from project.infrastructure.adapters.base_client import IClient, AsyncApi
+from project.infrastructure.utils.base_client import IClient, AsyncApi
 from project.exceptions import ApiError, ServerError, ClientError
 from project.settings import Settings
 
