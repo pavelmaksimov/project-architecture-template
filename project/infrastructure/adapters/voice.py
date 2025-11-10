@@ -6,7 +6,7 @@ import openai
 from llm_common.prometheus import action_tracking_decorator
 from pydub import AudioSegment
 
-from project.utils.retry import retry_unless_exception
+from project.libs.retry import retry_unless_exception
 
 exclude_exceptions_from_retry = (
     openai.BadRequestError,

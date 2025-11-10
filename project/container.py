@@ -10,7 +10,7 @@ from project.domains.user.repositories import UserRepository
 from project.domains.user.service import AuthService, QuotaService
 from project.infrastructure.adapters.database import transaction, current_transaction
 from project.infrastructure.adapters.llm import LLMClient
-from project.utils.structures import LazyInit
+from project.libs.structures import LazyInit
 
 if t.TYPE_CHECKING:
     from sqlalchemy.orm import Session as ORMSession

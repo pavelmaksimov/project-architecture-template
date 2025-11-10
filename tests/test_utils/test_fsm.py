@@ -2,7 +2,7 @@ from enum import auto, Enum
 
 import pytest
 
-from project.utils.fsm import transition, atransition, AsyncStateMachine, StateMachine, TransitionError
+from project.libs.fsm import transition, atransition, AsyncStateMachine, StateMachine, TransitionError
 
 
 class TaskStatus(Enum):

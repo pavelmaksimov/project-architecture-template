@@ -5,7 +5,7 @@ from pathlib import Path
 from pydantic import PostgresDsn, AfterValidator, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from project.utils.structures import SafeLazyInit
+from project.libs.structures import SafeLazyInit
 
 __all__ = ["Settings"]
 

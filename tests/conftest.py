@@ -14,7 +14,7 @@ from project.infrastructure.adapters import keycloak
 from project.infrastructure.apps.api import app
 from project.logger import setup_logging
 from project.settings import Settings, Envs
-from project.utils.log import logging_disabled
+from project.libs.log import logging_disabled
 
 
 @pytest.fixture(autouse=True, scope="session")
