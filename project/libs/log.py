@@ -1,7 +1,8 @@
 import logging
 import time
-from contextlib import contextmanager
 import typing as t
+from contextlib import contextmanager
+from datetime import datetime
 
 
 @contextmanager
@@ -33,3 +34,7 @@ def timer_log(logger: logging.Logger, name: str = "", template: str = "{name}, {
     yield
     message = template.format(name=name or logger.name, duration=round(time.perf_counter() - begin, 3))
     logger.debug(message)
+
+
+def get_log_id(user_id: int):
+    return f"{datetime.now().strftime("%m%d%H%M%S")}{user_id}"

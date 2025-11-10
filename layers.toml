@@ -74,9 +74,10 @@ depends_on = ["rest", "libs", "dicontainer", "usecases"]
 description = "Bot interface layer that handles interactions with messaging platforms"
 contains_modules = [
     "project.infrastructure.apps.bot",
+    "project.infrastructure.utils.telegram",
     "project.domains.*.handlers",
 ]
-depends_on = ["bot", "libs", "dicontainer", "usecases"]
+depends_on = ["bot", "libs", "dicontainer", "usecases", "adapters"]
 
 
 [layers.libs]
@@ -85,8 +86,6 @@ contains_modules = [
     "project.settings",
     "project.logger",
     "project.datatypes",
-    "*.utils.*",
-    "*.utils",
     "*.libs.*",
     "*.libs",
     "*.helpers.*",

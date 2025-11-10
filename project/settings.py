@@ -44,6 +44,9 @@ class SettingsValidator(BaseSettings):
     KEYCLOAK_USERNAME: str = ""
     KEYCLOAK_PASSWORD: SecretStr | None = None
 
+    # Auth service
+    BOT_AUTH_SERVICE_URL: str = ""
+
     # Database
     SQLALCHEMY_DATABASE_DSN: PostgresDsn  # Example: postgresql+psycopg2://user:password@localhost:5432/database
     DATABASE_PRE_PING: t.Annotated[bool, "Checks and creates connection if closed before requesting"] = False
