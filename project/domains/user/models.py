@@ -4,7 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from project.domains.base.models import TimeMixin, Base
 
 
-class User(TimeMixin, Base):
+class UserModel(TimeMixin, Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)

@@ -6,11 +6,11 @@ from sqlalchemy.orm import mapped_column
 
 
 from project.domains.base.models import TimeMixin, Base
-from project.domains.user.models import User
+from project.domains.user.models import UserModel
 from project.datatypes import UserIdT, AnswerT, QuestionT
 
 
-class Question(TimeMixin, Base):
+class QuestionModel(TimeMixin, Base):
     __tablename__ = "questions"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
@@ -19,10 +19,10 @@ class Question(TimeMixin, Base):
     content: Mapped[QuestionT] = mapped_column(String, nullable=False)
     is_voice: Mapped[bool] = mapped_column(Boolean, default=False)
 
-    user: Mapped[User] = relationship("User")
+    user: Mapped[UserModel] = relationship("UserModel")
 
 
-class Answer(TimeMixin, Base):
+class AnswerModel(TimeMixin, Base):
     __tablename__ = "answers"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
@@ -30,5 +30,5 @@ class Answer(TimeMixin, Base):
     question_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("questions.id"), index=True)
     content: Mapped[AnswerT] = mapped_column(String, nullable=False)
 
-    user: Mapped[User] = relationship("User")
-    question: Mapped["Question"] = relationship("Question")
+    user: Mapped[UserModel] = relationship("UserModel")
+    question: Mapped["QuestionModel"] = relationship("QuestionModel")

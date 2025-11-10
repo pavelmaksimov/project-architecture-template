@@ -3,7 +3,7 @@ import typing as t
 
 if t.TYPE_CHECKING:
     from project.domains.chat.interfaces import IGenerateGateway
-    from project.domains.chat.models import Question
+    from project.domains.chat.models import QuestionModel
 
 
 class AnswerService:
@@ -12,7 +12,7 @@ class AnswerService:
     def __init__(self, generate_adapter: "IGenerateGateway"):
         self.generate_adapter = generate_adapter
 
-    def make(self, question: "Question", chat_history) -> str:
+    def make(self, question: "QuestionModel", chat_history) -> str:
         message = self.PROMPT.format(text=question.content)
         content = self.generate_adapter.generate(chain([chat_history], message))
 

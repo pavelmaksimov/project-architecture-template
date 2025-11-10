@@ -1,8 +1,8 @@
 import factory
 
-from project.domains.user.models import User
+from project.domains.user.models import UserModel
 from project.infrastructure.adapters.database import scoped_session_factory
-from project.domains.chat.models import Question, Answer
+from project.domains.chat.models import QuestionModel, AnswerModel
 
 
 class SQLAlchemyFactoryMeta:
@@ -13,7 +13,7 @@ class SQLAlchemyFactoryMeta:
 
 class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta(SQLAlchemyFactoryMeta):
-        model = User
+        model = UserModel
 
     id = factory.Sequence(lambda n: n + 1)
     name = factory.Faker("name")
@@ -24,7 +24,7 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 class QuestionFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta(SQLAlchemyFactoryMeta):
-        model = Question
+        model = QuestionModel
 
     id = factory.Sequence(lambda n: n + 1)
     user_id = factory.SelfAttribute("user.id")
@@ -37,7 +37,7 @@ class QuestionFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 class AnswerFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta(SQLAlchemyFactoryMeta):
-        model = Answer
+        model = AnswerModel
 
     id = factory.Sequence(lambda n: n + 1)
     user_id = factory.SelfAttribute("user.id")
