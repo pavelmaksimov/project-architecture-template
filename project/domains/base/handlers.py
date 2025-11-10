@@ -7,11 +7,12 @@ from telegram.ext import (
     ContextTypes,
 )
 
-from project.infrastructure.utils.telegram import processing_errors, check_auth
+from project.infrastructure.utils.telegram import processing_errors, check_auth, timeout_with_retry
 
 logger = logging.getLogger(__name__)
 
 
+@timeout_with_retry
 @processing_errors
 @action_tracking_decorator("start_handler")
 @check_auth
