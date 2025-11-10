@@ -48,6 +48,11 @@ class SettingsValidator(BaseSettings):
     SQLALCHEMY_DATABASE_DSN: PostgresDsn  # Example: postgresql+psycopg2://user:password@localhost:5432/database
     DATABASE_PRE_PING: t.Annotated[bool, "Checks and creates connection if closed before requesting"] = False
 
+    # Telegram
+    TELEGRAM_BOT_TOKEN: NotEmptySecretStrT
+    TELEGRAM_BASE_URL: str = ""
+    TELEGRAM_FILE_BASE_URL: str = ""
+
     # Redis
     REDIS_HOST: str = ""
     REDIS_PORT: str = ""
