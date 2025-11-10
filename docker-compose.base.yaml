@@ -2,7 +2,7 @@ services:
   api:
     image: ${IMAGE_ID}:${IMAGE_TAG}
     environment:
-      - ACCESS_TOKEN=${ACCESS_TOKEN}
+      - API_TOKEN=${API_TOKEN}
       - SQLALCHEMY_DATABASE_DSN=postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
     command: ["uvicorn", "project.presentation.api:app", "--host", "0.0.0.0", "--port", "8080"]
     depends_on:

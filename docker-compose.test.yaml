@@ -11,7 +11,7 @@ services:
   api:
     image: ${IMAGE_ID}:${IMAGE_TAG}
     environment:
-      - ACCESS_TOKEN=token
+      - API_TOKEN=token
       - SQLALCHEMY_DATABASE_DSN=postgresql+psycopg2://test:test@db:5432/test
 
   db:

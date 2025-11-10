@@ -35,7 +35,7 @@ class Envs(Enum):
 class SettingsValidator(BaseSettings):
     # Application
     ENV: Envs = Envs.LOCAL
-    ACCESS_TOKEN: NotEmptySecretStrT
+    API_TOKEN: NotEmptySecretStrT
     HISTORY_WINDOW: int = 20
 
     # Keycloak

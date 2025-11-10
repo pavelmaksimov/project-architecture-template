@@ -23,7 +23,7 @@ def setup():
 
     with Settings.local(
         ENV="TEST",
-        ACCESS_TOKEN="token",
+        API_TOKEN="token",
         LLM_MODEL="LLM_MODEL",
         LLM_API_KEY="LLM_API_KEY",
     ):
@@ -126,7 +126,7 @@ async def asession(init_database):
 
 @pytest.fixture
 def api_client(session):
-    return TestClient(app, headers={"Access-Token": Settings().ACCESS_TOKEN.get_secret_value()})
+    return TestClient(app, headers={"Access-Token": Settings().API_TOKEN.get_secret_value()})
 
 
 @pytest.fixture
