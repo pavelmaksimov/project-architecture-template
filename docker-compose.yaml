@@ -11,7 +11,7 @@ services:
       - ./.env
     volumes:
       - ./logs:/logs
-    command: ["uvicorn", "project.presentation.api:app", "--host", "0.0.0.0", "--port", "8080"]
+    command: ["uvicorn", "project.presentation.api:app", "--host", "0.0.0.0", "--port", "8080", "--loop", "uvloop"]
     depends_on:
       db:
         condition: service_healthy
