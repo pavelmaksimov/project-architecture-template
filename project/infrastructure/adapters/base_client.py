@@ -8,7 +8,7 @@ import orjson
 from aiohttp import ClientResponse, ClientSession, typedefs
 from llm_common.prometheus import is_build_metrics, http_tracking
 
-from project.infrastructure.exceptions import ApiError, ServerError, ClientError
+from project.exceptions import ApiError, ServerError, ClientError
 
 logger = logging.getLogger(__name__)
 
