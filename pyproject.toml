@@ -25,6 +25,7 @@ dependencies = [
     "pottery>=3.0.1",
     "alembic>=1.15.2",
     "prometheus-client>=0.23.1",
+    "llm-common>=2.2.0",
 ]
 
 [dependency-groups]

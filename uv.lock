@@ -750,11 +750,11 @@ wheels = [
 
 [[package]]
 name = "llm-common"
-version = "2.1.2"
+version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ef/19/72465d3fee534e10587c456cae3c8abb9c89662083c0b0670ffce0058cdc/llm_common-2.1.2.tar.gz", hash = "sha256:caf86b36538d1c20ab2b252b443fe932d6364b3647edf6c109c147bc37024896", size = 10813 }
+sdist = { url = "https://files.pythonhosted.org/packages/ef/b1/da7895ba66b8582ca565578d363349d9850cc444fc7b8f3220707a8709c6/llm_common-2.2.0.tar.gz", hash = "sha256:f40f15259d2ad32651008fa0c8046ca4f128d97a0fc9bfb491b1f592ae7b79e1", size = 11692 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/60/77/d5fb07253c247df4e96024fd98feb049a56bdf8ec7b98a4c27e117b80667/llm_common-2.1.2-py3-none-any.whl", hash = "sha256:a97798a7ad6ef8b59105194505223b193bd699a2f835b567c8da61bb55be26c3", size = 10217 },
+    { url = "https://files.pythonhosted.org/packages/68/61/7d8fff146d9385255fe4f293c03376d8ba3c417f0b86e04a57c76861fceb/llm_common-2.2.0-py3-none-any.whl", hash = "sha256:d6ce3178403f3f57f8b26580e36794ba4ea4b3fe82527073c8bf1e6f5e45c508", size = 10665 },
 ]
 
 [[package]]
@@ -1318,6 +1318,7 @@ dependencies = [
     { name = "alembic" },
     { name = "fastapi" },
     { name = "httpx" },
+    { name = "llm-common" },
     { name = "orjson" },
     { name = "pottery" },
     { name = "prometheus-client" },
@@ -1374,6 +1375,7 @@ requires-dist = [
     { name = "alembic", specifier = ">=1.15.2" },
     { name = "fastapi", specifier = "~=0.115.8" },
     { name = "httpx", specifier = "~=0.28.1" },
+    { name = "llm-common", specifier = ">=2.2.0" },
     { name = "orjson", specifier = "~=3.10.12" },
     { name = "pottery", specifier = ">=3.0.1" },
     { name = "prometheus-client", specifier = ">=0.23.1" },
