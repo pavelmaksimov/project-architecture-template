@@ -19,8 +19,6 @@ async def reminder_job(context):
 async def run_bot_app() -> None:
     transport = TelegramHTTPXTransportWithMonitoring()
     httpx_request = HTTPXRequest(
-        read_timeout=30,
-        connect_timeout=30,
         httpx_kwargs={"transport": transport},
     )
 
