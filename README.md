@@ -22,26 +22,7 @@
 - Стандартизирует повторяемый код в разных проектах 
 - Разработчики будут быстрее развертывать проекты в контуре
 
-## Спецификации (Specifications)
-
-- [adapters.md](specs/rules/adapters.md) - Общие принципы работы с адаптерами и обзор существующих адаптеров
-- [alembic-db-migration.md](specs/rules/alembic-db-migration.md) - Создание и управление миграциями базы данных через Alembic
-- [anti-patterns.md](specs/rules/anti-patterns.md) - Антипаттерны, которых следует избегать в разработке
-- [auto-tests.md](specs/rules/auto-tests.md) - Правила написания и запуска автотестов
-- [create-adapter.md](specs/rules/create-adapter.md) - Пошаговая инструкция по созданию адаптера к внешней системе
-- [exceptions.md](specs/rules/exceptions.md) - Правила работы с исключениями и создание собственных ошибок
-- [fastapi-and-api-endpoints.md](specs/rules/fastapi-and-api-endpoints.md) - Best practices для создания API эндпоинтов
-- [layers.md](specs/rules/layers.md) - Архитектурные границы и слои приложения
-- [lazy-init-objects.md](specs/rules/lazy-init-objects.md) - Ленивая инициализация объектов вместо глобальных переменных
-- [linters.md](specs/rules/linters.md) - Запуск линтеров и инструментов проверки кода
-- [monitoring.md](specs/rules/monitoring.md) - Настройка мониторинга через Prometheus
-- [project-utils.md](specs/rules/project-utils.md) - Описание переиспользуемых утилит
-- [python-libs.md](specs/rules/python-libs.md) - Рекомендации по использованию библиотек Python
-- [settings-and-environments.md](specs/rules/settings-and-environments.md) - Работа с переменными окружения через Settings
-- [spec-driven-development.md](specs/rules/spec-driven-development.md) - Методология разработки на основе спецификаций
-- [telegram-handlers.md](specs/rules/telegram-handlers.md) - Правила создания обработчиков Telegram бота
-
-### Какую спецификацию читать для вашего сценария
+## Какую спецификацию читать для вашего сценария
 
 В директории `specs/rules/` находятся спецификации с подробными правилами и рекомендациями по разработке:
 
