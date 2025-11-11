@@ -2,6 +2,7 @@ import asyncio
 import logging
 import time
 
+import uvloop
 from llm_common.prometheus import build_prometheus_metrics
 
 from project.infrastructure.apps.flask import run_api_app
@@ -12,6 +13,8 @@ from project.settings import Settings, MONITORING_APP_NAME, Envs
 logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
+    # Example run Telegram bot.
+
     if not MONITORING_APP_NAME:
         error = "MONITORING_APP_NAME cannot be empty"
         raise ValueError(error)
@@ -31,7 +34,5 @@ if __name__ == "__main__":
         logger.info("Sleep 30 sec.")
         time.sleep(30)
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    run_bot_app()
+    with asyncio.Runner(loop_factory=uvloop.new_event_loop) as runner:
+        runner.run(run_bot_app())
