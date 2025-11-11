@@ -1,7 +1,5 @@
 from functools import cache
 
-from llm_common.clients.auth_client import AuthHttpClient
-
 from project.infrastructure.utils.base_client import IClient, AsyncApi
 from project.exceptions import ApiError, ServerError, ClientError
 from project.settings import Settings
@@ -24,14 +22,16 @@ class AuthClient(IClient):
         ApiError = AuthApiError
         ServerError = AuthServerError
         ClientError = AuthClientError
-        ClientSession = AuthHttpClient
+        name_for_monitoring = "auth_api"
 
     def __init__(self):
         self.api_root = Settings().BOT_AUTH_SERVICE_URL
         self.api = self.Api(self.api_root, name_for_monitoring="auth_api", request_settings={"timeout": 10})
 
-    async def check_telegram_user(self, user_telegram_id: int) -> bool:
-        result = await self.api.call_endpoint(f"api/check/{user_telegram_id}")
+    async def check_telegram_user(self, telegram_user_id: int) -> bool:
+        result = await self.api.call_endpoint(
+            f"api/check/{telegram_user_id}", resource_for_monitoring="api/check/{telegram_user_id}"
+        )
         return result["exists"]
 
     async def get_users_data(self) -> dict:
