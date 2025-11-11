@@ -122,3 +122,9 @@ allowed_in = ["bot"]
 
 [libs.argparse]
 allowed_in = ["cli"]
+
+[libs.pandas]
+allowed_in = []
+
+[libs.polars]
+allowed_in = []
