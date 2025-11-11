@@ -34,7 +34,7 @@ class Envs(Enum):
 
 class SettingsValidator(BaseSettings):
     # Application
-    ENV: Envs = Envs.LOCAL
+    ENV: Envs = Envs.PROD
     API_TOKEN: NotEmptySecretStrT
     HISTORY_WINDOW: int = 20
 
