@@ -20,7 +20,7 @@ def not_empty_validator(value):
 NotEmptyStrT = t.Annotated[str, AfterValidator(not_empty_validator)]
 NotEmptySecretStrT = t.Annotated[SecretStr, AfterValidator(not_empty_validator)]
 
-MONITORING_APP_NAME = "<project_name>"
+MONITORING_APP_NAME = ""
 API_ROOT_PATH = "/api"
 
 
