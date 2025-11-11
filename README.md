@@ -71,7 +71,7 @@ uv sync --locked --all-extras
 
 Либо через pip
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt -r requirements.dev.txt
 ```
 
 Нужно создать файл с переменными окружения `.env` в директории,
