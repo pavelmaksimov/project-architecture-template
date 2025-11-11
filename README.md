@@ -1,6 +1,3 @@
-TODO: при каких сценариях какую спеку читать.
-TODO: описание короткое для спек.
-
 # Архитектурный шаблон для сервисов GEN AI
 
 Шаблон составлен с учетом опыта разработки сервисов в GEN AI.
@@ -25,7 +22,55 @@ TODO: описание короткое для спек.
 - Стандартизирует повторяемый код в разных проектах 
 - Разработчики будут быстрее развертывать проекты в контуре
 
-TODO: как запустить через докер
+## Спецификации (Specifications)
+
+- [adapters.md](specs/rules/adapters.md) - Общие принципы работы с адаптерами и обзор существующих адаптеров
+- [alembic-db-migration.md](specs/rules/alembic-db-migration.md) - Создание и управление миграциями базы данных через Alembic
+- [anti-patterns.md](specs/rules/anti-patterns.md) - Антипаттерны, которых следует избегать в разработке
+- [auto-tests.md](specs/rules/auto-tests.md) - Правила написания и запуска автотестов
+- [create-adapter.md](specs/rules/create-adapter.md) - Пошаговая инструкция по созданию адаптера к внешней системе
+- [exceptions.md](specs/rules/exceptions.md) - Правила работы с исключениями и создание собственных ошибок
+- [fastapi-and-api-endpoints.md](specs/rules/fastapi-and-api-endpoints.md) - Best practices для создания API эндпоинтов
+- [layers.md](specs/rules/layers.md) - Архитектурные границы и слои приложения
+- [lazy-init-objects.md](specs/rules/lazy-init-objects.md) - Ленивая инициализация объектов вместо глобальных переменных
+- [linters.md](specs/rules/linters.md) - Запуск линтеров и инструментов проверки кода
+- [monitoring.md](specs/rules/monitoring.md) - Настройка мониторинга через Prometheus
+- [project-utils.md](specs/rules/project-utils.md) - Описание переиспользуемых утилит
+- [python-libs.md](specs/rules/python-libs.md) - Рекомендации по использованию библиотек Python
+- [settings-and-environments.md](specs/rules/settings-and-environments.md) - Работа с переменными окружения через Settings
+- [spec-driven-development.md](specs/rules/spec-driven-development.md) - Методология разработки на основе спецификаций
+- [telegram-handlers.md](specs/rules/telegram-handlers.md) - Правила создания обработчиков Telegram бота
+
+### Какую спецификацию читать для вашего сценария
+
+В директории `specs/rules/` находятся спецификации с подробными правилами и рекомендациями по разработке:
+
+**Создание нового функционала:**
+- Создать адаптер к внешнему API → [create-adapter.md](specs/rules/create-adapter.md)
+- Создать обработчик Telegram бота → [telegram-handlers.md](specs/rules/telegram-handlers.md)
+- Создать API эндпоинт → [fastapi-and-api-endpoints.md](specs/rules/fastapi-and-api-endpoints.md)
+- Добавить миграцию БД → [alembic-db-migration.md](specs/rules/alembic-db-migration.md)
+
+**Работа с архитектурой:**
+- Понять структуру слоев и границы модулей → [layers.md](specs/rules/layers.md)
+- Узнать про существующие адаптеры → [adapters.md](specs/rules/adapters.md)
+
+**Качество кода:**
+- Написать тесты → [auto-tests.md](specs/rules/auto-tests.md)
+- Настроить линтеры → [linters.md](specs/rules/linters.md)
+- Избежать типичных ошибок → [anti-patterns.md](specs/rules/anti-patterns.md)
+
+**Инфраструктура и конфигурация:**
+- Работать с настройками → [settings-and-environments.md](specs/rules/settings-and-environments.md)
+- Настроить мониторинг → [monitoring.md](specs/rules/monitoring.md)
+- Использовать ленивую инициализацию → [lazy-init-objects.md](specs/rules/lazy-init-objects.md)
+
+**Общие принципы:**
+- Работа с исключениями → [exceptions.md](specs/rules/exceptions.md)
+- Выбор и использование библиотек → [python-libs.md](specs/rules/python-libs.md)
+- Переиспользуемые модули → [project-utils.md](specs/rules/project-utils.md)
+- Разработка через спецификации → [spec-driven-development.md](specs/rules/spec-driven-development.md)
+
 
 ## Установка
 Мы используем пакетный менеджер UV, 
@@ -78,6 +123,8 @@ uv run python -m project.infrastructure.apps.bot
 ```bash
 python -m project.infrastructure.apps.main
 ```
+
+TODO: как запустить через докер
 
 ## Тестирование
 
@@ -144,3 +191,24 @@ pre-commit install
 - `project/settings.py` - Переменные окружения
 - `project/container.py` - Контейнер для внедрения зависимостей
   фреймворками. Почему не в `project/libs`? Потому что там запрещен импорт из project.infrastructure.
+
+## Документация
+
+В директории `specs/rules/` находятся документация по использованию шаблона:
+
+- [adapters.md](specs/rules/adapters.md) - Общие принципы работы с адаптерами и обзор существующих адаптеров
+- [alembic-db-migration.md](specs/rules/alembic-db-migration.md) - Создание и управление миграциями базы данных через Alembic
+- [anti-patterns.md](specs/rules/anti-patterns.md) - Антипаттерны, которых следует избегать в разработке
+- [auto-tests.md](specs/rules/auto-tests.md) - Правила написания и запуска автотестов
+- [create-adapter.md](specs/rules/create-adapter.md) - Пошаговая инструкция по созданию адаптера к внешней системе
+- [exceptions.md](specs/rules/exceptions.md) - Правила работы с исключениями и создание собственных ошибок
+- [fastapi-and-api-endpoints.md](specs/rules/fastapi-and-api-endpoints.md) - Best practices для создания API эндпоинтов
+- [layers.md](specs/rules/layers.md) - Архитектурные границы и слои приложения
+- [lazy-init-objects.md](specs/rules/lazy-init-objects.md) - Ленивая инициализация объектов вместо глобальных переменных
+- [linters.md](specs/rules/linters.md) - Запуск линтеров и инструментов проверки кода
+- [monitoring.md](specs/rules/monitoring.md) - Настройка мониторинга через Prometheus
+- [project-utils.md](specs/rules/project-utils.md) - Описание переиспользуемых утилит
+- [python-libs.md](specs/rules/python-libs.md) - Рекомендации по использованию библиотек Python
+- [settings-and-environments.md](specs/rules/settings-and-environments.md) - Работа с переменными окружения через Settings
+- [spec-driven-development.md](specs/rules/spec-driven-development.md) - Методология разработки на основе спецификаций
+- [telegram-handlers.md](specs/rules/telegram-handlers.md) - Правила создания обработчиков Telegram бота
