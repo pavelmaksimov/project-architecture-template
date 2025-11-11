@@ -6,7 +6,7 @@ from project.exceptions import ApiError, ServerError, ClientError
 
 @pytest.fixture
 def api():
-    return AsyncApi(api_root="http://example.com", headers={"Authorization": "Bearer token"})
+    return AsyncApi(api_root="http://example.com", headers={"Authorization": "Bearer token"}, name_for_monitoring="Api")
 
 
 @pytest.mark.asyncio
@@ -75,7 +75,7 @@ async def test_unknown_status_error(api, aresponses):
     with pytest.raises(ApiError) as exc_info:
         await api.call_endpoint("test")
 
-    assert "UnknownError" in str(exc_info.value)
+    assert "304 Not Modified" in str(exc_info.value)
 
 
 def test_exception_inheritance():

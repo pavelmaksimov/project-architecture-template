@@ -3,7 +3,7 @@ import typing as t
 
 from sqlalchemy import select, delete, orm
 
-from project.domains.base.exceptions import NotFoundError, throw
+from project.exceptions import NotFoundError, throw
 from project.infrastructure.adapters.database import Session, transaction, current_transaction
 from project.domains.base.models import Base
 

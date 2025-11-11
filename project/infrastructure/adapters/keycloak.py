@@ -28,7 +28,7 @@ class KeycloakAsyncClient:
         password: str | None = None,
     ):
         self.api_root = keycloak_url
-        self.api = self.Api(self.api_root)
+        self.api = self.Api(self.api_root, name_for_monitoring="keycloak")
         self._auth_data = {
             "grant_type": "password",
             "client_id": client_id,
@@ -63,7 +63,7 @@ class KeycloakSyncClient:
         password: str | None = None,
     ):
         self.api_root = keycloak_url
-        self.api = self.Api(self.api_root)
+        self.api = self.Api(self.api_root, name_for_monitoring="keycloak")
         self._auth_data = {
             "grant_type": "password",
             "client_id": client_id,

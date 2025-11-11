@@ -30,7 +30,8 @@ class AuthClient(IClient):
 
     async def check_telegram_user(self, telegram_user_id: int) -> bool:
         result = await self.api.call_endpoint(
-            f"api/check/{telegram_user_id}", resource_for_monitoring="api/check/{telegram_user_id}"
+            f"api/check/{telegram_user_id}",
+            resource_for_monitoring="api/check/{telegram_user_id}",
         )
         return result["exists"]
 
