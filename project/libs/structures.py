@@ -1,9 +1,23 @@
 import typing as t
 from contextlib import contextmanager
-from contextvars import ContextVar
 
 
 class LazyInit[T]:
+    """
+    Simple lazy initialization using contextvars.
+
+    Example:
+        class SettingsValidation(pydantic.BaseModel):
+            my_param: str = 1
+        Settings = LazyInit(SettingsClass)
+
+        assert Settings().my_param == "one"
+
+        # Uses overridden parameters.
+        with Settings.local(my_param="two"):
+            assert Settings().my_param == "two
+    """
+
     def __init__(self, klass: type[T], kwargs_func: t.Callable[[], dict] | None = None):
         self._klass: type[T] = klass
         self._kwargs_func: t.Callable[[], dict] = kwargs_func or (dict)
@@ -34,39 +48,3 @@ class LazyInit[T]:
         finally:
             # Restore previous instance
             self._instance = origin
-
-
-class SafeLazyInit[T]:
-    """
-    Simple lazy initialization using contextvars.
-
-    Example:
-        Settings = LazyContextVar(SettingsClass)
-        instance = Settings()  # Creates instance lazily
-
-        with Settings.local(param="value"):
-            instance = Settings()  # Uses overridden parameters
-    """
-
-    def __init__(self, klass: type[T], kwargs_func: t.Callable[[], dict] | None = None):
-        self._klass: type[T] = klass
-        self._kwargs_func: t.Callable[[], dict] = kwargs_func or (dict)
-        self._context_var: ContextVar[T | None] = ContextVar(f"{klass.__name__}_instance", default=None)
-
-    def __call__(self) -> T:
-        instance = self._context_var.get()
-        if instance is None:
-            instance = self._klass(**self._kwargs_func())
-            self._context_var.set(instance)
-        return instance
-
-    @contextmanager
-    def local(self, **kwargs):
-        """Simple context manager for parameter overrides."""
-        token = self._context_var.set(self._klass(**(self._kwargs_func() | kwargs)))
-
-        try:
-            yield
-        finally:
-            # Restore previous instance
-            self._context_var.reset(token)

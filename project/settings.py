@@ -5,7 +5,7 @@ from pathlib import Path
 from pydantic import PostgresDsn, AfterValidator, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from project.libs.structures import SafeLazyInit
+from project.libs.structures import LazyInit
 
 __all__ = ["Settings"]
 
@@ -84,4 +84,4 @@ class SettingsValidator(BaseSettings):
         return self.ENV in (Envs.PROD, Envs.LAMBDA, Envs.SANDBOX)
 
 
-Settings = SafeLazyInit(SettingsValidator)
+Settings = LazyInit(SettingsValidator)
