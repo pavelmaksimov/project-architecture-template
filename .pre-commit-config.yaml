@@ -57,3 +57,12 @@ repos:
         entry: uv export --no-dev --no-hashes -o requirements.txt
         language: system
         pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: update-dev-deps
+        stages: [pre-commit, pre-push]
+        name: Update requirements.dev.txt
+        entry: uv export --no-hashes -o requirements.dev.txt --only-group dev
+        language: system
+        pass_filenames: false
