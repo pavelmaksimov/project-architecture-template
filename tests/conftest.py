@@ -126,7 +126,7 @@ async def asession(init_database):
 
 @pytest.fixture
 def api_client(session):
-    return TestClient(app, headers={"Access-Token": Settings().API_TOKEN.get_secret_value()})
+    return TestClient(app, headers={"Api-Token": Settings().API_TOKEN.get_secret_value()})
 
 
 @pytest.fixture
