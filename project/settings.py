@@ -68,6 +68,15 @@ class SettingsValidator(BaseSettings):
     LLM_TEMPERATURE: float = 0.3
     LLM_MAX_TOKENS: int = 8192
 
+    # Logging settings
+    WRITE_LOGS_TO_FILE: bool = True
+    LOG_LEVEL: str = "INFO"
+    TELEGRAM_LOG_LEVEL: str = "INFO"
+    HTTP_REQUESTS_LOG_LEVEL: str = "ERROR"
+    SQLALCHEMY_LOG_LEVEL: str = "ERROR"
+    REDIS_LOG_LEVEL: str = "ERROR"
+    FLASK_LOG_LEVEL: str = "ERROR"
+
     # Loading local settings for development environment.
     model_config = SettingsConfigDict(env_file=Path(__file__).parent.parent / ".env", extra="allow")
 

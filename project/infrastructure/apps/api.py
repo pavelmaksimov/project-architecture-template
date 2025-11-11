@@ -27,7 +27,7 @@ def auth_by_token(auth_token: str = Header(alias="Access-Token")):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    setup_logging(Settings().ENV)  # di: skip
+    setup_logging()
 
     logger.info("Connecting to database")
 

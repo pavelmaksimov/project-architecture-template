@@ -1,6 +1,8 @@
 project-root = "project"
-exclude-objects = ["Settings", "DIContainer", "Container", "*Error", "throw", "Envs", "get_log_id", "timer",
-    "*Model"]
+exclude-objects = [
+    "Settings", "DIContainer", "Container", "*Error", "throw", "Envs", "get_log_id", "timer",
+    "*Model", "setup_logging",
+]
 exclude-modules = [
     "project.infrastructure.adapters.database",
     "project.infrastructure.adapters.adatabase",

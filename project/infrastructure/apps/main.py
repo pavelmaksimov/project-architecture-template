@@ -15,6 +15,6 @@ if __name__ == "__main__":
     elif Settings().ENV == Envs.SANDBOX:
         build_prometheus_metrics(project_name=MONITORING_APP_NAME, env="dev")
 
-    setup_logging(Settings().ENV)
+    setup_logging()
 
     # Run apps.

@@ -1,76 +1,117 @@
 import logging.config
-from functools import lru_cache
 from pathlib import Path
 
-from project.settings import Envs
+from project.settings import Settings
 
 
-@lru_cache
-def setup_logging(mode: Envs):
-    config: dict = {
+def setup_logging():
+    config = {
         "version": 1,
-        "disable_existing_loggers": False,
+        "disable_existing_loggers": True,
         "formatters": {
-            "default": {"format": "%(asctime)s [%(levelname)s] %(message)s"},
+            "default": {
+                "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            },
         },
         "handlers": {
-            "stdout": {
+            "console": {
                 "class": "logging.StreamHandler",
-                "level": "INFO",
+                "level": Settings().LOG_LEVEL,
                 "formatter": "default",
                 "stream": "ext://sys.stdout",
             },
-            "stderr": {
-                "class": "logging.StreamHandler",
-                "level": "ERROR",
-                "formatter": "default",
-                "stream": "ext://sys.stderr",
-            },
         },
         "loggers": {
-            "uvicorn": {"level": "INFO", "handlers": ["stdout"], "propagate": False},
-            "uvicorn.error": {"level": "ERROR", "handlers": ["stdout", "stderr"], "propagate": False},
-            "uvicorn.access": {"level": "INFO", "handlers": ["stdout"], "propagate": False},
-            "uvicorn.asgi": {"level": "INFO", "handlers": ["stdout"], "propagate": False},
-            "sqlalchemy.engine": {"level": "INFO", "handlers": ["stdout"], "propagate": False},
+            "telegram": {
+                "level": Settings().TELEGRAM_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "telegram.ext": {
+                "level": Settings().TELEGRAM_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "apscheduler.scheduler": {
+                "level": Settings().TELEGRAM_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "httpx": {
+                "level": Settings().HTTP_REQUESTS_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "httpcore": {
+                "level": Settings().HTTP_REQUESTS_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "openai": {
+                "level": Settings().HTTP_REQUESTS_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "aiohttp": {
+                "level": Settings().HTTP_REQUESTS_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "requests": {
+                "level": Settings().HTTP_REQUESTS_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "sqlalchemy": {
+                "level": Settings().SQLALCHEMY_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "sqlalchemy.engine": {
+                "level": Settings().SQLALCHEMY_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "redis": {
+                "level": Settings().REDIS_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "flask": {
+                "level": Settings().FLASK_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "werkzeug": {
+                "level": Settings().FLASK_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
         },
-        "root": {"level": "INFO", "handlers": ["stdout", "stderr"]},
+        "root": {"level": Settings().LOG_LEVEL, "handlers": ["console"], "propagate": False},
     }
 
-    if mode == Envs.PROD:
-        Path("logs").mkdir(parents=True, exist_ok=True)
+    if Settings().WRITE_LOGS_TO_FILE:
+        # Create logs directory if it doesn't exist
+        log_dir = Path(__file__).parent.parent / "logs"
+        log_dir.mkdir(parents=True, exist_ok=True)
+        log_file = log_dir / "app.log"
 
-        error_handler_name = "errors_file"
-        config["handlers"][error_handler_name] = {
-            "class": "logging.handlers.RotatingFileHandler",
-            "level": "ERROR",
-            "formatter": "default",
-            "filename": "logs/error.log",
-            "maxBytes": 10 * 1024 * 1024,  # 10 MB
-            "backupCount": 1,
-            "encoding": "utf8",
-        }
-        config["root"]["handlers"].append(error_handler_name)
-
-        info_handler_name = "info_file"
-        config["handlers"][info_handler_name] = {
+        config["handlers"]["file"] = {
             "class": "logging.handlers.TimedRotatingFileHandler",
-            "level": "INFO",
+            "level": Settings().LOG_LEVEL,
             "formatter": "default",
-            "filename": "logs/app.log",
+            "filename": log_file,
             "when": "midnight",
-            "interval": 1,
-            "backupCount": 10,
+            "backupCount": 14,
             "encoding": "utf8",
-            "delay": True,
         }
-        config["root"]["handlers"].append(info_handler_name)
 
-        # Добавляем файловые обработчики в специфические логгеры
-        config["loggers"]["uvicorn"]["handlers"].append("info_file")
-        config["loggers"]["uvicorn.error"]["handlers"].extend(["errors_file", "info_file"])
-        config["loggers"]["uvicorn.access"]["handlers"].append("info_file")
-        config["loggers"]["uvicorn.asgi"]["handlers"].append("info_file")
-        config["loggers"]["sqlalchemy.engine"]["handlers"].append("info_file")
+        # Add file handler to all loggers
+        for logger_config in config["loggers"].values():
+            logger_config["handlers"].append("file")
+
+        # Add file handler to root logger
+        config["root"]["handlers"].append("file")
 
     logging.config.dictConfig(config)

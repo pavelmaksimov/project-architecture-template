@@ -13,20 +13,20 @@ from project.infrastructure.adapters import database
 from project.infrastructure.adapters import keycloak
 from project.infrastructure.apps.api import app
 from project.logger import setup_logging
-from project.settings import Settings, Envs
+from project.settings import Settings
 from project.libs.log import logging_disabled
 
 
 @pytest.fixture(autouse=True, scope="session")
 def setup():
-    setup_logging(Envs.TEST)
-
     with Settings.local(
         ENV="TEST",
         API_TOKEN="token",
         LLM_MODEL="LLM_MODEL",
         LLM_API_KEY="LLM_API_KEY",
     ):
+        setup_logging()
+
         yield
 
 

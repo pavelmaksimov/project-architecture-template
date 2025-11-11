@@ -7,6 +7,7 @@ from telegram.ext import AIORateLimiter, ApplicationBuilder
 from telegram.request import HTTPXRequest
 
 from project.domains.base.handlers import register_base_handlers
+from project.logger import setup_logging
 from project.settings import Settings
 
 logger = logging.getLogger(__name__)
@@ -17,6 +18,8 @@ async def reminder_job(context):
 
 
 async def run_bot_app() -> None:
+    setup_logging()
+
     transport = TelegramHTTPXTransportWithMonitoring()
     httpx_request = HTTPXRequest(
         httpx_kwargs={"transport": transport},
