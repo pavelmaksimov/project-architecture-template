@@ -22,6 +22,16 @@ def setup_logging():
             },
         },
         "loggers": {
+            "uvicorn": {
+                "level": Settings().FASTAPI_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
+            "fastapi": {
+                "level": Settings().FASTAPI_LOG_LEVEL,
+                "handlers": ["console"],
+                "propagate": False,
+            },
             "telegram": {
                 "level": Settings().TELEGRAM_LOG_LEVEL,
                 "handlers": ["console"],

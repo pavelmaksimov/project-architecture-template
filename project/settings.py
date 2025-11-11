@@ -71,6 +71,7 @@ class SettingsValidator(BaseSettings):
     # Logging settings
     WRITE_LOGS_TO_FILE: bool = True
     LOG_LEVEL: str = "INFO"
+    FASTAPI_LOG_LEVEL = "INFO"
     TELEGRAM_LOG_LEVEL: str = "INFO"
     HTTP_REQUESTS_LOG_LEVEL: str = "ERROR"
     SQLALCHEMY_LOG_LEVEL: str = "ERROR"
