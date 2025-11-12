@@ -172,7 +172,7 @@ pre-commit install
 - `project/components/{component}/ai/{agent_name}/exceptions.py`
 - `project/components/{component}/ai/{agent_name}/schemas.py` - pydantic модели
 - `project/components/{component}/ai/{agent_name}/prompts.py` - llm промпты
-- `project/components/{component}/ai/{agent_name}/main.py` - логика ai агента
+- `project/components/{component}/ai/{agent_name}/agent.py` - логика ai агента
 - `project/libs/*` - универсальный переиспользуемые код, не связанный с бизнес-логикой и инфраструктурой
 - `project/exceptions.py` - базовые исключения
 - `project/logger.py` - настройки логирования
