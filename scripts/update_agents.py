@@ -9,6 +9,7 @@ def main():
     project_root = Path(__file__).parent.parent
     rules_dir = project_root / "specs" / "rules"
     output_file = project_root / "AGENTS.md"
+    readme_content = (project_root / "README.md").read_text()
 
     if not rules_dir.exists():
         print(f"Error: Directory {rules_dir} does not exist", file=sys.stderr)
@@ -22,7 +23,7 @@ def main():
         return 0
 
     # Collect content from all files
-    content_parts = ["Файл генерируется автоматически из файлов в specs/rules/*",]
+    content_parts = ["Файл генерируется автоматически из файлов в specs/rules/*", readme_content]
     for md_file in md_files:
         file_content = md_file.read_text(encoding="utf-8").strip()
         if file_content:
