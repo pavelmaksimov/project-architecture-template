@@ -715,7 +715,7 @@ async with atransaction():
 
 ## Использование сессий и транзакций в классах репозиториях
 
-**Расположение:** `project/domains/base/repositories.py`
+**Расположение:** `project/components/base/repositories.py`
 
 ### ORMRepository — Базовый класс репозиториев
 
@@ -861,18 +861,19 @@ uvicorn запускается с циклом uvloop
 uvicorn project.presentation.api:app -host 0.0.0.0 --loop uvloop
 ```
 
-Эндпоинты должны располагаться в `project.domains.{name}.endpoints`.
+Эндпоинты должны располагаться в `project.components.{name}.endpoints`.
 
 ### Формат ответов ресурсов API
 Лучше возвращать в виде словаря.
 Тогда при необходимости добавление новых данных в ответе ручки, нужно будет добавить только новое поле.
-Используйте готовую схему для этого `project.domains.base.schemas.BaseResponse`.
+Используйте готовую схему для этого `project.components.base.schemas.BaseResponse`.
 Если указать в аргументе response_model, в swagger появится документация по выводу.
 Но в случае тяжелых данных это может быть затратно по времени,
 потому что данные буду валидироваться через `pydantic`, это замедляет 2.5 раза по сравнению с обычным dict/dataclass.
 
 ```python
-from project.domains.base.schemas import BaseResponse
+from project.components.base.schemas import BaseResponse
+
 
 @app.get("/my", response_model=BaseResponse[list[int]])
 async def my_resource():
@@ -931,12 +932,12 @@ TODO: переработать
 из слоя инфраструктуры и ввода/вывода.
 Чтобы обозначить ожидаемый интерфейс объектов из слоя инфраструктуры в аннотациях типов, не импортируя их,
 можно создавать заглушки объектов наследуясь от класса `Protocol`.
-Пример в [interfaces.py](project/domains/chat/interfaces.py)
+Пример в [interfaces.py](project/components/chat/interfaces.py)
 
 Из-за того, что бизнес-логика не зависит от деталей реализации, упрощается тестирование.
 Пример теста бизнес-логики посмотрите тут [test_ask.py](tests/test_domains/test_chat/test_ask.py)
 
-Пример, как надо писать модули смотрите на примере домена [chat](project/domains/chat)
+Пример, как надо писать модули смотрите на примере домена [chat](project/components/chat)
 
 ## Слои
 
@@ -945,7 +946,7 @@ TODO: переработать
 Вводить новые сущности можно по мере увеличения сложности проекта.
 Поэтому ограничимся описанием этих паттернов.
 
-**UseCase** - точка входа в бизнес-сценарии. Пример [use_cases.py](project/domains/chat/use_cases.py).
+**UseCase** - точка входа в бизнес-сценарии. Пример [use_cases.py](project/components/chat/use_cases.py).
 Слой, через который интерфейсы ввода/вывода запускают бизнес-логику.
 Здесь содержится валидация данных, авторизация, проверка квоты, лимитов и т.д.
 Поэтому другие домены и поддомены бизнес-логики не должны использовать `UseCase`.
@@ -960,17 +961,17 @@ TODO: переработать
 
 `UseCase` - это объект без состояния.
 
-**Service** - скрывает детали реализации бизнес-процесса. Пример [service.py](project/domains/chat/service.py)
+**Service** - скрывает детали реализации бизнес-процесса. Пример [service.py](project/components/chat/service.py)
 Может объединять в себе работу одного или нескольких доменов.\
 Объект без состояния.
 
 **Repository** - нужны, чтобы отделить доступ к данным от ORM. Пример [repositories.py]
-(project/domains/chat/repositories.py)\
+(project/components/chat/repositories.py)\
 Объект без состояния.
 
 - доступ к данным изолируйте в классах Repository, в бизнес-логике извлечение данных из бд затрудняет 
-  читать и понимать саму бизнес-логику. Ищите примеры в модулях [repositories.py](project/domains/user/repositories.py)
-- Есть generic базовый класс с базовыми методами, наследуйте ваши Repository от него, пример в [repositories.py](project/domains/user/repositories.py)
+  читать и понимать саму бизнес-логику. Ищите примеры в модулях [repositories.py](project/components/user/repositories.py)
+- Есть generic базовый класс с базовыми методами, наследуйте ваши Repository от него, пример в [repositories.py](project/components/user/repositories.py)
 
 ```python
 # Когда мы смотрим на бизнес-логику, лучше увидеть такое
@@ -983,7 +984,7 @@ async with Session() as session:
 ```
 
 **Interface** - это объект, показывающий ожидаемый интерфейс, используется только в аннотациях типов.
-Пример [interfaces.py](project/domains/chat/interfaces.py).
+Пример [interfaces.py](project/components/chat/interfaces.py).
 Избавляет от необходимости импорта реального объекта,
 чтобы не нарушать правило инверсии зависимостей.
 

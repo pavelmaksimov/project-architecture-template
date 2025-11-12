@@ -10,7 +10,7 @@ from llm_common.prometheus import fastapi_tracking_middleware, fastapi_endpoint_
 from starlette.requests import Request
 from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 
-from project.domains.chat.endpoints import router as chat_router
+from project.components.chat.endpoints import router as chat_router
 from project.logger import setup_logging
 from project.settings import Settings, API_ROOT_PATH
 

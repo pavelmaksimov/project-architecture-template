@@ -29,13 +29,13 @@ def iter_domain_modules(project_dir: pathlib.Path):
     """
     :return: {"domain": ["module", ...]}
     """
-    domains_dir = project_dir / "domains"
+    domains_dir = project_dir / "components"
     for domain_dir in domains_dir.iterdir():
         if domain_dir.is_dir() and not domain_dir.name.startswith("_"):
             for file in domain_dir.iterdir():
                 if file.is_file() and file.suffix == ".py" and not file.name.startswith("_"):
                     module_name = file.stem
-                    yield domain_dir.name, module_name, f"project.domains.{domain_dir.name}.{module_name}"
+                    yield domain_dir.name, module_name, f"project.components.{domain_dir.name}.{module_name}"
 
 
 @pytest.fixture(scope="session")

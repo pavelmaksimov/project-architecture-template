@@ -5,7 +5,7 @@ from langchain_openai import ChatOpenAI
 from llm_common.clients.llm_http_client import LLMHttpClient
 from openai import AsyncClient
 
-from project.domains.chat.interfaces import IGenerateGateway
+from project.components.chat.interfaces import IGenerateGateway
 from project.settings import Settings
 
 

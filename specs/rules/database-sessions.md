@@ -82,7 +82,7 @@ async with atransaction():
 
 ## Использование сессий и транзакций в классах репозиториях
 
-**Расположение:** `project/domains/base/repositories.py`
+**Расположение:** `project/components/base/repositories.py`
 
 ### ORMRepository — Базовый класс репозиториев
 

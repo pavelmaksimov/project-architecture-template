@@ -5,8 +5,8 @@ from project.datatypes import UserIdT, QuestionT
 
 if t.TYPE_CHECKING:
     from project.container import AllRepositories
-    from project.domains.chat.models import AnswerModel
-    from project.domains.chat.answer.service import AnswerService
+    from project.components.chat.models import AnswerModel
+    from project.components.chat.answer.service import AnswerService
 
 
 class ChatService:

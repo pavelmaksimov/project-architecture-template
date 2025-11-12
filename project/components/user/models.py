@@ -1,7 +1,7 @@
 from sqlalchemy import BigInteger, String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
 
-from project.domains.base.models import TimeMixin, Base
+from project.components.base.models import TimeMixin, Base
 
 
 class UserModel(TimeMixin, Base):

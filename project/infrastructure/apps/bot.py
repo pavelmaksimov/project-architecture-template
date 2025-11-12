@@ -6,7 +6,7 @@ from llm_common.clients.telegram_client import TelegramHTTPXTransportWithMonitor
 from telegram.ext import AIORateLimiter, ApplicationBuilder
 from telegram.request import HTTPXRequest
 
-from project.domains.base.handlers import register_base_handlers
+from project.components.base.handlers import register_base_handlers
 from project.logger import setup_logging
 from project.settings import Settings
 

@@ -2,8 +2,8 @@ import typing as t
 
 from fastapi import APIRouter, Query
 
-from project.domains.base.schemas import BaseResponse
-from project.domains.chat.schemas import AskBody
+from project.components.base.schemas import BaseResponse
+from project.components.chat.schemas import AskBody
 from project.container import Container
 
 router = APIRouter(prefix="/chat", tags=["chat"])

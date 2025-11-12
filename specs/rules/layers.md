@@ -15,12 +15,12 @@ TODO: переработать
 из слоя инфраструктуры и ввода/вывода.
 Чтобы обозначить ожидаемый интерфейс объектов из слоя инфраструктуры в аннотациях типов, не импортируя их,
 можно создавать заглушки объектов наследуясь от класса `Protocol`.
-Пример в [interfaces.py](project/domains/chat/interfaces.py)
+Пример в [interfaces.py](project/components/chat/interfaces.py)
 
 Из-за того, что бизнес-логика не зависит от деталей реализации, упрощается тестирование.
 Пример теста бизнес-логики посмотрите тут [test_ask.py](tests/test_domains/test_chat/test_ask.py)
 
-Пример, как надо писать модули смотрите на примере домена [chat](project/domains/chat)
+Пример, как надо писать модули смотрите на примере домена [chat](project/components/chat)
 
 ## Слои
 
@@ -29,7 +29,7 @@ TODO: переработать
 Вводить новые сущности можно по мере увеличения сложности проекта.
 Поэтому ограничимся описанием этих паттернов.
 
-**UseCase** - точка входа в бизнес-сценарии. Пример [use_cases.py](project/domains/chat/use_cases.py).
+**UseCase** - точка входа в бизнес-сценарии. Пример [use_cases.py](project/components/chat/use_cases.py).
 Слой, через который интерфейсы ввода/вывода запускают бизнес-логику.
 Здесь содержится валидация данных, авторизация, проверка квоты, лимитов и т.д.
 Поэтому другие домены и поддомены бизнес-логики не должны использовать `UseCase`.
@@ -44,17 +44,17 @@ TODO: переработать
 
 `UseCase` - это объект без состояния.
 
-**Service** - скрывает детали реализации бизнес-процесса. Пример [service.py](project/domains/chat/service.py)
+**Service** - скрывает детали реализации бизнес-процесса. Пример [service.py](project/components/chat/service.py)
 Может объединять в себе работу одного или нескольких доменов.\
 Объект без состояния.
 
 **Repository** - нужны, чтобы отделить доступ к данным от ORM. Пример [repositories.py]
-(project/domains/chat/repositories.py)\
+(project/components/chat/repositories.py)\
 Объект без состояния.
 
 - доступ к данным изолируйте в классах Repository, в бизнес-логике извлечение данных из бд затрудняет 
-  читать и понимать саму бизнес-логику. Ищите примеры в модулях [repositories.py](project/domains/user/repositories.py)
-- Есть generic базовый класс с базовыми методами, наследуйте ваши Repository от него, пример в [repositories.py](project/domains/user/repositories.py)
+  читать и понимать саму бизнес-логику. Ищите примеры в модулях [repositories.py](project/components/user/repositories.py)
+- Есть generic базовый класс с базовыми методами, наследуйте ваши Repository от него, пример в [repositories.py](project/components/user/repositories.py)
 
 ```python
 # Когда мы смотрим на бизнес-логику, лучше увидеть такое
@@ -67,7 +67,7 @@ async with Session() as session:
 ```
 
 **Interface** - это объект, показывающий ожидаемый интерфейс, используется только в аннотациях типов.
-Пример [interfaces.py](project/domains/chat/interfaces.py).
+Пример [interfaces.py](project/components/chat/interfaces.py).
 Избавляет от необходимости импорта реального объекта,
 чтобы не нарушать правило инверсии зависимостей.
 

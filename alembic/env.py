@@ -8,14 +8,14 @@ from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-from project.domains.base.models import public_schema
+from project.components.base.models import public_schema
 from project.settings import Settings
 
 import importlib
 from pathlib import Path
 
 project_root = Path(__file__).parent.parent
-domains_path = project_root / "project" / "domains"
+domains_path = project_root / "project" / "components"
 
 for py_file in domains_path.rglob("*.py"):
     rel_path = py_file.relative_to(project_root)

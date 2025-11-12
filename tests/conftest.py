@@ -7,7 +7,7 @@ from starlette.testclient import TestClient
 from testcontainers.postgres import PostgresContainer
 from testcontainers.redis import RedisContainer, AsyncRedisContainer
 
-import project.domains.base.models
+import project.components.base.models
 from project.infrastructure.adapters import adatabase
 from project.infrastructure.adapters import database
 from project.infrastructure.adapters import keycloak
@@ -44,7 +44,7 @@ def init_database(setup):
 
             try:
                 with logging_disabled():
-                    project.domains.base.models.public_schema.create_all(bind=engine, checkfirst=True)
+                    project.components.base.models.public_schema.create_all(bind=engine, checkfirst=True)
 
                 yield engine
 

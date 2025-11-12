@@ -1,7 +1,7 @@
 from sqlalchemy import select
 
-from project.domains.base.repositories import ORMModelRepository, ORMRepository
-from project.domains.chat.models import QuestionModel, AnswerModel
+from project.components.base.repositories import ORMModelRepository, ORMRepository
+from project.components.chat.models import QuestionModel, AnswerModel
 
 
 class QuestionRepository(ORMModelRepository[QuestionModel]):

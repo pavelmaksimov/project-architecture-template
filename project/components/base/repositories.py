@@ -5,7 +5,7 @@ from sqlalchemy import select, delete, orm
 
 from project.exceptions import NotFoundError, throw
 from project.infrastructure.adapters.database import Session, transaction, current_transaction
-from project.domains.base.models import Base
+from project.components.base.models import Base
 
 T = t.TypeVar("T", bound=Base)
 

@@ -1,13 +1,13 @@
 from contextlib import contextmanager
 import typing as t
 
-from project.domains.chat.answer.service import AnswerService
-from project.domains.chat.interfaces import IGenerateGateway
-from project.domains.chat.repositories import QuestionRepository, AnswerRepository, ChatRepository
-from project.domains.chat.service import ChatService
-from project.domains.chat.use_cases import ChatUseCase
-from project.domains.user.repositories import UserRepository
-from project.domains.user.service import AuthService, QuotaService
+from project.components.chat.answer.service import AnswerService
+from project.components.chat.interfaces import IGenerateGateway
+from project.components.chat.repositories import QuestionRepository, AnswerRepository, ChatRepository
+from project.components.chat.service import ChatService
+from project.components.chat.use_cases import ChatUseCase
+from project.components.user.repositories import UserRepository
+from project.components.user.service import AuthService, QuotaService
 from project.infrastructure.adapters.database import transaction, current_transaction
 from project.infrastructure.adapters.llm import LLMClient
 from project.libs.structures import LazyInit

@@ -6,7 +6,7 @@ import typing as t
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import sessionmaker, Session as ORMSession, scoped_session
 
-from project.domains.base.models import public_schema
+from project.components.base.models import public_schema
 from project.settings import Settings
 
 session_storage: contextvars.ContextVar[ORMSession | None] = contextvars.ContextVar("current_session", default=None)

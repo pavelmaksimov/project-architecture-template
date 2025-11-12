@@ -14,7 +14,7 @@ depends_on = ["usecases", "services", "repo", "adapters", "libs"]
 [layers.usecases]
 description = "Contains business logic and use cases that orchestrate the flow of data to and from entities and implement application-specific business rules"
 contains_modules = [
-    "project.domains.*.use_cases",
+    "project.components.*.use_cases",
 ]
 depends_on = ["services", "repo", "libs"]
 
@@ -22,7 +22,7 @@ depends_on = ["services", "repo", "libs"]
 [layers.services]
 description = "Provides domain-specific services that implement core business logic and domain rules, often used by use cases"
 contains_modules = [
-    "project.domains.*.service"
+    "project.components.*.service"
 ]
 depends_on = ["services", "repo", "libs"]
 
@@ -30,7 +30,7 @@ depends_on = ["services", "repo", "libs"]
 [layers.repo]
 description = "Separate the business logic from ORM. Repository that abstracts data access logic."
 contains_modules = [
-    "project.domains.*.repositories",
+    "project.components.*.repositories",
 ]
 depends_on = ["repo", "libs", "adapters", "orm"]
 
@@ -38,7 +38,7 @@ depends_on = ["repo", "libs", "adapters", "orm"]
 [layers.orm]
 description = "Object-Relational Mapping layer that defines database models and handles direct interaction with the database"
 contains_modules = [
-    "project.domains.*.models",
+    "project.components.*.models",
 ]
 depends_on = ["orm", "libs", "models", "adapters"]
 
@@ -55,7 +55,7 @@ depends_on = ["orm", "libs"]
 description = "Command Line Interface layer that handles user interaction through command line tools and scripts"
 contains_modules = [
     "project.infrastructure.cli",
-    "project.domains.*.cli",
+    "project.components.*.cli",
 ]
 depends_on = ["cli", "libs", "dicontainer", "usecases", "repo"]
 
@@ -65,7 +65,7 @@ description = "REST API layer that handles HTTP requests and responses, exposing
 contains_modules = [
     "project.infrastructure.apps.api",
     "project.infrastructure.apps.flask",
-    "project.domains.*.endpoints",
+    "project.components.*.endpoints",
 ]
 depends_on = ["rest", "libs", "dicontainer", "usecases"]
 
@@ -75,7 +75,7 @@ description = "Bot interface layer that handles interactions with messaging plat
 contains_modules = [
     "project.infrastructure.apps.bot",
     "project.infrastructure.utils.telegram",
-    "project.domains.*.handlers",
+    "project.components.*.handlers",
 ]
 depends_on = ["bot", "libs", "dicontainer", "usecases", "adapters"]
 

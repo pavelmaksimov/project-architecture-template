@@ -3,9 +3,9 @@ import typing as t
 from project.datatypes import UserIdT, QuestionT, AnswerT
 
 if t.TYPE_CHECKING:
-    from project.domains.chat.service import ChatService
+    from project.components.chat.service import ChatService
     from project.container import AllRepositories
-    from project.domains.user.service import AuthService, QuotaService
+    from project.components.user.service import AuthService, QuotaService
 
 
 class ChatUseCase:

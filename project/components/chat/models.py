@@ -5,8 +5,8 @@ from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.orm import mapped_column
 
 
-from project.domains.base.models import TimeMixin, Base
-from project.domains.user.models import UserModel
+from project.components.base.models import TimeMixin, Base
+from project.components.user.models import UserModel
 from project.datatypes import UserIdT, AnswerT, QuestionT
 
 

@@ -154,21 +154,21 @@ pre-commit install
   поэтому отдельный модуль
 - `project/infrastructure/adapters/*` - интеграции к внешним системам (адаптеры, клиенты)
 - `project/infrastructure/utils` - универсальный переиспользуемые код, не связанный с бизнес-логикой, относящиеся к
-- `project/domains/{component}/cli.py` - обработчики CLI интерфейса
-- `project/domains/{component}/endpoints.py` - эндпоинты API
-- `project/domains/{component}/handlers.py` - обработчики бота
-- `project/domains/{component}/models.py` - модели данных ORM
-- `project/domains/{component}/repositories.py` - Любое обращение к данным
-- `project/domains/{component}/enums.py` - Наборы значений
-- `project/domains/{component}/usecases.py` - точка входа в бизнес-логику (сценарии использования приложения)
-- `project/domains/{component}/service.py` - детали реализации бизнес-логики (когда бизнес-логика не влезает в  
+- `project/components/{component}/cli.py` - обработчики CLI интерфейса
+- `project/components/{component}/endpoints.py` - эндпоинты API
+- `project/components/{component}/handlers.py` - обработчики бота
+- `project/components/{component}/models.py` - модели данных ORM
+- `project/components/{component}/repositories.py` - Любое обращение к данным
+- `project/components/{component}/enums.py` - Наборы значений
+- `project/components/{component}/usecases.py` - точка входа в бизнес-логику (сценарии использования приложения)
+- `project/components/{component}/service.py` - детали реализации бизнес-логики (когда бизнес-логика не влезает в  
   usecases.py, переноси сюда)
-- `project/domains/{component}/exceptions` - исключения бизнес-логики относящиеся к компоненту
-- `project/domains/{component}/schemas.py` - схемы данных и/или валидация pydantic
-- `project/domains/{component}/ai/{agent_name}/exceptions.py`
-- `project/domains/{component}/ai/{agent_name}/schemas.py` - pydantic модели
-- `project/domains/{component}/ai/{agent_name}/prompts.py` - llm промпты
-- `project/domains/{component}/ai/{agent_name}/main.py` - логика ai агента
+- `project/components/{component}/exceptions` - исключения бизнес-логики относящиеся к компоненту
+- `project/components/{component}/schemas.py` - схемы данных и/или валидация pydantic
+- `project/components/{component}/ai/{agent_name}/exceptions.py`
+- `project/components/{component}/ai/{agent_name}/schemas.py` - pydantic модели
+- `project/components/{component}/ai/{agent_name}/prompts.py` - llm промпты
+- `project/components/{component}/ai/{agent_name}/main.py` - логика ai агента
 - `project/libs/*` - универсальный переиспользуемые код, не связанный с бизнес-логикой и инфраструктурой
 - `project/exceptions.py` - базовые исключения
 - `project/logger.py` - настройки логирования

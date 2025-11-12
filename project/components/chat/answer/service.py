@@ -2,8 +2,8 @@ from itertools import chain
 import typing as t
 
 if t.TYPE_CHECKING:
-    from project.domains.chat.interfaces import IGenerateGateway
-    from project.domains.chat.models import QuestionModel
+    from project.components.chat.interfaces import IGenerateGateway
+    from project.components.chat.models import QuestionModel
 
 
 class AnswerService:

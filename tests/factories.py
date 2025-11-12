@@ -1,8 +1,8 @@
 import factory
 
-from project.domains.user.models import UserModel
+from project.components.user.models import UserModel
 from project.infrastructure.adapters.database import scoped_session_factory
-from project.domains.chat.models import QuestionModel, AnswerModel
+from project.components.chat.models import QuestionModel, AnswerModel
 
 
 class SQLAlchemyFactoryMeta:
