@@ -2,6 +2,8 @@
 
 Для создания адаптеров, работающих с внешними HTTP API, используйте классы из [base_client.py](../../project/infrastructure/utils/base_client.py).
 
+Как замокать http запросы в тестах можно найти в спеке [auto-tests.md](auto-tests.md).
+
 **Основные компоненты:**
 
 1. **AsyncApi** — базовый класс для асинхронных HTTP клиентов
