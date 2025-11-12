@@ -22,7 +22,7 @@ def main():
         return 0
 
     # Collect content from all files
-    content_parts = []
+    content_parts = ["Файл генерируется автоматически из файлов в specs/rules/*",]
     for md_file in md_files:
         file_content = md_file.read_text(encoding="utf-8").strip()
         if file_content:
