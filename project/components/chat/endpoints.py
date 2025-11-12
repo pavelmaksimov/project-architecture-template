@@ -1,26 +1,22 @@
-import typing as t
+from fastapi import APIRouter
 
-from fastapi import APIRouter, Query
-
-from project.components.base.schemas import BaseResponse
-from project.components.chat.schemas import AskBody
+from project.components.base.schemas import ApiResponseSchema
+from project.components.chat.schemas import AskBodySchema, ChatHistoryBodySchema, ChatHistoryResponseSchema
 from project.container import Container
+from project.datatypes import AnswerT
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
 
-@router.get("/v1/history/{user_id}")
-def get_chat_history_v1(
-    user_id: int,
-    limit: t.Annotated[int, Query(ge=1)] = 10,
-):
-    """Getting the story of a user chat."""
-    return Container().repo.chat.get_history(user_id=user_id, limit=limit)
+@router.post("/v1/history", response_model=ApiResponseSchema[ChatHistoryResponseSchema])
+def get_history_v1(body: ChatHistoryBodySchema):
+    """Get chat history for a user."""
+    history = Container().chat.get_history(user_id=body.user_id, limit=body.limit)
+    return ApiResponseSchema(data=ChatHistoryResponseSchema(messages=history))
 
 
-@router.post("/v1/ask", response_model=BaseResponse[str])
-def ask_v1(body: AskBody):
+@router.post("/v1/ask", response_model=ApiResponseSchema[AnswerT])
+def ask_v1(body: AskBodySchema):
     """Asking a question to the chat."""
-    message = Container().chat.ask(user_id=body.user_id, question=body.question)
-
-    return message
+    answer = Container().chat.ask(user_id=body.user_id, question=body.question)
+    return ApiResponseSchema(data=answer)

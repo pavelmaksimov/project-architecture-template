@@ -1,9 +1,3 @@
-class AuthService:
-    def __init__(self): ...
-
-    def check(self, user_id): ...
-
-
 class QuotaService:
     def __init__(self): ...
 

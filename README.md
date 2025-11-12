@@ -41,10 +41,12 @@
 - 🗄️ Добавить миграцию БД → [alembic-db-migration.md](specs/rules/alembic-db-migration.md)
 - 🧪 Создать авто-тест → [auto-tests.md](specs/rules/auto-tests.md)
 - 🚨 Как создать своё исключение → [exceptions.md](specs/rules/exceptions.md)
-- 🎨 Вайбкодинг → [spec-driven-development.md](specs/rules/spec-driven-development.md)
+- Как создать ORM модель → [create-orm-model.md](specs/rules/create-orm-model.md)
+- 🎨 Вайбкодинг → [development.md](specs/rules/development.md)
 
 **🏛️ Работа с архитектурой:**
 - 📐 Понять структуру слоев и границы модулей → [layers.md](specs/rules/layers.md)
+- Доменно-специфичные типы → [tiny-types.md](specs/rules/tiny-types.md)
 - 🔌 Узнать про существующие адаптеры → [adapters.md](specs/rules/adapters.md)
 - ⚠️ Как избежать типичных ошибок и сохранить нервы и время, себе и другим → [anti-patterns.md](specs/rules/anti-patterns.md)
 - 🧱 Какие есть переиспользуемые модули в проекте → [project-utils.md](specs/rules/project-utils.md)
@@ -199,5 +201,7 @@ pre-commit install
 - [project-utils.md](specs/rules/project-utils.md) - Описание переиспользуемых утилит
 - [python-libs.md](specs/rules/python-libs.md) - Рекомендации по использованию библиотек Python
 - [settings-and-environments.md](specs/rules/settings-and-environments.md) - Работа с переменными окружения через Settings
-- [spec-driven-development.md](specs/rules/spec-driven-development.md) - Методология разработки на основе спецификаций
+- [development.md](specs/rules/development.md) - Методология разработки на основе спецификаций
 - [telegram-handlers.md](specs/rules/telegram-handlers.md) - Правила создания обработчиков Telegram бота
+- [create-orm-model.md](specs/rules/create-orm-model.md) - Правила создания ORM моделей
+- [tiny-types.md](specs/rules/tiny-types.md) - Доменно-специфичные типы

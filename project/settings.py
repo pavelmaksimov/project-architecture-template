@@ -87,7 +87,7 @@ class SettingsValidator(BaseSettings):
     def is_production(self):
         return self.ENV == Envs.PROD
 
-    def is_testable(self):
+    def is_testable_stand(self):
         return self.ENV in (Envs.LAMBDA, Envs.SANDBOX)
 
     def is_any_stand(self):

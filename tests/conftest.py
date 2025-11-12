@@ -130,31 +130,22 @@ def api_client(session):
 
 
 @pytest.fixture
-def responses():
+def httpx_responses():
     """Fixture for mocking httpx requests using respx with a 'responses'-like API."""
     import httpx
     import respx
 
     class _ResponsesWrapper:
-        # Method aliases for compatibility with tests
-        GET = "GET"
-        POST = "POST"
-        PUT = "PUT"
-        PATCH = "PATCH"
-        DELETE = "DELETE"
-        HEAD = "HEAD"
-        OPTIONS = "OPTIONS"
-
         def __init__(self, router: respx.Router):
             self._router = router
 
-        def add(self, method, url, json=None, status=200, headers=None):
+        def add(self, method, url, json=None, status_code=200, headers=None):
             # Register a route and set a mock response
             route = self._router.request(method, url)
             if json is not None:
-                route.mock(return_value=httpx.Response(status, json=json, headers=headers))
+                route.mock(return_value=httpx.Response(status_code, json=json, headers=headers))
             else:
-                route.mock(return_value=httpx.Response(status, headers=headers))
+                route.mock(return_value=httpx.Response(status_code, headers=headers))
             return route
 
     with respx.mock as router:
@@ -162,7 +153,7 @@ def responses():
 
 
 @pytest.fixture
-def aresponses():
+def aiohttp_responses():
     """Fixture for mocking asynchronous requests."""
     with aioresponses() as mock:
         yield mock
@@ -186,9 +177,9 @@ def keycloak_client():
 
 
 @pytest.fixture
-def mock_keycloak(responses):
-    responses.add(
-        responses.POST,
+def mock_keycloak(httpx_responses):
+    httpx_responses.add(
+        "POST",
         "http://keycloak.example.com/auth",
         json={"access_token": "test_token"},
         status=200,
@@ -196,8 +187,8 @@ def mock_keycloak(responses):
 
 
 @pytest.fixture
-def mock_async_keycloak(aresponses):
-    aresponses.add(
+def mock_async_keycloak(aiohttp_responses):
+    aiohttp_responses.add(
         "http://keycloak.example.com/auth",
         method="POST",
         payload={"access_token": "test_token"},

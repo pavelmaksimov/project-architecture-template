@@ -76,3 +76,6 @@ with Settings.local(MAX_TOKENS=1000, TEMPERATURE=0.5):
     result = some_function()
     # В этом контексте some_function и Settings().MAX_TOKENS вернет 1000
 ```
+
+## Переменные окружение проекта
+{include [settings.py](../../project/settings.py)}

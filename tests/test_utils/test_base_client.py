@@ -10,24 +10,24 @@ def api():
 
 
 @pytest.mark.asyncio
-async def test_call_endpoint_success(api, aresponses):
-    aresponses.get("http://example.com/test", status=200, payload={"key": "value"})
+async def test_call_endpoint_success(api, aiohttp_responses):
+    aiohttp_responses.get("http://example.com/test", status=200, payload={"key": "value"})
     result = await api.call_endpoint("test")
 
     assert result == {"key": "value"}
 
 
 @pytest.mark.asyncio
-async def test_response_to_native_text(api, aresponses):
-    aresponses.get("http://example.com/test", status=200, body="text response")
+async def test_response_to_native_text(api, aiohttp_responses):
+    aiohttp_responses.get("http://example.com/test", status=200, body="text response")
     result = await api.call_endpoint("test")
 
     assert result == "text response"
 
 
 @pytest.mark.asyncio
-async def test_client_error(api, aresponses):
-    aresponses.get("http://example.com/test", status=400, body="Error detail")
+async def test_client_error(api, aiohttp_responses):
+    aiohttp_responses.get("http://example.com/test", status=400, body="Error detail")
 
     with pytest.raises(ClientError) as exc_info:
         await api.call_endpoint("test")
@@ -38,8 +38,8 @@ async def test_client_error(api, aresponses):
 
 
 @pytest.mark.asyncio
-async def test_server_error(api, aresponses):
-    aresponses.get("http://example.com/test", status=500, body="Server error")
+async def test_server_error(api, aiohttp_responses):
+    aiohttp_responses.get("http://example.com/test", status=500, body="Server error")
 
     with pytest.raises(ServerError) as exc_info:
         await api.call_endpoint("test")
@@ -49,28 +49,28 @@ async def test_server_error(api, aresponses):
 
 
 @pytest.mark.asyncio
-async def test_headers_merge(api, aresponses):
-    aresponses.get("http://example.com/test", status=200)
+async def test_headers_merge(api, aiohttp_responses):
+    aiohttp_responses.get("http://example.com/test", status=200)
 
     await api.call_endpoint("test", headers={"X-Header": "value"})
 
-    request = list(aresponses.requests.values())[0][0]
+    request = list(aiohttp_responses.requests.values())[0][0]
 
     assert request.kwargs["headers"] == {"Authorization": "Bearer token", "X-Header": "value"}
 
 
 @pytest.mark.asyncio
-async def test_successful_get_request(api, aresponses):
+async def test_successful_get_request(api, aiohttp_responses):
     test_data = {"result": "success"}
-    aresponses.get("http://example.com/resource", status=200, payload=test_data)
+    aiohttp_responses.get("http://example.com/resource", status=200, payload=test_data)
 
     result = await api.call_endpoint("resource", method="GET")
     assert result == test_data
 
 
 @pytest.mark.asyncio
-async def test_unknown_status_error(api, aresponses):
-    aresponses.get("http://example.com/test", status=304)
+async def test_unknown_status_error(api, aiohttp_responses):
+    aiohttp_responses.get("http://example.com/test", status=304)
 
     with pytest.raises(ApiError) as exc_info:
         await api.call_endpoint("test")

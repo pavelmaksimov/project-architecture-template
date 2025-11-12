@@ -1,15 +1,13 @@
 from contextlib import contextmanager
 import typing as t
 
-from project.components.chat.answer.service import AnswerService
-from project.components.chat.interfaces import IGenerateGateway
-from project.components.chat.repositories import QuestionRepository, AnswerRepository, ChatRepository
-from project.components.chat.service import ChatService
+from project.components.chat.ai.agent import ChatAgent
+from project.components.chat.repositories import MessageRepository
 from project.components.chat.use_cases import ChatUseCase
 from project.components.user.repositories import UserRepository
-from project.components.user.service import AuthService, QuotaService
+from project.components.user.service import QuotaService
 from project.infrastructure.adapters.database import transaction, current_transaction
-from project.infrastructure.adapters.llm import LLMClient
+from project.infrastructure.adapters.llm import llm_chat_client
 from project.libs.structures import LazyInit
 
 if t.TYPE_CHECKING:
@@ -17,11 +15,9 @@ if t.TYPE_CHECKING:
 
 
 class AllRepositories:
-    def __init__(self):
-        self.user = UserRepository()  # di: skip
-        self.question = QuestionRepository()  # di: skip
-        self.answer = AnswerRepository()  # di: skip
-        self.chat = ChatRepository()  # di: skip
+    def __init__(self, user_repo=None, message_repo=None):
+        self.user = user_repo or UserRepository()  # di: skip
+        self.message = message_repo or MessageRepository()  # di: skip
 
     @classmethod
     @contextmanager
@@ -45,19 +41,19 @@ class DIContainer:
     For resolving dependencies.
     """
 
-    def __init__(self, generate_adapter: IGenerateGateway | None = None):
+    def __init__(self, repositories=None, llm_client=None, chat_agent=None):
         # Infrastructure dependencies:
-        self.repo = Repositories()  # di: skip
-        self._generate_adapter = generate_adapter or LLMClient()  # di: skip
+        self.repo = repositories or Repositories()  # di: skip
+        self._llm_client = llm_client or llm_chat_client()  # di: skip
 
-        # Domain dependencies:
-        self._answer_service = AnswerService(self._generate_adapter)  # di: skip
-        self._chat_service = ChatService(self.repo, self._answer_service)  # di: skip
-        self._auth_service = AuthService()  # di: skip
+        # AI services:
+        self._chat_agent = chat_agent or ChatAgent(self._llm_client)  # di: skip
+
+        # Domain Services:
         self._quota_service = QuotaService()  # di: skip
 
-        # Application dependencies:
-        self.chat = ChatUseCase(self.repo, self._chat_service, self._auth_service, self._quota_service)  # di: skip
+        # UseCases:
+        self.chat = ChatUseCase(self.repo, self._chat_agent, self._quota_service)  # di: skip
 
 
 Container = LazyInit(DIContainer)

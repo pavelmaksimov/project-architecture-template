@@ -2,7 +2,8 @@ import factory
 
 from project.components.user.models import UserModel
 from project.infrastructure.adapters.database import scoped_session_factory
-from project.components.chat.models import QuestionModel, AnswerModel
+from project.components.chat.models import MessageModel
+from project.components.chat.enums import MessageTypeEnum
 
 
 class SQLAlchemyFactoryMeta:
@@ -22,27 +23,15 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     is_admin = False
 
 
-class QuestionFactory(factory.alchemy.SQLAlchemyModelFactory):
+class MessageFactory(factory.alchemy.SQLAlchemyModelFactory):
+    """Фабрика для создания сообщений чата."""
+
     class Meta(SQLAlchemyFactoryMeta):
-        model = QuestionModel
+        model = MessageModel
 
     id = factory.Sequence(lambda n: n + 1)
     user_id = factory.SelfAttribute("user.id")
-    telegram_message_id = factory.Sequence(lambda n: n + 1)
     content = factory.Faker("text", max_nb_chars=50)
-    is_voice = False
+    message_type = MessageTypeEnum.USER
 
     user = factory.SubFactory(UserFactory)
-
-
-class AnswerFactory(factory.alchemy.SQLAlchemyModelFactory):
-    class Meta(SQLAlchemyFactoryMeta):
-        model = AnswerModel
-
-    id = factory.Sequence(lambda n: n + 1)
-    user_id = factory.SelfAttribute("user.id")
-    question_id = factory.SelfAttribute("question.id")
-    content = factory.Faker("text", max_nb_chars=50)
-
-    user = factory.SubFactory(UserFactory)
-    question = factory.SubFactory(QuestionFactory)

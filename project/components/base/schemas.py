@@ -1,5 +1,5 @@
 from pydantic import BaseModel
 
 
-class BaseResponse[T](BaseModel):
+class ApiResponseSchema[T](BaseModel):
     data: T

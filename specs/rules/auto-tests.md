@@ -27,7 +27,7 @@
 
 В проекте есть фабрики объектов ORM моделей, они позволяют подготавливать окружение для тестирования.
 Находятся в [factories.py](tests/factories.py).
-Пример использования в [test_ask.py](tests/test_domains/test_chat/test_ask.py).
+Пример использования в [test_use_case.py](../../tests/test_domains/test_chat/test_use_case.py).
 
 В тестах используется одна сессия SqlAlchemy с БД без завершения транзакции, поэтому объекты на самом деле не создаются 
 фабрикой в БД, но благодаря внутреннему хранилищу ORM, программа видит эти объекты.
@@ -139,15 +139,15 @@ def test_endpoint(api_client):
 
 ### Фикстуры для мокирования HTTP запросов
 
-**`responses`**
+**`httpx_responses`**
 - Для мокирования синхронных HTTP запросов (httpx)
 - Использует библиотеку respx
 
 Пример использования:
 ```python
-def test_external_api(responses):
-    responses.add(
-        responses.GET,
+def test_external_api(httpx_responses):
+    httpx_responses.add(
+        "GET",
         "https://api.example.com/data",
         json={"result": "success"},
         status=200
@@ -155,14 +155,14 @@ def test_external_api(responses):
     # Теперь запросы на этот URL вернут mock-ответ
 ```
 
-**`aresponses`**
+**`aiohttp_responses`**
 - Для мокирования асинхронных HTTP запросов (aiohttp)
 - Использует библиотеку aioresponses
 
 Пример использования:
 ```python
-async def test_external_api_async(aresponses):
-    aresponses.add(
+async def test_external_api_async(aiohttp_responses):
+    aiohttp_responses.add(
         "https://api.example.com/data",
         method="GET",
         payload={"result": "success"},

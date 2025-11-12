@@ -9,9 +9,9 @@ def test_keycloak_sync_client_get_token_success(keycloak_client, mock_keycloak):
     assert token == "test_token"
 
 
-def test_keycloak_sync_client_get_token_failure(responses, keycloak_client):
-    responses.add(
-        responses.POST,
+def test_keycloak_sync_client_get_token_failure(httpx_responses, keycloak_client):
+    httpx_responses.add(
+        "POST",
         "http://keycloak.example.com/auth",
         json={"error": "invalid_grant"},
         status=400,
@@ -21,9 +21,9 @@ def test_keycloak_sync_client_get_token_failure(responses, keycloak_client):
         keycloak_client.get_token()
 
 
-def test_keycloak_sync_client_server_error(responses, keycloak_client):
-    responses.add(
-        responses.POST,
+def test_keycloak_sync_client_server_error(httpx_responses, keycloak_client):
+    httpx_responses.add(
+        "POST",
         "http://keycloak.example.com/auth",
         json={"error": "internal_server_error"},
         status=500,
@@ -41,8 +41,8 @@ async def test_keycloak_async_client_get_token_success(mock_async_keycloak, keyc
 
 
 @pytest.mark.asyncio
-async def test_keycloak_async_client_get_token_failure(aresponses, keycloak_aclient):
-    aresponses.add(
+async def test_keycloak_async_client_get_token_failure(aiohttp_responses, keycloak_aclient):
+    aiohttp_responses.add(
         "http://keycloak.example.com/auth",
         method="POST",
         payload={"error": "invalid_grant"},
@@ -54,8 +54,8 @@ async def test_keycloak_async_client_get_token_failure(aresponses, keycloak_acli
 
 
 @pytest.mark.asyncio
-async def test_keycloak_async_client_server_error(aresponses, keycloak_aclient):
-    aresponses.add(
+async def test_keycloak_async_client_server_error(aiohttp_responses, keycloak_aclient):
+    aiohttp_responses.add(
         "http://keycloak.example.com/auth",
         method="POST",
         payload={"error": "internal_server_error"},

@@ -8,7 +8,7 @@ description = "Dependency injection container. Resolving dependencies."
 contains_modules = [
     "project.container"
 ]
-depends_on = ["usecases", "services", "repo", "adapters", "libs"]
+depends_on = ["usecases", "services", "repo", "adapters", "ai", "libs"]
 
 
 [layers.usecases]
@@ -19,12 +19,20 @@ contains_modules = [
 depends_on = ["services", "repo", "libs"]
 
 
+[layers.ai]
+description = "AI agents that encapsulate LLM logic, prompt management, and AI-specific processing"
+contains_modules = [
+    "project.components.*.ai.*",
+]
+depends_on = ["ai", "libs"]
+
+
 [layers.services]
 description = "Provides domain-specific services that implement core business logic and domain rules, often used by use cases"
 contains_modules = [
     "project.components.*.service"
 ]
-depends_on = ["services", "repo", "libs"]
+depends_on = ["services", "repo", "ai", "libs"]
 
 
 [layers.repo]
@@ -128,3 +136,9 @@ allowed_in = []
 
 [libs.polars]
 allowed_in = []
+
+[libs.langchain]
+allowed_in = ["ai", "adapters"]
+
+[libs.openai]
+allowed_in = ["ai", "adapters"]

@@ -9,16 +9,16 @@ uvicorn project.presentation.api:app -host 0.0.0.0 --loop uvloop
 ### Формат ответов ресурсов API
 Лучше возвращать в виде словаря.
 Тогда при необходимости добавление новых данных в ответе ручки, нужно будет добавить только новое поле.
-Используйте готовую схему для этого `project.components.base.schemas.BaseResponse`.
+Используйте готовую схему для этого `project.components.base.schemas.ApiResponse`.
 Если указать в аргументе response_model, в swagger появится документация по выводу.
 Но в случае тяжелых данных это может быть затратно по времени,
 потому что данные буду валидироваться через `pydantic`, это замедляет 2.5 раза по сравнению с обычным dict/dataclass.
 
 ```python
-from project.components.base.schemas import BaseResponse
+from project.components.base.schemas import ApiResponseSchema
 
 
-@app.get("/my", response_model=BaseResponse[list[int]])
+@app.get("/my", response_model=ApiResponseSchema[list[int]])
 async def my_resource():
     return {"data": [1, 2]}
 ```
