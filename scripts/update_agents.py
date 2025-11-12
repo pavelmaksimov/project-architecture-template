@@ -1,7 +1,37 @@
 """Script to aggregate all markdown files from specs/rules into AGENTS.md."""
 
+import re
 import sys
 from pathlib import Path
+
+
+def process_includes(content: str, project_root: Path) -> str:
+    """Replace {include [text](path)} patterns with actual file content."""
+    # Pattern to match {include [text](path)}
+    pattern = r'\{include\s+\[([^\]]+)\]\(([^\)]+)\)\}'
+    
+    def replace_include(match):
+        display_text = match.group(1)
+        file_path = match.group(2)
+        
+        # Resolve path relative to project root
+        # Remove leading ../../ and resolve
+        resolved_path = project_root / file_path.lstrip('../')
+        
+        if not resolved_path.exists():
+            print(f"Warning: File not found: {resolved_path}", file=sys.stderr)
+            return match.group(0)  # Keep original if file not found
+        
+        try:
+            file_content = resolved_path.read_text(encoding="utf-8")
+            # Determine file extension for code block
+            extension = resolved_path.suffix.lstrip('.')
+            return f"```{extension}\n{file_content}\n```"
+        except Exception as e:
+            print(f"Error reading {resolved_path}: {e}", file=sys.stderr)
+            return match.group(0)  # Keep original on error
+    
+    return re.sub(pattern, replace_include, content)
 
 
 def main():
@@ -27,6 +57,8 @@ def main():
     for md_file in md_files:
         file_content = md_file.read_text(encoding="utf-8").strip()
         if file_content:
+            # Process include patterns in the content
+            file_content = process_includes(file_content, project_root)
             content_parts.append(file_content)
 
     # Join with double newline separator
