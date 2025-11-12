@@ -39,28 +39,23 @@
 - 🤖 Создать обработчик Telegram бота → [telegram-handlers.md](specs/rules/telegram-handlers.md)
 - 🌐 Создать API эндпоинт → [fastapi-and-api-endpoints.md](specs/rules/fastapi-and-api-endpoints.md)
 - 🗄️ Добавить миграцию БД → [alembic-db-migration.md](specs/rules/alembic-db-migration.md)
+- 🧪 Создать авто-тест → [auto-tests.md](specs/rules/auto-tests.md)
+- 🚨 Как создать своё исключение → [exceptions.md](specs/rules/exceptions.md)
+- 🎨 Вайбкодинг → [spec-driven-development.md](specs/rules/spec-driven-development.md)
 
 **🏛️ Работа с архитектурой:**
 - 📐 Понять структуру слоев и границы модулей → [layers.md](specs/rules/layers.md)
 - 🔌 Узнать про существующие адаптеры → [adapters.md](specs/rules/adapters.md)
-
-**✅ Качество кода:**
-- 🧪 Как писать авто-тесты → [auto-tests.md](specs/rules/auto-tests.md)
-- 🔍 Настроить линтеры → [linters.md](specs/rules/linters.md)
 - ⚠️ Как избежать типичных ошибок и сохранить нервы и время, себе и другим → [anti-patterns.md](specs/rules/anti-patterns.md)
+- 🧱 Какие есть переиспользуемые модули в проекте → [project-utils.md](specs/rules/project-utils.md)
 
 **⚙️ Инфраструктура и конфигурация:**
 - 🗄️ Как работать с бд через ORM, сессии и транзакции → [database-sessions.md](specs/rules/database-sessions.md)
 - 🔧 Как добавить переменные окружуния и использовать их в проекте → [settings-and-environments.md](specs/rules/settings-and-environments.md)
 - 📊 Настроить мониторинг для функции или участка кода → [monitoring.md](specs/rules/monitoring.md)
 - ⏱️ Использовать ленивую инициализацию → [lazy-init-objects.md](specs/rules/lazy-init-objects.md)
-
-**📚 Общие принципы:**
-- 🚨 Как создать своё исключение → [exceptions.md](specs/rules/exceptions.md)
+- 🔍 Настроить линтеры → [linters.md](specs/rules/linters.md)
 - 📦 Выбор и использование внешних библиотек → [python-libs.md](specs/rules/python-libs.md)
-- 🧱 Какие есть переиспользуемые модули в проекте → [project-utils.md](specs/rules/project-utils.md)
-- 🎨 Вайбкодинг → [spec-driven-development.md](specs/rules/spec-driven-development.md)
-
 
 ## 📥 Установка
 Мы используем пакетный менеджер UV, 
@@ -180,6 +175,10 @@ pre-commit install
 - `project/settings.py` - Переменные окружения
 - `project/container.py` - Контейнер для внедрения зависимостей
   фреймворками. Почему не в `project/libs`? Потому что там запрещен импорт из project.infrastructure.
+- `tests/test_*` - Автотесты
+- `tests/conftest.py` - Фикстуры
+- `tests/factories.py` - Фабрики данных
+- `alembic/versions/*` - Миграции бд
 
 ## 📚 Документация
 
