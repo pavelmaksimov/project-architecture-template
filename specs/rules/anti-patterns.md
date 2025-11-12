@@ -2,16 +2,18 @@
 # Антипаттерны
 - хранить данные в файлах и в глобальных объектах, используйте базу данных, redis, postgres
 - использовать pickle сериализацию, это не безопасно
-- использовать для состояния агента просто словарь, минимум TypedDict, лучше pydantic
-- использовать одно состояния для всех агентов, это не безопасно, потому что при изменении поведения одного агента 
+- использовать для состояния ai агента просто словарь, надо минимум TypedDict, лучше pydantic схему, она с валидацией
+- использовать одно состояния для всех агентов, это не безопасно, потому что при изменении поведения одного агента, 
   есть риск повлиять на другой
 - Запрещено использовать Pandas, Polars и тому подобное.
   По опыту никто не может и не хочет разбираться в их апи, оно плохо читается, требуется знание их апи.
   Предпочтительнее язык SQL или операции над нативными объектами, списками и словарями, аннотированными через 
-  TypedDict, dataclass и т.д. 
+  TypedDict, dataclass и т.д.
 
 
 ### Инъекция зависимостей
+Видео про эту проблему https://www.youtube.com/watch?v=3Z_3yCgVKkM
+
 **Плохо**: Создание зависимостей внутри классов или функций.
 ```python
 class AskUseCase:
@@ -20,12 +22,12 @@ class AskUseCase:
         self.chat = ChatService(...)
 
     def ask(self, user_id: int, question: str) -> str:
-        # Тестирование потребует моков.
+        # Тестирование потребует патча.
         repo = DatabaseRepository()  # прямое создание зависимости
         ...
 ```
 
-При тестировании придется мокать все вложенные зависимости ChatService и DatabaseRepository:
+При тестировании придется патчить все вложенные зависимости ChatService и DatabaseRepository:
 ```python
 from unittes import mock
 
@@ -43,19 +45,16 @@ def test_ask():
 
 **Хорошо**: Внедрение зависимостей через контейнер зависимостей (DI Container):
 ```python
-from typing import Protocol
+from typing import TYPE_CHECKING
 
-class IRepository(Protocol):  # Интерфейс
-    def get(self): ...
-
-class IChatService(Protocol):  # Интерфейс
-    def create_answer(self, user_id, question): ...
+if TYPE_CHECKING:
+    from ... import Repository, ChatService
 
 class AskUseCase:
     def __init__(
         self,
-        repo: IRepository,   # Интерфейс вместо реализации
-        chat: IChatService,  # Интерфейс вместо реализации
+        repo: "Repository",
+        chat: "ChatService",
     ):
         self.repo = repo
         self.chat = chat
@@ -88,7 +87,7 @@ other_container = DIContainer(chat_service=OtherChatService)
 assert other_container.ask_use_case.ask(user_id=1, question="My question") == "Other Answer"
 ```
 
-Такой класс можно тестировать с разными реализациями зависимостей без моков:
+Такой класс можно тестировать с разными реализациями зависимостей без патчей:
 ```python
 def test_ask_use_case():
     user_id = 1
@@ -118,5 +117,3 @@ def test_ask_use_case():
 2. Явно видны все используемые зависимости и данные
 3. Тест проверяет только публичное API класса
 4. При рефакторинге внутренней реализации тест останется рабочим
-
-Видео про эту проблему https://www.youtube.com/watch?v=3Z_3yCgVKkM
