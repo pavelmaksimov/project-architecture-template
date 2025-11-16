@@ -1,4 +1,6 @@
-.codegen
+.python-version
+dc.yml
+.aiignore
 
 # Python-generated files
 __pycache__/

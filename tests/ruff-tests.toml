@@ -1,0 +1,23 @@
+line-length = 120
+indent-width = 4
+target-version = "py312"
+
+[format]
+line-ending = "lf"
+skip-magic-trailing-comma = false
+
+[lint]
+ignore = [
+    "E731", "A002", "PYI001", "SIM117", "E741", "UP035", "UP028", "S101", "RUF015", "E711", "EM101",
+    "RUF002",
+]
+select = [
+    "E", "E4", "E7", "E9", "F", "B", "ERA", "FAST", "YTT", "UP", "FURB", "PLC", "PLE",
+    "ASYNC", "BLE", "FBT", "A", "COM", "C", "EM", "FA", "INT", "ISC", "ICN", "LOG", "G", "INP", "PIE", "T20",
+    "PYI", "PT", "Q", "RSE", "SLF", "SIM", "SLOT", "TID", "TC", "PTH", "FLY", "C90", "NPY", "N", "PERF",
+    "D201", "D204", "D206", "D207", "D208", "D209", "D210", "D211", "D213", "D300", "D402", "D403", "D418", "D419",
+    "PLW0245", "PLW0128", "PLW0127", "PLW0406", "PLW0602", "PLW0603", "PLW0642", "PLW0711",
+    "PLW1501", "PLW1508", "PLW1509", "PLW1510", "PLW2101", "PLW2901", "PLW3301",
+    "TRY004", "TRY201", "TRY203", "TRY300", "TRY301", "TRY401",
+    "TD004", "TD005", "TD006", "TD007",
+]
