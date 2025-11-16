@@ -168,8 +168,11 @@ pre-commit install
 - `project/components/{component}/exceptions` - исключения бизнес-логики относящиеся к компоненту
 - `project/components/{component}/schemas.py` - схемы данных и/или валидация pydantic
 - `project/components/{component}/ai/{agent_name}/exceptions.py`
-- `project/components/{component}/ai/{agent_name}/schemas.py` - pydantic модели
-- `project/components/{component}/ai/{agent_name}/prompts.py` - llm промпты
+- `project/components/{component}/ai/{agent_name}/schemas.py` - схемы данных агента (pydantic модели)
+- `project/components/{component}/ai/{agent_name}/prompts.py` - llm промпты, еще второй вариант ниже, где каждый промпт 
+  в отдельнос файле, в общей директории prompts
+- `project/components/{component}/ai/{agent_name}/prompts/*.py` - llm промпты
+- `project/components/{component}/ai/{agent_name}/tools/*.py` - инструменты ai агента
 - `project/components/{component}/ai/{agent_name}/agent.py` - логика ai агента
 - `project/libs/*` - универсальный переиспользуемые код, не связанный с бизнес-логикой и инфраструктурой
 - `project/exceptions.py` - базовые исключения
