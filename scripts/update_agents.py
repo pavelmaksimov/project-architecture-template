@@ -39,6 +39,7 @@ def main():
     project_root = Path(__file__).parent.parent
     rules_dir = project_root / "specs" / "rules"
     output_file = project_root / "AGENTS.md"
+    output_file2 = project_root / "llms.txt"
     readme_content = (project_root / "README.md").read_text()
 
     if not rules_dir.exists():
@@ -61,12 +62,15 @@ def main():
             file_content = process_includes(file_content, project_root)
             content_parts.append(file_content)
 
+    content_parts[-1] = content_parts[-1] + "\n"
+
     # Join with double newline separator
     aggregated_content = "\n\n---\n\n".join(content_parts)
 
     # Write to output file
-    output_file.write_text(aggregated_content + "\n", encoding="utf-8")
-    
+    output_file.write_text(aggregated_content, encoding="utf-8")
+    output_file2.write_text(aggregated_content, encoding="utf-8")
+
     print(f"Successfully aggregated {len(content_parts)} files into {output_file}")
     return 0
 
