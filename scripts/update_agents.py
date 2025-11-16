@@ -38,8 +38,11 @@ def main():
     """Collect all markdown files from specs/rules and write to AGENTS.md."""
     project_root = Path(__file__).parent.parent
     rules_dir = project_root / "specs" / "rules"
-    output_file = project_root / "AGENTS.md"
-    output_file2 = project_root / "llms.txt"
+    output_files = [
+        project_root / "AGENTS.md",
+        project_root / "llms.txt",
+        project_root / "CLAUDE.md"
+    ]
     readme_content = (project_root / "README.md").read_text()
 
     if not rules_dir.exists():
@@ -67,11 +70,11 @@ def main():
     # Join with double newline separator
     aggregated_content = "\n\n---\n\n".join(content_parts)
 
-    # Write to output file
-    output_file.write_text(aggregated_content, encoding="utf-8")
-    output_file2.write_text(aggregated_content, encoding="utf-8")
+    # Write to output files
+    for output_file in output_files:
+        output_file.write_text(aggregated_content, encoding="utf-8")
 
-    print(f"Successfully aggregated {len(content_parts)} files into {output_file}")
+    print(f"Successfully aggregated {len(content_parts)} files into {', '.join(str(f) for f in output_files)}")
     return 0
 
 
