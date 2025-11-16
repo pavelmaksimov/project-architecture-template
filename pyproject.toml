@@ -44,6 +44,7 @@ dev = [
     "respx>=0.21.1",
     "ruff~=0.8.2",
     "testcontainers>=4.10.0",
+    "black>=25.11.0",
     {include-group = "voice"},
     {include-group = "llm"},
     {include-group = "telegram"},
@@ -76,16 +77,20 @@ indent-width = 4
 target-version = "py312"
 include = [
     "project/**/*.py",
+    "tests/**/*.py",
 ]
 
 [tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
 line-ending = "lf"
 skip-magic-trailing-comma = false
 
 [tool.ruff.lint]
 ignore = [
     "E731", "PYI001", "SIM117", "ARG001", "E731", "E741", "UP035", "UP028", "RET504", "S101", "RUF002", "C901",
-    "BLE001", "UP038", "RUF003"
+    "BLE001", "UP038", "RUF003", "COM812", "RUF001", "RUF003", "BLE001", "UP038", "EM101", "ICN003", "FBT001",
+    "FBT002",
 ]
 select = [
     "E", "E4", "E7", "E9", "F", "B", "ERA", "FAST", "YTT", "UP", "FURB", "RUF", "PLC", "PLE",
@@ -101,3 +106,15 @@ select = [
 
 [tool.ruff.lint.flake8-builtins]
 builtins-ignorelist = ["id", "type", "filter"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-sort-within-sections = true
+lines-after-imports = 2
+force-wrap-aliases = false
+known-first-party = ["project"]
+
+[tool.black]
+line-length = 120
+target-version = ['py312']
+include = '(project/.*\.py|tests/.*\.py)$'

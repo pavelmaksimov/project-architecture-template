@@ -39,7 +39,6 @@ def init_database(setup):
                 "SQLALCHEMY_DATABASE_DSN": postgres.get_connection_url(),
             },
         ):
-
             engine = database.engine_factory()
 
             try:

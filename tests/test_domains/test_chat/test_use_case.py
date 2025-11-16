@@ -9,14 +9,16 @@ from tests.factories import UserFactory
 @freeze_time("2025-01-01")
 def test_question_use_case(session):
     """Тест UseCase для задавания вопроса в чат."""
-    
+
     class MockLLMClient:
         """Мок LLM клиента для тестирования."""
 
         def invoke(self, messages):
             """Возвращает мок-ответ."""
+
             class Response:
                 content = f"Bar {datetime.date.today()}"
+
             return Response()
 
     user = UserFactory()
@@ -38,11 +40,13 @@ def test_question_use_case_with_http_mock(session, httpx_responses):
     mock_response_json = {
         "id": "chatcmpl-123",
         "object": "chat.completion",
-        "choices": [{
-            "message": {"role": "assistant", "content": response_text},
-            "finish_reason": "stop",
-            "index": 0,
-        }],
+        "choices": [
+            {
+                "message": {"role": "assistant", "content": response_text},
+                "finish_reason": "stop",
+                "index": 0,
+            },
+        ],
         "usage": {"prompt_tokens": 5, "completion_tokens": 2, "total_tokens": 7},
         "created": 1234567890,
         "model": "gpt-4o-mini",
