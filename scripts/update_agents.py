@@ -41,7 +41,7 @@ def main():
     output_files = [
         project_root / "AGENTS.md",
         project_root / "llms.txt",
-        project_root / "CLAUDE.md"
+        project_root / "CLAUDE.local.md"
     ]
     readme_content = (project_root / "README.md").read_text()
 

@@ -2,7 +2,6 @@
 dc.yml
 .aiignore
 project-prompt-20*
-*.local.*
 
 # Python-generated files
 __pycache__/
