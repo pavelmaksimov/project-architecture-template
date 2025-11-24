@@ -14,6 +14,10 @@
 - Создана спецификация `specs/features/project-prompt-script.md`
 - Обновлена документация `specs/rules/development.md`
 
+#### UI для сбора файлов: добавлен интерфейс на Textual
+- Создано консольное приложение `scripts/project_prompt_ui.py` - интерактивный TUI для выбора файлов для создания 
+  промпта
+
 ### Changed
 #### CHANGELOG: улучшено форматирование CHANGELOG.md
 - Изменен промпт команды claude /changelog `.claude/commands/changelog.md`

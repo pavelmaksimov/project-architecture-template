@@ -49,6 +49,7 @@ dev = [
     {include-group = "llm"},
     {include-group = "telegram"},
     {include-group = "llm"},
+    "textual>=6.6.0",
 ]
 voice = [
     "pydub>=0.25.1",
