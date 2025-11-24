@@ -7,6 +7,8 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2025-11-24
+
 ### Added
 #### Генерация промптов для LLM: добавлен скрипт для генерации промптов из файлов проекта
 - Создан `scripts/project_prompt.py` для автоматического создания промптов
@@ -15,13 +17,20 @@
 - Обновлена документация `specs/rules/development.md`
 
 #### UI для сбора файлов: добавлен интерфейс на Textual
-- Создано консольное приложение `scripts/project_prompt_ui.py` - интерактивный TUI для выбора файлов для создания 
+- Создано консольное приложение `scripts/project_prompt_ui.py` - интерактивный TUI для выбора файлов для создания
   промпта
 
 ### Changed
 #### CHANGELOG: улучшено форматирование CHANGELOG.md
 - Изменен промпт команды claude /changelog `.claude/commands/changelog.md`
 - Обновлен CHANGELOG.md
+
+### Fixed
+#### Документация: исправлено название файла документации
+- Переименован `CLAUDE.md` в `CLAUDE.local.md` в `.gitignore`
+- Изменена спецификация `specs/rules/create-orm-model.md`
+- Удалена устаревшая спецификация `specs/rules/alembic-db-migration.md`
+- Обновлена спецификация, добавлены правила по работе с исключениями `specs/rules/anti-patterns.md`
 
 ## [0.2.0] - 2025-11-17
 
