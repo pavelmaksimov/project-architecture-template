@@ -1,0 +1,144 @@
+exclude_modules = [] # excludes modules from the scan
+
+[layers]
+
+
+[layers.dicontainer]
+description = "Dependency injection container. Resolving dependencies."
+contains_modules = [
+    "project.container"
+]
+depends_on = ["usecases", "services", "repo", "adapters", "ai", "libs"]
+
+
+[layers.usecases]
+description = "Contains business logic and use cases that orchestrate the flow of data to and from entities and implement application-specific business rules"
+contains_modules = [
+    "project.components.*.use_cases",
+]
+depends_on = ["services", "repo", "libs"]
+
+
+[layers.ai]
+description = "AI agents that encapsulate LLM logic, prompt management, and AI-specific processing"
+contains_modules = [
+    "project.components.*.ai.*",
+]
+depends_on = ["ai", "libs"]
+
+
+[layers.services]
+description = "Provides domain-specific services that implement core business logic and domain rules, often used by use cases"
+contains_modules = [
+    "project.components.*.service"
+]
+depends_on = ["services", "repo", "ai", "libs"]
+
+
+[layers.repo]
+description = "Separate the business logic from ORM. Repository that abstracts data access logic."
+contains_modules = [
+    "project.components.*.repositories",
+]
+depends_on = ["repo", "libs", "adapters", "orm"]
+
+
+[layers.orm]
+description = "Object-Relational Mapping layer that defines database models and handles direct interaction with the database"
+contains_modules = [
+    "project.components.*.models",
+]
+depends_on = ["orm", "libs", "models", "adapters"]
+
+
+[layers.adapters]
+description = "Adapters that translate between the application's internal data structures and external systems or services"
+contains_modules = [
+    "project.infrastructure.adapters.*",
+]
+depends_on = ["orm", "libs"]
+
+
+[layers.cli]
+description = "Command Line Interface layer that handles user interaction through command line tools and scripts"
+contains_modules = [
+    "project.infrastructure.cli",
+    "project.components.*.cli",
+]
+depends_on = ["cli", "libs", "dicontainer", "usecases", "repo"]
+
+
+[layers.rest]
+description = "REST API layer that handles HTTP requests and responses, exposing application functionality through web endpoints"
+contains_modules = [
+    "project.infrastructure.apps.api",
+    "project.infrastructure.apps.flask",
+    "project.components.*.endpoints",
+]
+depends_on = ["rest", "libs", "dicontainer", "usecases"]
+
+
+[layers.bot]
+description = "Bot interface layer that handles interactions with messaging platforms"
+contains_modules = [
+    "project.infrastructure.apps.bot",
+    "project.infrastructure.utils.telegram",
+    "project.components.*.handlers",
+]
+depends_on = ["bot", "libs", "dicontainer", "usecases", "adapters"]
+
+
+[layers.libs]
+description = "Utility and helper libraries that provide common functionality used across different layers of the application"
+contains_modules = [
+    "project.settings",
+    "project.logger",
+    "project.datatypes",
+    "*.libs.*",
+    "*.libs",
+    "*.helpers.*",
+    "*.helpers",
+    "*.interfaces.*",
+    "*.interfaces",
+    "*.schemas.*",
+    "*.schemas",
+    "*.enums.*",
+    "*.enums",
+    "*.exceptions.*",
+    "*.exceptions",
+    "*.enums",
+]
+depends_on = ["libs"]
+
+
+# Conditions for dependence on libraries and frameworks.
+[libs]
+[libs.sqlalchemy]
+allowed_in = ["adapters", "orm", "repo"] # these layers can import this package, while others can not
+
+[libs.pydantic]
+allowed_in = ["libs"]
+
+[libs.fastapi]
+allowed_in = ["rest"]
+
+[libs.flask]
+allowed_in = ["rest"]
+
+[libs.telegram]
+allowed_in = ["bot"]
+
+[libs.argparse]
+allowed_in = ["cli"]
+
+[libs.pandas]
+allowed_in = []
+
+[libs.polars]
+allowed_in = []
+
+[libs.langchain]
+allowed_in = ["ai", "adapters"]
+
+[libs.openai]
+allowed_in = ["ai", "adapters"]

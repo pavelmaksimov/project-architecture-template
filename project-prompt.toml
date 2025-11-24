@@ -1,0 +1,26 @@
+include-paths = [
+    "project/container.py",
+    "project/datatypes.py",
+    "project/exceptions.py",
+    "project/settings.py",
+    "project/components/base/*",
+    "project/components/user/*",
+    "project/infrastructure/adapters/*",
+    "llms.txt",
+    "README.md",
+    "pyproject.md",
+]
+exclude_paths = [
+    "*cache*",
+    "project/logger.py",
+    "project/libs/*",
+    "project/infrastructure/apps/*",
+    "project/infrastructure/utils/*",
+    "project/infrastructure/adapters/auth.py",
+    "project/infrastructure/adapters/cache.py",
+    "project/infrastructure/adapters/database.py",
+    "project/infrastructure/adapters/keycloak.py",
+    "*.png",
+    "*.jpeg",
+]
+exclude-empty-files = true
