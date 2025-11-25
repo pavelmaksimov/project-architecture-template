@@ -9,6 +9,7 @@ from telegram.ext import ContextTypes
 from project.exceptions import AuthError
 from project.infrastructure.adapters.auth import auth_client
 from project.libs.log import get_log_id
+from project.settings import Settings
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +45,9 @@ def processing_errors(func):
 def check_auth(func):
     @wraps(func)
     async def wrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        if Settings().is_local():
+            return await func(update, context)
+
         user_id = update.effective_user.id
         if not await auth_client().check_telegram_user(user_id):  # di: skip
             raise AuthError(user_id)

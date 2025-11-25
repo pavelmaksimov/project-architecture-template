@@ -20,8 +20,12 @@ health_response = {"status": "ok"}
 
 
 def auth_by_token(auth_token: str = Header(alias="Api-Token")):
+    if Settings().is_local():
+        return auth_token
+
     if auth_token != Settings().API_TOKEN.get_secret_value():
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token")
+
     return auth_token
 
 
