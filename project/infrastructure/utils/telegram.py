@@ -58,9 +58,10 @@ def check_auth(func):
 
 
 def timeout_with_retry(
+    func: Callable | None = None,
+    *,
     timeout: float = 180,
     max_attempts: int = 3,
-    *,
     retry_message: str | None = processing_retry_message,
     failed_message: str | None = failed_message,
     processing_message_on: bool = False,
@@ -132,5 +133,9 @@ def timeout_with_retry(
                         processing_msg = None
 
         return wrapper
+
+    # Для исползования без скобок т.е. без указания аргументов в декораторе.
+    if func is not None:
+        return decorator(func)
 
     return decorator
