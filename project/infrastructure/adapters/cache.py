@@ -24,7 +24,7 @@ def RedisClient() -> redis.Redis:  # noqa: N802
 
 
 @contextmanager
-def local_redis_transaction() -> Generator[Pipeline, Any, None]:
+def isolated_redis_transaction() -> Generator[Pipeline, Any, None]:
     """
     Creates an isolated Redis transaction using a new pipeline.
     Executes the transaction on context exit.
@@ -37,7 +37,7 @@ def local_redis_transaction() -> Generator[Pipeline, Any, None]:
 
 
 @contextmanager
-def context_redis_transaction() -> Generator[Pipeline, Any, None]:
+def redis_transaction() -> Generator[Pipeline, Any, None]:
     """
     Reuses an existing transaction pipeline if available in the current context.
     Otherwise, creates a new one, stores it in the context, and ensures execution.

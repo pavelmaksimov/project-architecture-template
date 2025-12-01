@@ -1,7 +1,8 @@
 project-root = "project"
 exclude-objects = [
     "Settings", "DIContainer", "Container", "*Error", "throw", "Envs", "get_log_id", "timer",
-    "*Model", "setup_logging", "*T", "*Enum", "*Schema"
+    "*Model", "setup_logging", "*T", "*Enum", "*Schema", "redis_atransaction", "redis_transaction",
+    "isolated_redis_atransaction", "isolated_redis_transaction"
 ]
 exclude-modules = [
     "project.infrastructure.adapters.database",

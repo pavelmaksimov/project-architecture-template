@@ -24,7 +24,7 @@ def RedisAsyncClient() -> redis.asyncio.Redis:  # noqa: N802
 
 
 @asynccontextmanager
-async def local_redis_async_transaction() -> AsyncGenerator[Pipeline, Any]:
+async def isolated_redis_atransaction() -> AsyncGenerator[Pipeline, Any]:
     """
     Creates an isolated Redis transaction using a new pipeline.
     Executes the transaction on context exit.
@@ -37,7 +37,7 @@ async def local_redis_async_transaction() -> AsyncGenerator[Pipeline, Any]:
 
 
 @asynccontextmanager
-async def context_redis_async_transaction() -> AsyncGenerator[Pipeline, Any]:
+async def redis_atransaction() -> AsyncGenerator[Pipeline, Any]:
     """
     Reuses an existing transaction pipeline if available in the current context.
     Otherwise, creates a new one, stores it in the context, and ensures execution.

@@ -1,11 +1,11 @@
 import pytest
 
-from project.infrastructure.adapters.acache import context_redis_async_transaction, local_redis_async_transaction
+from project.infrastructure.adapters.acache import redis_atransaction, isolated_redis_atransaction
 
 
 @pytest.mark.asyncio
 async def test_async_local_transaction(async_redis):
-    async with local_redis_async_transaction() as tr:
+    async with isolated_redis_atransaction() as tr:
         tr.set("foo", "bar")
         tr.set("bar", "baz")
 
@@ -18,13 +18,13 @@ async def test_async_local_transaction(async_redis):
 
 @pytest.mark.asyncio
 async def test_async_context_transaction(async_redis):
-    async with context_redis_async_transaction() as tr:
+    async with redis_atransaction() as tr:
         tr.set("foo", "bar")
 
         assert await async_redis.get("foo") == None
         assert await async_redis.get("bar") == None
 
-        async with context_redis_async_transaction() as ltr:
+        async with redis_atransaction() as ltr:
             assert tr == ltr
 
             ltr.set("bar", "baz")
@@ -44,13 +44,13 @@ async def test_async_context_with_local_transaction(async_redis):
     assert await async_redis.get("foo") == None
     assert await async_redis.get("bar") == None
 
-    async with context_redis_async_transaction() as tr:
+    async with redis_atransaction() as tr:
         tr.set("foo", "bar")
 
         assert await async_redis.get("foo") == None
         assert await async_redis.get("bar") == None
 
-        async with local_redis_async_transaction() as ltr:
+        async with isolated_redis_atransaction() as ltr:
             assert tr != ltr
 
             ltr.set("bar", "baz")
@@ -69,7 +69,7 @@ async def test_delete(async_redis):
     await async_redis.set("foo", "bar")
     assert await async_redis.get("foo") == b"bar"
 
-    async with local_redis_async_transaction() as tr:
+    async with isolated_redis_atransaction() as tr:
         await tr.delete("foo")
 
     assert await async_redis.get("foo") == None
