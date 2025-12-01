@@ -14,7 +14,7 @@ def test_keycloak_sync_client_get_token_failure(httpx_responses, keycloak_client
         "POST",
         "http://keycloak.example.com/auth",
         json={"error": "invalid_grant"},
-        status=400,
+        status_code=400,
     )
 
     with pytest.raises(KeycloakClientError):
@@ -26,7 +26,7 @@ def test_keycloak_sync_client_server_error(httpx_responses, keycloak_client):
         "POST",
         "http://keycloak.example.com/auth",
         json={"error": "internal_server_error"},
-        status=500,
+        status_code=500,
     )
 
     with pytest.raises(KeycloakServerError):

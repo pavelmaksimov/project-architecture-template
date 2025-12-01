@@ -181,7 +181,7 @@ def mock_keycloak(httpx_responses):
         "POST",
         "http://keycloak.example.com/auth",
         json={"access_token": "test_token"},
-        status=200,
+        status_code=200,
     )
 
 
