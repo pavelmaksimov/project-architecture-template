@@ -1,4 +1,4 @@
-from sqlalchemy import String, BigInteger, Integer, ForeignKey, Enum as SQLEnum
+from sqlalchemy import String, BigInteger, Integer, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from project.components.base.models import TimeMixin, Base
@@ -15,6 +15,6 @@ class MessageModel(TimeMixin, Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     user_id: Mapped[UserIdT] = mapped_column(Integer, ForeignKey("users.id"), index=True, nullable=False)
     content: Mapped[str] = mapped_column(String, nullable=False)
-    message_type: Mapped[MessageTypeEnum] = mapped_column(SQLEnum(MessageTypeEnum), nullable=False)
+    message_type: Mapped[MessageTypeEnum] = mapped_column(Enum(MessageTypeEnum), nullable=False)
 
     user: Mapped[UserModel] = relationship("UserModel")
