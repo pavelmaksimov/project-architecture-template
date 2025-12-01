@@ -3,7 +3,7 @@ import typing as t
 
 from project.components.chat.ai.agent import ChatAgent
 from project.components.chat.repositories import MessageRepository
-from project.components.chat.use_cases import ChatUseCase
+from project.components.chat.use_cases import Chat
 from project.components.user.repositories import UserRepository, UserCacheRepository
 from project.components.user.service import QuotaService
 from project.infrastructure.adapters.database import transaction, current_transaction
@@ -54,7 +54,7 @@ class DIContainer:
         quota_service = QuotaService()  # di: skip
 
         # UseCases:
-        self.chat = ChatUseCase(self.repo, chat_agent, quota_service)  # di: skip
+        self.chat = Chat(self.repo, chat_agent, quota_service)  # di: skip
 
 
 Container = LazyInit(DIContainer)

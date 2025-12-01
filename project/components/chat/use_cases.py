@@ -11,7 +11,7 @@ if t.TYPE_CHECKING:
     from project.components.user.service import QuotaService
 
 
-class ChatUseCase:
+class Chat:
     def __init__(
         self,
         repo: "AllRepositories",
