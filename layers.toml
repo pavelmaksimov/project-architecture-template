@@ -8,7 +8,7 @@ description = "Dependency injection container. Resolving dependencies."
 contains_modules = [
     "project.container"
 ]
-depends_on = ["usecases", "services", "repo", "adapters", "ai", "libs"]
+depends_on = ["usecases", "services", "repo", "adapters", "ai", "common"]
 
 
 [layers.usecases]
@@ -16,7 +16,7 @@ description = "Contains business logic and use cases that orchestrate the flow o
 contains_modules = [
     "project.components.*.use_cases",
 ]
-depends_on = ["services", "repo", "libs"]
+depends_on = ["services", "repo", "common"]
 
 
 [layers.ai]
@@ -24,7 +24,7 @@ description = "AI agents that encapsulate LLM logic, prompt management, and AI-s
 contains_modules = [
     "project.components.*.ai.*",
 ]
-depends_on = ["ai", "libs"]
+depends_on = ["ai", "common"]
 
 
 [layers.services]
@@ -32,7 +32,7 @@ description = "Provides domain-specific services that implement core business lo
 contains_modules = [
     "project.components.*.service"
 ]
-depends_on = ["services", "repo", "ai", "libs"]
+depends_on = ["services", "repo", "ai", "common"]
 
 
 [layers.repo]
@@ -40,7 +40,7 @@ description = "Separate the business logic from ORM. Repository that abstracts d
 contains_modules = [
     "project.components.*.repositories",
 ]
-depends_on = ["repo", "libs", "adapters", "orm"]
+depends_on = ["repo", "common", "adapters", "orm"]
 
 
 [layers.orm]
@@ -48,15 +48,16 @@ description = "Object-Relational Mapping layer that defines database models and 
 contains_modules = [
     "project.components.*.models",
 ]
-depends_on = ["orm", "libs", "models", "adapters"]
+depends_on = ["orm", "common", "models", "adapters"]
 
 
 [layers.adapters]
 description = "Adapters that translate between the application's internal data structures and external systems or services"
 contains_modules = [
     "project.infrastructure.adapters.*",
+    "project.infrastructure.utils.base_client",
 ]
-depends_on = ["orm", "libs"]
+depends_on = ["orm", "common", "adapters"]
 
 
 [layers.cli]
@@ -65,7 +66,7 @@ contains_modules = [
     "project.infrastructure.cli",
     "project.components.*.cli",
 ]
-depends_on = ["cli", "libs", "dicontainer", "usecases", "repo"]
+depends_on = ["cli", "common", "dicontainer", "usecases", "repo"]
 
 
 [layers.rest]
@@ -75,7 +76,7 @@ contains_modules = [
     "project.infrastructure.apps.flask",
     "project.components.*.endpoints",
 ]
-depends_on = ["rest", "libs", "dicontainer", "usecases"]
+depends_on = ["rest", "common", "dicontainer", "usecases"]
 
 
 [layers.bot]
@@ -85,10 +86,10 @@ contains_modules = [
     "project.infrastructure.utils.telegram",
     "project.components.*.handlers",
 ]
-depends_on = ["bot", "libs", "dicontainer", "usecases", "adapters"]
+depends_on = ["bot", "common", "dicontainer", "usecases", "adapters"]
 
 
-[layers.libs]
+[layers.common]
 description = "Utility and helper libraries that provide common functionality used across different layers of the application"
 contains_modules = [
     "project.settings",
@@ -106,9 +107,8 @@ contains_modules = [
     "*.enums",
     "*.exceptions.*",
     "*.exceptions",
-    "*.enums",
 ]
-depends_on = ["libs"]
+depends_on = ["common"]
 
 
 # Conditions for dependence on libraries and frameworks.
@@ -117,9 +117,15 @@ depends_on = ["libs"]
 allowed_in = ["adapters", "orm", "repo"] # these layers can import this package, while others can not
 
 [libs.pydantic]
-allowed_in = ["libs"]
+allowed_in = ["common"]
+
+[libs.pydantic_settings]
+allowed_in = ["common"]
 
 [libs.fastapi]
+allowed_in = ["rest"]
+
+[libs.starlette]
 allowed_in = ["rest"]
 
 [libs.flask]
@@ -131,14 +137,45 @@ allowed_in = ["bot"]
 [libs.argparse]
 allowed_in = ["cli"]
 
-[libs.pandas]
-allowed_in = []
-
-[libs.polars]
-allowed_in = []
-
 [libs.langchain]
+allowed_in = ["ai", "adapters"]
+
+[libs.langgraph]
 allowed_in = ["ai", "adapters"]
 
 [libs.openai]
 allowed_in = ["ai", "adapters"]
+
+[libs.langchain_openai]
+allowed_in = ["ai", "adapters"]
+
+[libs.pydub]
+allowed_in = ["ai", "adapters"]
+
+[libs.aiohttp]
+allowed_in = ["adapters"]
+
+[libs.httpx]
+allowed_in = ["adapters"]
+
+[libs.redis]
+allowed_in = ["repo", "adapters"]
+
+# Пакеты или запрещенные для использования или запрещенные для использования внутри project.
+[libs.pandas]  # Не используй это
+allowed_in = []
+
+[libs.polars]  # Не используй это
+allowed_in = []
+
+[libs.pytest]
+allowed_in = []
+
+[libs.unittest]
+allowed_in = []
+
+[libs.requests]  # используй httpx
+allowed_in = []
+
+[libs.alembic]
+allowed_in = []
