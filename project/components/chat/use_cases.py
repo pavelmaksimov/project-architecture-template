@@ -1,5 +1,6 @@
 import typing as t
 
+from project.components.user.schemas import UserCacheSchema
 from project.datatypes import UserIdT, QuestionT, AnswerT
 from project.components.chat.enums import MessageTypeEnum
 from project.settings import Settings
@@ -11,8 +12,6 @@ if t.TYPE_CHECKING:
 
 
 class ChatUseCase:
-    """UseCase для работы с чатом."""
-
     def __init__(
         self,
         repo: "AllRepositories",
@@ -37,6 +36,8 @@ class ChatUseCase:
         answer_text = self.chat_agent.generate_answer(question, history_messages)
 
         self.repo.message.save_ai_message(user_id, answer_text)
+
+        self.repo.user_cache.save(user_id, UserCacheSchema(user_id=user_id))
 
         return answer_text
 

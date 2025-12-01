@@ -1,11 +1,14 @@
-from contextlib import contextmanager
 import typing as t
+from contextlib import contextmanager
+from datetime import timedelta
 
 from sqlalchemy import select, delete, orm
 
-from project.exceptions import NotFoundError, throw
-from project.infrastructure.adapters.database import Session, transaction, current_transaction
 from project.components.base.models import Base
+from project.exceptions import NotFoundError, throw
+from project.infrastructure.adapters.acache import RedisAsyncClient
+from project.infrastructure.adapters.database import Session, transaction, current_transaction
+
 
 T = t.TypeVar("T", bound=Base)
 
@@ -85,3 +88,9 @@ class ORMModelRepository(ORMRepository[T]):
     def delete_by_id(cls, id: t.Any) -> None:
         with cls.get_transaction() as session:
             session.execute(delete(cls._model).where(cls._model.id == id))
+
+
+class CacheRepository:
+    client = RedisAsyncClient
+    key_template: t.ClassVar[str]
+    ttl: t.ClassVar[timedelta]

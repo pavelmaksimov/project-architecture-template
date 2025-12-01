@@ -4,7 +4,7 @@ import typing as t
 from project.components.chat.ai.agent import ChatAgent
 from project.components.chat.repositories import MessageRepository
 from project.components.chat.use_cases import ChatUseCase
-from project.components.user.repositories import UserRepository
+from project.components.user.repositories import UserRepository, UserCacheRepository
 from project.components.user.service import QuotaService
 from project.infrastructure.adapters.database import transaction, current_transaction
 from project.infrastructure.adapters.llm import llm_chat_client
@@ -15,8 +15,9 @@ if t.TYPE_CHECKING:
 
 
 class AllRepositories:
-    def __init__(self, user_repo=None, message_repo=None):
+    def __init__(self, user_repo=None, user_cache_repo=None, message_repo=None):
         self.user = user_repo or UserRepository()  # di: skip
+        self.user_cache = user_cache_repo or UserCacheRepository()  # di: skip
         self.message = message_repo or MessageRepository()  # di: skip
 
     @classmethod
@@ -44,16 +45,16 @@ class DIContainer:
     def __init__(self, repositories=None, llm_client=None, chat_agent=None):
         # Infrastructure dependencies:
         self.repo = repositories or Repositories()  # di: skip
-        self._llm_client = llm_client or llm_chat_client()  # di: skip
+        llm_client = llm_client or llm_chat_client()  # di: skip
 
         # AI services:
-        self._chat_agent = chat_agent or ChatAgent(self._llm_client)  # di: skip
+        chat_agent = chat_agent or ChatAgent(llm_client)  # di: skip
 
         # Domain Services:
-        self._quota_service = QuotaService()  # di: skip
+        quota_service = QuotaService()  # di: skip
 
         # UseCases:
-        self.chat = ChatUseCase(self.repo, self._chat_agent, self._quota_service)  # di: skip
+        self.chat = ChatUseCase(self.repo, chat_agent, quota_service)  # di: skip
 
 
 Container = LazyInit(DIContainer)
