@@ -272,7 +272,22 @@ class SyncApi:
 
 class IClient(t.Protocol):
     """
-    class MyClient:
+    import project.exceptions
+
+    class MyApiError(project.exceptions.ApiError):
+        pass
+
+    class MyServerError(project.exceptions.ServerError):
+        pass
+
+    class MyClientError(project.exceptions.ClientError):
+        pass
+
+    class MyClient(IClient):
+        ApiError = MyApiError
+        ServerError = MyServerError
+        ClientError = MyClientError
+
         Api = AsyncApi
         api_root = "http://example.com/api"
 
@@ -296,6 +311,10 @@ class IClient(t.Protocol):
     async with client.api.Session():
         await client.my_endpoint()
     """
+
+    ApiError: type[Exception]
+    ServerError: type[Exception]
+    ClientError: type[Exception]
 
     Api: t.ClassVar[type[AsyncApi | SyncApi]]
     api_root: str
