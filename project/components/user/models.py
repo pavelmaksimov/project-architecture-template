@@ -5,7 +5,7 @@ from project.components.base.models import TimeMixin, Base
 
 
 class UserModel(TimeMixin, Base):
-    __tablename__ = "users"
+    __tablename__ = "user"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)

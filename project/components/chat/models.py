@@ -10,7 +10,7 @@ from project.datatypes import UserIdT
 class MessageModel(TimeMixin, Base):
     """Модель для хранения сообщений чата (вопросы пользователя и ответы AI)."""
 
-    __tablename__ = "messages"
+    __tablename__ = "message"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     user_id: Mapped[UserIdT] = mapped_column(Integer, ForeignKey("users.id"), index=True, nullable=False)
