@@ -16,16 +16,14 @@ keywords = [
 dependencies = [
     "orjson~=3.10.12",
     "pydantic-settings~=2.7.1",
-    "sqlalchemy~=2.0.37",
-    "fastapi~=0.115.8",
-    "uvicorn~=0.34.0",
-    "psycopg2-binary~=2.9.10",
     "aiohttp~=3.11.14",
     "httpx~=0.28.1",
-    "pottery>=3.0.1",
-    "alembic>=1.15.2",
     "prometheus-client>=0.23.1",
     "llm-common>=2.2.0",
+    "redis>=7.1.0",
+    "langchain-openai>=0.3.35",
+    "langgraph>=0.6.10",
+    "openai>=2.4.0",
 ]
 
 [dependency-groups]
@@ -45,10 +43,6 @@ dev = [
     "ruff~=0.8.2",
     "testcontainers>=4.10.0",
     "black>=25.11.0",
-    {include-group = "voice"},
-    {include-group = "llm"},
-    {include-group = "telegram"},
-    {include-group = "llm"},
     "textual>=6.6.0",
 ]
 voice = [
@@ -57,15 +51,16 @@ voice = [
 telegram = [
     "python-telegram-bot[job-queue,rate-limiter]>=22.5",
     "uvloop>=0.22.1",
-]
-llm = [
-    "langchain-openai>=0.3.35",
-    "langgraph>=0.6.10",
-    "llm-common>=2.1.2",
-    "openai>=2.4.0",
-]
-flask = [
     "flask>=3.1.2",
+]
+restapi = [
+    "fastapi>=0.115.12",
+    "uvicorn>=0.34.0",
+]
+database = [
+    "alembic>=1.15.2",
+    "psycopg2-binary>=2.9.10",
+    "sqlalchemy>=2.0.41",
 ]
 
 [project.urls]

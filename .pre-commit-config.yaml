@@ -54,7 +54,7 @@ repos:
       - id: update-deps
         stages: [pre-commit, pre-push]
         name: Update requirements.txt
-        entry: uv export --no-dev --no-hashes -o requirements.txt
+        entry: uv export --all-groups --no-dev --no-hashes -o requirements.txt
         language: system
         pass_filenames: false
 
