@@ -26,6 +26,7 @@ dependencies = [
     "langchain-openai>=0.3.35",
     "langgraph>=0.6.10",
     "openai>=2.4.0",
+    "cohere>=5.20.0",
 ]
 
 [dependency-groups]
