@@ -67,6 +67,7 @@ class SettingsValidator(BaseSettings):
     LLM_MIDDLE_PROXY_URL: str = ""
     LLM_TEMPERATURE: float = 0.3
     LLM_MAX_TOKENS: int = 8192
+    LLM_TIMEOUT: float | None = None
 
     # Logging settings
     WRITE_LOGS_TO_FILE: bool = True
