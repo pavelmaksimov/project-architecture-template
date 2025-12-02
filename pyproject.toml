@@ -11,6 +11,8 @@ authors = [
 keywords = [
   "project-template",
   "styleguide",
+  "vibecoding",
+  "vibecode",
 ]
 
 dependencies = [
