@@ -1,9 +1,9 @@
 from functools import cache
 
 import cohere
-from langchain_openai import ChatOpenAI
+import langchain_openai
 from llm_common.clients.llm_http_client import LLMHttpClient
-from openai import AsyncClient
+import openai
 
 from project.settings import Settings
 
@@ -11,7 +11,7 @@ from project.settings import Settings
 @cache
 def llm_chat_client():
     """Client with prometheus monitoring."""
-    return ChatOpenAI(
+    return langchain_openai.ChatOpenAI(
         api_key=Settings().LLM_API_KEY.get_secret_value(),
         base_url=Settings().LLM_MIDDLE_PROXY_URL if Settings().is_any_stand() else None,
         model=Settings().LLM_MODEL,
@@ -23,9 +23,9 @@ def llm_chat_client():
 
 
 @cache
-def llm_aclient() -> AsyncClient:
+def llm_aclient() -> openai.AsyncClient:
     """Client with prometheus monitoring."""
-    return AsyncClient(
+    return openai.AsyncClient(
         api_key=Settings().LLM_API_KEY.get_secret_value(),
         base_url=Settings().LLM_MIDDLE_PROXY_URL if Settings().is_any_stand() else None,
         http_client=LLMHttpClient(),
