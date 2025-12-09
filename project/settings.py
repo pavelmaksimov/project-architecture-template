@@ -28,7 +28,7 @@ class Envs(Enum):
     PROD = "PROD"  # to work at a prod stand
     LAMBDA = "LAMBDA"  # to work at a stable stand
     SANDBOX = "SANDBOX"  # to work on a test stand
-    TEST = "TEST"  # for run testing
+    TEST = "AUTOTEST"  # for run testing
     LOCAL = "LOCAL"  # for local development
 
 

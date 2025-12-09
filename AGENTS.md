@@ -540,7 +540,7 @@ def test_ask_use_case():
 
 **`setup`** (scope="session", autouse=True)
 - Автоматически применяется ко всем тестам
-- Устанавливает тестовое окружение (ENV="TEST", токены, ключи)
+- Устанавливает тестовое окружение (ENV="AUTOTESTS", токены, ключи)
 - Настраивает логирование
 
 ### Фикстуры для работы с базой данных
@@ -1919,7 +1919,7 @@ class Envs(Enum):
     PROD = "PROD"  # to work at a prod stand
     LAMBDA = "LAMBDA"  # to work at a stable stand
     SANDBOX = "SANDBOX"  # to work on a test stand
-    TEST = "TEST"  # for run testing
+    TEST = "AUTOTEST"  # for run testing
     LOCAL = "LOCAL"  # for local development
 
 

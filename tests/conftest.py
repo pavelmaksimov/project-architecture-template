@@ -20,7 +20,7 @@ from project.libs.log import logging_disabled
 @pytest.fixture(autouse=True, scope="session")
 def setup():
     with Settings.local(
-        ENV="TEST",
+        ENV="AUTOTESTS",
         API_TOKEN="token",
         LLM_MODEL="LLM_MODEL",
         LLM_API_KEY="LLM_API_KEY",
