@@ -6,7 +6,7 @@ from sqlalchemy import select, delete, orm
 
 from project.components.base.models import Base
 from project.exceptions import NotFoundError, throw
-from project.infrastructure.adapters.acache import RedisAsyncClient
+from project.infrastructure.adapters.acache import redis_client
 from project.infrastructure.adapters.database import Session, transaction, current_transaction
 
 
@@ -91,6 +91,6 @@ class ORMModelRepository(ORMRepository[T]):
 
 
 class CacheRepository:
-    client = RedisAsyncClient
+    client = redis_client
     key_template: t.ClassVar[str]
     ttl: t.ClassVar[timedelta]

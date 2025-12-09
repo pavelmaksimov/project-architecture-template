@@ -33,13 +33,15 @@ ttl = timedelta(seconds=60)       # 60 секунд
 ## Атрибуты класса
 
 ### client
-Тип: `t.ClassVar[RedisAsyncClient]`
+Тип: `t.ClassVar[redis_client]`
 
 Клиент для работы с Redis. Уже определен в базовом классе:
 
 ```python
+from project.infrastructure.adapters.acache import redis_client
+
 class CacheRepository:
-    client = RedisAsyncClient
+    client = redis_client
 ```
 
 Используйте метод `cls.client()` для получения экземпляра клиента внутри методов.

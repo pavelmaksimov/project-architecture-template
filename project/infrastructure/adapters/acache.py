@@ -15,7 +15,7 @@ redis_async_transactions: contextvars.ContextVar[Pipeline | None] = contextvars.
 
 
 @cache
-def RedisAsyncClient() -> redis.asyncio.Redis:  # noqa: N802
+def redis_client() -> redis.asyncio.Redis:
     return redis.asyncio.Redis(
         host=Settings().REDIS_HOST,
         port=int(Settings().REDIS_PORT),
@@ -29,7 +29,7 @@ async def isolated_redis_atransaction() -> AsyncGenerator[Pipeline, Any]:
     Creates an isolated Redis transaction using a new pipeline.
     Executes the transaction on context exit.
     """
-    client = RedisAsyncClient()
+    client = redis_client()
 
     async with client.pipeline() as pipe:
         yield pipe
@@ -48,7 +48,7 @@ async def redis_atransaction() -> AsyncGenerator[Pipeline, Any]:
         yield current_transaction
 
     else:
-        client = RedisAsyncClient()
+        client = redis_client()
 
         async with client.pipeline() as pipe:
             token = redis_async_transactions.set(pipe)
