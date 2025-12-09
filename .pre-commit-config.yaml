@@ -73,5 +73,5 @@ repos:
         stages: [pre-commit]
         name: Update AGENTS.md from specs/rules
         entry: python scripts/update_agents.py
-        language: system
+        language: python
         pass_filenames: false
