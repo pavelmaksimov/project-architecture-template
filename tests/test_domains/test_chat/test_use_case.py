@@ -57,7 +57,7 @@ def test_question_use_case_with_http_mock(session, httpx_responses):
         method="POST",
         url="https://api.openai.com/v1/chat/completions",
         json=mock_response_json,
-        status_code=200,
+        status=200,
     )
 
     user = UserFactory()

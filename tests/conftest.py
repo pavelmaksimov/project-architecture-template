@@ -138,13 +138,14 @@ def httpx_responses():
         def __init__(self, router: respx.Router):
             self._router = router
 
-        def add(self, method, url, json=None, status_code=200, headers=None):
+        def add(self, method, url, json=None, status=200, headers=None):
             # Register a route and set a mock response
             route = self._router.request(method, url)
             if json is not None:
-                route.mock(return_value=httpx.Response(status_code, json=json, headers=headers))
+                route.mock(return_value=httpx.Response(status, json=json, headers=headers))
             else:
-                route.mock(return_value=httpx.Response(status_code, headers=headers))
+                route.mock(return_value=httpx.Response(status, headers=headers))
+
             return route
 
     with respx.mock as router:
@@ -181,7 +182,7 @@ def mock_keycloak(httpx_responses):
         "POST",
         "http://keycloak.example.com/auth",
         json={"access_token": "test_token"},
-        status_code=200,
+        status=200,
     )
 
 
