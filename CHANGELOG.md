@@ -7,6 +7,27 @@
 
 ## [Unreleased]
 
+## [0.5.0] - 2025-12-10
+
+### Added
+#### LLM: добавлен клиент для reranking на базе Cohere
+- Создана функция `reranker_client()` в `project/infrastructure/adapters/llm.py`
+- Интегрирован с LLMHttpClient для мониторинга
+
+#### Chat: добавлен новый тип сообщения INSTRUCTION
+- Добавлено значение `MessageTypeEnum.INSTRUCTION` в `project/components/chat/enums.py`
+
+### Changed
+#### LLM: улучшены клиенты для работы с языковыми моделями
+- Добавлены параметры конфигурации в `llm_chat_client()` (model, temperature, max_tokens, streaming, timeout)
+- Добавлена настройка `LLM_TIMEOUT` в Settings
+- Переименована функция `llm_aclient()` в `llm_client()` для унификации
+
+### Fixed
+#### Tests: улучшен httpx fixture для тестирования HTTP запросов
+- Изменен параметр `status_code` на `status` в httpx responses
+#### Infrastructure: переименован Redis клиент
+
 ## [0.4.0] - 2025-12-01
 
 ### Added
