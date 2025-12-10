@@ -34,8 +34,8 @@ repos:
       - id: la-linter
         stages: [pre-commit, pre-push]
         name: Checking isolation layers and direction of dependencies
-        entry: la-linter
-        language: python
+        entry: uv run la-linter
+        language: system
         args: [project, --no-check-no-layer]
         pass_filenames: false
 
@@ -44,8 +44,8 @@ repos:
       - id: di-linter
         stages: [pre-commit]
         name: Checking dependency injections
-        entry: di-linter
-        language: python
+        entry: uv run di-linter
+        language: system
         args: [project]
         pass_filenames: false
 
