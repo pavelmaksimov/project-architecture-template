@@ -13,7 +13,7 @@ def test_question_use_case(session):
     class MockLLMClient:
         """Мок LLM клиента для тестирования."""
 
-        def invoke(self, messages):
+        def invoke(self, messages, config=None):
             """Возвращает мок-ответ."""
 
             class Response:
@@ -26,6 +26,34 @@ def test_question_use_case(session):
     container = DIContainer(llm_client=MockLLMClient())
 
     answer = container.chat.ask(user_id=user.id, question="Foo")
+
+    assert answer == "Bar 2025-01-01"
+
+
+@freeze_time("2025-01-01")
+def test_question_use_case_with_chat_id(session):
+    """Тест UseCase для задавания вопроса в конкретный чат."""
+
+    class MockLLMClient:
+        """Мок LLM клиента для тестирования."""
+
+        def invoke(self, messages, config=None):
+            """Возвращает мок-ответ."""
+
+            class Response:
+                content = f"Bar {datetime.date.today()}"
+
+            return Response()
+
+    user = UserFactory()
+
+    container = DIContainer(llm_client=MockLLMClient())
+
+    # Создаем чат
+    chat_id = container.chat.create_chat(user_id=user.id, title="Test Chat")
+
+    # Задаем вопрос в конкретный чат
+    answer = container.chat.ask(user_id=user.id, question="Foo", chat_id=chat_id)
 
     assert answer == "Bar 2025-01-01"
 
@@ -65,3 +93,29 @@ def test_question_use_case_with_http_mock(session, httpx_responses):
     answer = Container().chat.ask(user_id=user.id, question="Foo")
 
     assert answer == response_text
+
+
+def test_create_chat_use_case(session):
+    """Тест создания нового чата."""
+    user = UserFactory()
+
+    container = Container()
+
+    chat_id = container.chat.create_chat(user_id=user.id, title="Test Chat")
+
+    assert chat_id is not None
+
+
+def test_get_active_chat_use_case(session):
+    """Тест получения активного чата."""
+    user = UserFactory()
+
+    container = Container()
+
+    # Первый вызов должен создать чат
+    chat_id1 = container.chat.get_active_chat(user_id=user.id)
+
+    # Второй вызов должен вернуть тот же чат
+    chat_id2 = container.chat.get_active_chat(user_id=user.id)
+
+    assert chat_id1 == chat_id2

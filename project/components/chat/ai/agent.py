@@ -5,6 +5,7 @@ from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from project.components.chat.ai.prompts import SYSTEM_PROMPT
 from project.components.chat.enums import MessageTypeEnum
 from project.datatypes import QuestionT, AnswerT
+from project.datatypes import QuestionT, AnswerT, UserIdT
 
 if t.TYPE_CHECKING:
     from project.components.chat.models import MessageModel
@@ -15,7 +16,7 @@ class ChatAgent:
     def __init__(self, llm_client: "ChatOpenAI"):
         self.llm_client = llm_client
 
-    def generate_answer(self, question: QuestionT, history: list["MessageModel"]) -> AnswerT:
+    def generate_answer(self, user_id: UserIdT, question: QuestionT, history: list["MessageModel"]) -> AnswerT:
         """
         Получить ответ от LLM на основе вопроса и истории чата.
 
