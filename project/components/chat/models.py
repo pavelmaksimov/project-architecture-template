@@ -1,4 +1,4 @@
-from sqlalchemy import String, BigInteger, Integer, ForeignKey, Enum, Index
+from sqlalchemy import String, BigInteger, Integer, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from project.components.base.models import TimeMixin, Base

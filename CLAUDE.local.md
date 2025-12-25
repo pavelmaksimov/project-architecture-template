@@ -1960,7 +1960,13 @@ class SettingsValidator(BaseSettings):
     LLM_MAX_TOKENS: int = 8192
     LLM_TIMEOUT: float | None = None
 
-    # Logging settings
+    # Langfuse
+    LANGFUSE_TRACING_ENABLED: bool = "false"
+    LANGFUSE_PUBLIC_KEY: str | None = None
+    LANGFUSE_SECRET_KEY: str | None = None
+    LANGFUSE_HOST: str | None = None
+
+    # Logging
     WRITE_LOGS_TO_FILE: bool = True
     LOG_LEVEL: str = "INFO"
     FASTAPI_LOG_LEVEL: str = "INFO"

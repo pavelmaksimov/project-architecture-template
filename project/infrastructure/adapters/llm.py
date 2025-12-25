@@ -3,6 +3,7 @@ from functools import cache
 import cohere
 import langchain_openai
 import openai
+from langfuse import Langfuse
 from llm_common.clients.llm_http_client import LLMHttpClient
 
 from project.settings import Settings
@@ -80,4 +81,14 @@ def reranker_client(timeout: float | None = None) -> cohere.AsyncClient:
         base_url=Settings().LLM_MIDDLE_PROXY_URL if Settings().is_any_stand() else None,
         httpx_client=LLMHttpClient(),
         timeout=timeout or Settings().LLM_TIMEOUT,
+    )
+
+
+@cache
+def langfuse_client() -> Langfuse:
+    return Langfuse(
+        public_key=Settings().LANGFUSE_PUBLIC_KEY,
+        secret_key=Settings().LANGFUSE_SECRET_KEY,
+        host=Settings().LANGFUSE_HOST,
+        tracing_enabled=Settings().LANGFUSE_TRACING_ENABLED,
     )

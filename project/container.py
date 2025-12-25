@@ -43,13 +43,14 @@ class DIContainer:
     For resolving dependencies.
     """
 
-    def __init__(self, repositories=None, llm_client=None, chat_agent=None):
+    def __init__(self, repositories=None, llm_client=None, chat_agent=None, langfuse_client=None):
         # Infrastructure dependencies:
         self.repo = repositories or Repositories()  # di: skip
         llm_client = llm_client or llm_chat_client()  # di: skip
+        langfuse_client = llm_client or langfuse_client()  # di: skip
 
         # AI services:
-        chat_agent = chat_agent or ChatAgent()  # di: skip
+        chat_agent = chat_agent or ChatAgent(llm_client, langfuse_client)  # di: skip
 
         # Domain Services:
         quota_service = QuotaService()  # di: skip

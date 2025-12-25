@@ -40,7 +40,7 @@ class TestChatHistory:
 
         response = api_client.post(
             "/chat/v1/history",
-            json={"user_id": user.id, "chat_id": chat.id}
+            json={"user_id": user.id, "chat_id": chat.id},
         )
 
         assert response.status_code == 200
@@ -64,7 +64,7 @@ class TestChatHistory:
 
         response = api_client.post(
             "/chat/v1/history",
-            json={"user_id": user.id}
+            json={"user_id": user.id},
         )
 
         assert response.status_code == 200
@@ -110,7 +110,7 @@ class TestAskEndpoint:
 
         response = api_client.post(
             "/chat/v1/ask",
-            json={"user_id": user.id, "question": "Test question"}
+            json={"user_id": user.id, "question": "Test question"},
         )
 
         assert response.status_code == 200
@@ -148,7 +148,7 @@ class TestAskEndpoint:
 
         response = api_client.post(
             "/chat/v1/ask",
-            json={"user_id": user.id, "question": "Test question", "chat_id": chat.id}
+            json={"user_id": user.id, "question": "Test question", "chat_id": chat.id},
         )
 
         assert response.status_code == 200

@@ -27,6 +27,8 @@ dependencies = [
     "langgraph>=0.6.10",
     "openai>=2.4.0",
     "cohere>=5.20.0",
+    "langfuse==3.10.1",
+    "langchain>=1.2.0",
 ]
 
 [dependency-groups]

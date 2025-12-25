@@ -58,7 +58,7 @@ class Chat:
                 limit=Settings().HISTORY_WINDOW,
             )
 
-            answer_text = self.chat_agent.generate_answer(user_id, question, history_messages)
+            answer_text = self.chat_agent.generate_answer(user_id, chat_id, question, history_messages)
 
             self.repo.message.save_ai_message(user_id, chat_id, answer_text)
 
