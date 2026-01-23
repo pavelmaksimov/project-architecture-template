@@ -29,13 +29,16 @@
 #### Шаг 2: Определить кастомные классы ошибок (опционально)
 
 ```python
-from project.exceptions import ApiError, ServerError, ClientError
+from project.exceptions import ExternalApiError, ServerError, ClientError
 
-class MyServiceApiError(ApiError):
+
+class MyServiceApiError(ExternalApiError):
     pass
+
 
 class MyServiceServerError(ServerError):
     pass
+
 
 class MyServiceClientError(ClientError):
     pass

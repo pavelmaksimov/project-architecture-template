@@ -1,7 +1,7 @@
 import pytest
 
 from project.infrastructure.utils.base_client import AsyncApi
-from project.exceptions import ApiError, ServerError, ClientError
+from project.exceptions import ExternalApiError, ServerError, ClientError
 
 
 @pytest.fixture
@@ -72,12 +72,12 @@ async def test_successful_get_request(api, aiohttp_responses):
 async def test_unknown_status_error(api, aiohttp_responses):
     aiohttp_responses.get("http://example.com/test", status=304)
 
-    with pytest.raises(ApiError) as exc_info:
+    with pytest.raises(ExternalApiError) as exc_info:
         await api.call_endpoint("test")
 
     assert "304 Not Modified" in str(exc_info.value)
 
 
 def test_exception_inheritance():
-    assert issubclass(ClientError, ApiError)
-    assert issubclass(ServerError, ApiError)
+    assert issubclass(ClientError, ExternalApiError)
+    assert issubclass(ServerError, ExternalApiError)

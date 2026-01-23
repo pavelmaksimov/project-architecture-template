@@ -1,11 +1,11 @@
 from functools import cache
 
 from project.infrastructure.utils.base_client import IClient, AsyncApi
-from project.exceptions import ApiError, ServerError, ClientError
+from project.exceptions import ExternalApiError, ServerError, ClientError
 from project.settings import Settings
 
 
-class AuthApiError(ApiError):
+class AuthApiError(ExternalApiError):
     pass
 
 

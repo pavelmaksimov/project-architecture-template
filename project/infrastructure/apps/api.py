@@ -88,7 +88,7 @@ async def not_found_error_handler(request: Request, exc: exceptions.NotFoundErro
 
 
 @app.exception_handler(exceptions.AuthError)
-async def auth_error_handler(request: Request, exc: exceptions.NotFoundError):
+async def auth_error_handler(request: Request, exc: exceptions.AuthError):
     message = f"{request.method} {request.url} {status.HTTP_401_UNAUTHORIZED} ({exc})"
     logger.error(message)
     return ORJSONResponse(
@@ -97,8 +97,8 @@ async def auth_error_handler(request: Request, exc: exceptions.NotFoundError):
     )
 
 
-@app.exception_handler(exceptions.ApiError)
-async def integration_error_handler(request: Request, exc: exceptions.NotFoundError):
+@app.exception_handler(exceptions.ExternalApiError)
+async def integration_error_handler(request: Request, exc: exceptions.ExternalApiError):
     message = f"{request.method} {request.url} {status.HTTP_500_INTERNAL_SERVER_ERROR} ({exc})"
     logger.error(message)
     return ORJSONResponse(

@@ -2,7 +2,7 @@ import project.exceptions
 from project.infrastructure.utils import base_client as base
 
 
-class KeycloakApiError(project.exceptions.ApiError):
+class KeycloakApiError(project.exceptions.ExternalApiError):
     pass
 
 

@@ -1,22 +1,23 @@
 import logging
 import time
 import typing as t
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, contextmanager
 
 import httpx
 import orjson
-from aiohttp import ClientResponse, ClientSession, typedefs
+from aiohttp import ClientResponse, ClientSession, ClientError as AiohttpClientError, typedefs
 from llm_common.prometheus import is_build_metrics, http_tracking
 
-from project.exceptions import ApiError, ServerError, ClientError
+from project.exceptions import ExternalApiError, ServerError, ClientError, ExternalHTTPConnectionError
 
 logger = logging.getLogger(__name__)
 
 
 class AsyncApi:
-    ApiError = ApiError
+    ApiError = ExternalApiError
     ServerError = ServerError
     ClientError = ClientError
+    ConnectionError = ExternalHTTPConnectionError
     ClientSession = ClientSession
     name_for_monitoring: str
 
@@ -87,38 +88,73 @@ class AsyncApi:
 
             start_time = time.perf_counter()
 
-            async with sess.request(
-                method,
-                url,
-                params=params,
-                data=data,
-                json=json,
-                headers=headers,
-                **request_settings,
-            ) as response:
+            try:
+                async with sess.request(
+                    method,
+                    url,
+                    params=params,
+                    data=data,
+                    json=json,
+                    headers=headers,
+                    **request_settings,
+                ) as response:
+                    duration = time.perf_counter() - start_time
+                    logger.debug("End call endpoint: %s %s, duration %s ", method, url, duration)
+
+                    if is_build_metrics():
+                        request_headers = getattr(response.request_info, "headers", {}) or {}
+                        response_headers = response.headers or {}
+                        request_size = int(
+                            request_headers.get("content-length", request_headers.get("Content-Length", 0)),
+                        )
+                        response_size = int(
+                            response_headers.get("content-length", response_headers.get("Content-Length", 0)),
+                        )
+                        http_tracking(
+                            app_type=self.name_for_monitoring,
+                            resource=resource_for_monitoring,
+                            method=str(method).upper(),
+                            response_size=response_size,
+                            status_code=response.status,
+                            duration=duration,
+                            request_size=request_size,
+                        )
+
+                    return await self.process_response(response)
+
+            except AiohttpClientError as exc:
                 duration = time.perf_counter() - start_time
-                logger.debug("End call endpoint: %s %s, duration %s ", method, url, duration)
+                logger.error("Connection error: %s %s - %s", method, url, exc)
 
                 if is_build_metrics():
-                    request_headers = getattr(response.request_info, "headers", {}) or {}
-                    response_headers = response.headers or {}
-                    request_size = int(
-                        request_headers.get("content-length", request_headers.get("Content-Length", 0)),
-                    )
-                    response_size = int(
-                        response_headers.get("content-length", response_headers.get("Content-Length", 0)),
-                    )
                     http_tracking(
                         app_type=self.name_for_monitoring,
                         resource=resource_for_monitoring,
                         method=str(method).upper(),
-                        response_size=response_size,
-                        status_code=response.status,
+                        response_size=0,
+                        status_code=0,
                         duration=duration,
-                        request_size=request_size,
+                        request_size=0,
                     )
 
-                return await self.process_response(response)
+                raise self.ConnectionError(url=url, method=method, original_error=exc) from exc
+
+            except TimeoutError as exc:
+                duration = time.perf_counter() - start_time
+                logger.error("Timeout error: %s %s - %s", method, url, exc)
+
+                if is_build_metrics():
+                    http_tracking(
+                        app_type=self.name_for_monitoring,
+                        resource=resource_for_monitoring,
+                        method=str(method).upper(),
+                        response_size=0,
+                        status_code=0,
+                        duration=duration,
+                        request_size=0,
+                    )
+
+                raise self.ConnectionError(url=url, method=method, original_error=exc) from exc
 
     async def response_to_native(self, response: ClientResponse) -> t.Any:
         try:
@@ -131,12 +167,22 @@ class AsyncApi:
             return
 
         if 400 <= response.status < 500:
-            raise self.ClientError(response, response.status, response.reason, response_data)
+            raise self.ClientError(
+                response=response,
+                response_data=response_data,
+                url=response.url,
+                status_code=response.status,
+            )
 
         if response.status >= 500:
-            raise self.ServerError(response, response_data)
+            raise self.ServerError(
+                response=response,
+                response_data=response_data,
+                url=response.url,
+                status_code=response.status,
+            )
 
-        raise self.ApiError(response_data, response)
+        raise self.ApiError(response=response, response_data=response_data)
 
     async def process_response(self, response: ClientResponse) -> t.Any:
         response_data = await self.response_to_native(response)
@@ -147,9 +193,10 @@ class AsyncApi:
 
 
 class SyncApi:
-    ApiError = ApiError
+    ApiError = ExternalApiError
     ServerError = ServerError
     ClientError = ClientError
+    ConnectionError = ExternalHTTPConnectionError
     ClientSession = httpx.Client
     name_for_monitoring: str
 
@@ -173,13 +220,13 @@ class SyncApi:
             self.log_level = logging.getLevelNamesMapping()[self.log_level.upper()]
         self.session = None
 
-    @asynccontextmanager
-    async def Session(self, **session_settings):  # noqa: N802
+    @contextmanager
+    def Session(self, **session_settings):  # noqa: N802
         if self.session:
             yield self.session
         else:
             try:
-                async with self.ClientSession(**session_settings) as session:
+                with self.ClientSession(**session_settings) as session:
                     self.session = session
                     yield session
             finally:
@@ -206,7 +253,7 @@ class SyncApi:
         headers = self.headers | (headers or {})
         request_settings = self.request_settings | (request_settings or {})
 
-        with session or self.session or self.ClientSession() as sess:
+        with session or self.session or self.Session() as sess:
             logger.log(self.log_level, "Call endpoint: %s %s", method, url)
 
             if self.logging_extra_data:
@@ -219,30 +266,84 @@ class SyncApi:
                 if json:
                     logger.debug("Json: %s", json)
 
-            response = sess.request(
-                method,
-                url,
-                params=params,
-                data=data,
-                json=json,
-                headers=headers,
-                **request_settings,
-            )
+            start_time = time.perf_counter()
 
-            logger.debug("End call endpoint: %s %s, duration %s ", method, url, response.elapsed.total_seconds())
-
-            if is_build_metrics():
-                http_tracking(
-                    app_type=self.name_for_monitoring,
-                    resource=resource_for_monitoring,
-                    method=str(method).upper(),
-                    response_size=int(response.headers.get("content-length", 0)),
-                    status_code=response.status_code,
-                    duration=response.elapsed.total_seconds(),
-                    request_size=int(response.request.headers.get("content-length", 0)),
+            try:
+                response = sess.request(
+                    method,
+                    url,
+                    params=params,
+                    data=data,
+                    json=json,
+                    headers=headers,
+                    **request_settings,
                 )
 
-            return self.process_response(response)
+                logger.debug("End call endpoint: %s %s, duration %s ", method, url, response.elapsed.total_seconds())
+
+                if is_build_metrics():
+                    http_tracking(
+                        app_type=self.name_for_monitoring,
+                        resource=resource_for_monitoring,
+                        method=str(method).upper(),
+                        response_size=int(response.headers.get("content-length", 0)),
+                        status_code=response.status_code,
+                        duration=response.elapsed.total_seconds(),
+                        request_size=int(response.request.headers.get("content-length", 0)),
+                    )
+
+                return self.process_response(response)
+
+            except httpx.ConnectError as exc:
+                duration = time.perf_counter() - start_time
+                logger.error("Connection error: %s %s - %s", method, url, exc)
+
+                if is_build_metrics():
+                    http_tracking(
+                        app_type=self.name_for_monitoring,
+                        resource=resource_for_monitoring,
+                        method=str(method).upper(),
+                        response_size=0,
+                        status_code=0,
+                        duration=duration,
+                        request_size=0,
+                    )
+
+                raise self.ConnectionError(url=url, method=method, original_error=exc) from exc
+
+            except httpx.TimeoutException as exc:
+                duration = time.perf_counter() - start_time
+                logger.error("Timeout error: %s %s - %s", method, url, exc)
+
+                if is_build_metrics():
+                    http_tracking(
+                        app_type=self.name_for_monitoring,
+                        resource=resource_for_monitoring,
+                        method=str(method).upper(),
+                        response_size=0,
+                        status_code=0,
+                        duration=duration,
+                        request_size=0,
+                    )
+
+                raise self.ConnectionError(url=url, method=method, original_error=exc) from exc
+
+            except httpx.HTTPStatusError as exc:
+                duration = time.perf_counter() - start_time
+                logger.error("HTTP status error: %s %s - %s", method, url, exc)
+
+                if is_build_metrics():
+                    http_tracking(
+                        app_type=self.name_for_monitoring,
+                        resource=resource_for_monitoring,
+                        method=str(method).upper(),
+                        response_size=0,
+                        status_code=exc.response.status_code if exc.response else 0,
+                        duration=duration,
+                        request_size=0,
+                    )
+
+                raise self.ConnectionError(url=url, method=method, original_error=exc) from exc
 
     def response_to_native(self, response: httpx.Response) -> t.Any:
         try:
@@ -255,12 +356,22 @@ class SyncApi:
             return
 
         if 400 <= response.status_code < 500:
-            raise self.ClientError(response, response.status_code, response.reason_phrase, response_data)
+            raise self.ClientError(
+                response=response,
+                response_data=response_data,
+                url=response.url,
+                status_code=response.status_code,
+            )
 
         if response.status_code >= 500:
-            raise self.ServerError(response, response_data)
+            raise self.ServerError(
+                response=response,
+                response_data=response_data,
+                url=response.url,
+                status_code=response.status_code,
+            )
 
-        raise self.ApiError(response_data, response)
+        raise self.ApiError(response=response, response_data=response_data)
 
     def process_response(self, response: httpx.Response) -> t.Any:
         response_data = self.response_to_native(response)
@@ -283,10 +394,14 @@ class IClient(t.Protocol):
     class MyClientError(project.exceptions.ClientError):
         pass
 
+    class MyConnectionError(project.exceptions.ConnectionError):
+        pass
+
     class MyClient(IClient):
         ApiError = MyApiError
         ServerError = MyServerError
         ClientError = MyClientError
+        ConnectionError = MyConnectionError
 
         Api = AsyncApi
         api_root = "http://example.com/api"
@@ -299,10 +414,10 @@ class IClient(t.Protocol):
             session: ClientSession | None = None,
         ):
             headers = {"Authorization": f"Bearer {token}"}
-            self.api = self.Api(self.api_root, headers, settings, session)
+            self.api = self.Api(self.api_root, headers=headers, name_for_monitoring="my_api")
 
         async def my_endpoint():
-            return await self.api.call_endpoint("resource_name", "POST")
+            return await self.api.call_endpoint("resource_name", method="POST")
 
     client = MyClient("token")
     await client.my_endpoint()
@@ -315,6 +430,7 @@ class IClient(t.Protocol):
     ApiError: type[Exception]
     ServerError: type[Exception]
     ClientError: type[Exception]
+    ConnectionError: type[Exception]
 
     Api: t.ClassVar[type[AsyncApi | SyncApi]]
     api_root: str

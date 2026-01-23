@@ -30,29 +30,46 @@ class NotFoundError(AppError, ValueError):
         return f"NotFoundError: {self.object_name}={self.id} not found"
 
 
-class ApiError(AppError):
-    def __init__(self, name, response):
-        self.name = name
-        self.response = response
-
-    def __repr__(self):
-        return (
-            f"{self.__class__.__name__}: {self.name} {self.response.status} {self.response.reason} {self.response.text}"
-        )
-
-
-class ServerError(ApiError):
+class ExternalApiError(AppError):
     def __init__(self, response, response_data):
         self.response = response
         self.response_data = response_data
 
+    def __repr__(self):
+        return f"{self.__class__.__name__}: {self.response_data}"
 
-class ClientError(ApiError):
-    def __init__(self, response, code, message, detail):
-        self.response = response
-        self.code = code
-        self.message = message
-        self.detail = detail
+
+class ServerError(ExternalApiError):
+    def __init__(self, response, response_data, url, status_code):
+        super().__init__(response, response_data)
+        self.url = url
+        self.status_code = status_code
 
     def __repr__(self):
-        return f"{self.__class__.__name__}: {self.code} {self.message}{f' - {self.detail}' if self.detail else ''}"
+        return f"{self.__class__.__name__}: {self.status_code} ({self.response_data})"
+
+    def __str__(self):
+        return f"{self.response.method} {self.url} {self.status_code} ({self.response_data})"
+
+
+class ClientError(ExternalApiError):
+    def __init__(self, response, response_data, url, status_code):
+        super().__init__(response, response_data)
+        self.url = url
+        self.status_code = status_code
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}: {self.status_code} ({self.response_data})"
+
+    def __str__(self):
+        return f"{self.response.method} {self.url} {self.status_code} ({self.response_data})"
+
+
+class ExternalHTTPConnectionError(AppError):
+    def __init__(self, url: str, method: str, original_error: Exception):
+        self.url = url
+        self.method = method
+        self.original_error = original_error
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}: {self.method} {self.url} ({self.original_error})"
