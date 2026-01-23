@@ -53,5 +53,117 @@ async def health_check():
 @app.get("/user/v1/list", deprecated=True)
 ```
 
-### Ошибки HTTP
-Не нужно тащить `fastapi.exceptions.HTTPException` в бизнес-логику, они должны оставаться в модулях `endpoints.py`.
+
+## Обработка исключений в FastAPI
+
+### Правильный подход к обработке исключений
+
+Поток обработки ошибок: Бизнес-логика → raise Exception → FastAPI Exception Handler → HTTP Response
+
+**В бизнес-логике** поднимать обычные исключения (наследники `AppError`):
+
+```python
+# В use cases, services, repositories
+def process_user(user_id: int):
+    user = user_repo.get(user_id)
+    if not user:
+        raise UserNotFoundError(f"User {user_id} not found")
+    return user
+```
+
+**В FastAPI эндпоинтах** использовать обработчики исключений FastAPI для преобразования бизнес-исключений в HTTP ответы:
+
+```python
+app = FastAPI(...)
+
+@app.exception_handler(Exception)
+async def custom_exception_handler(request, exc: Exception):
+    message = f"Unexpected Error: {exc}"
+    logger.exception(message)
+    return ORJSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": "Internal Server Error"},
+    )
+
+
+@app.exception_handler(HTTPException)
+async def custom_http_exception_handler(request, exc: HTTPException):
+    message = f"{request.method} {request.url} {exc.status_code}"
+    if exc.detail:
+        message = f"{message} ({exc.detail})"
+
+    if Settings().is_local():
+        message = f"{message} headers={request.headers}"
+
+    logger.error(message)
+
+    return await http_exception_handler(request, exc)
+
+
+@app.exception_handler(RequestValidationError)
+async def custom_validation_exception_handler(request: Request, exc: RequestValidationError):
+    message = f"{request.method} {request.url} {status.HTTP_422_UNPROCESSABLE_ENTITY} ({exc.errors()})"
+    logger.error(message)
+    return await request_validation_exception_handler(request, exc)
+
+
+@app.exception_handler(exceptions.NotFoundError)
+async def not_found_error_handler(request: Request, exc: exceptions.NotFoundError):
+    message = f"{request.method} {request.url} {status.HTTP_404_NOT_FOUND} ({exc})"
+    logger.error(message)
+    return ORJSONResponse(
+        status_code=status.HTTP_404_NOT_FOUND,
+        content={"detail": str(exc)},
+    )
+
+
+@app.exception_handler(exceptions.AuthError)
+async def auth_error_handler(request: Request, exc: exceptions.NotFoundError):
+    message = f"{request.method} {request.url} {status.HTTP_401_UNAUTHORIZED} ({exc})"
+    logger.error(message)
+    return ORJSONResponse(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        content={"detail": str(exc)},
+    )
+
+
+@app.exception_handler(exceptions.ExternalApiError)
+async def integration_error_handler(request: Request, exc: exceptions.NotFoundError):
+    message = f"{request.method} {request.url} {status.HTTP_500_INTERNAL_SERVER_ERROR} ({exc})"
+    logger.error(message)
+    return ORJSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": str(exc)},
+    )
+```
+
+### Почему так правильно?
+
+1. **Разделение ответственностей**: Бизнес-логика не знает о HTTP, фреймворк обрабатывает HTTP аспекты
+2. **Переиспользование**: Одна бизнес-логика может использоваться в разных контекстах (API, CLI, тесты)
+3. **Тестируемость**: Легче тестировать бизнес-логику без HTTP зависимостей
+4. **Читаемость**: Код бизнес-логики фокусируется на логике, а не на HTTP деталях
+
+### Антипаттерны
+
+❌ **Не использовать HTTPException в бизнес-логике:**
+```python
+# ПЛОХО: бизнес-логика зависит от FastAPI
+def process_user(user_id: int):
+    user = user_repo.get(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")  # ❌
+    return user
+```
+
+❌ **Не подавлять исключения в эндпоинтах:**
+```python
+# ПЛОХО: скрывает ошибки
+@app.get("/users/{user_id}")
+async def get_user(user_id: int):
+    try:
+        user = await user_service.get_user(user_id)
+        return user
+    except Exception as e:
+        return {"error": "Something went wrong"}  # ❌
+```
