@@ -1,4 +1,7 @@
-.codegen
+.python-version
+dc.yml
+.aiignore
+project-prompt-20*
 
 # Python-generated files
 __pycache__/

@@ -1,0 +1,16 @@
+project-root = "project"
+exclude-objects = [
+    "Settings", "DIContainer", "Container", "*Error", "throw", "Envs", "get_log_id", "timer",
+    "*Model", "setup_logging", "*T", "*Enum", "*Schema", "redis_atransaction", "redis_transaction",
+    "isolated_redis_atransaction", "isolated_redis_transaction", "auth_client", "langfuse_client",
+]
+exclude-modules = [
+    "project.infrastructure.adapters.database",
+    "project.infrastructure.adapters.adatabase",
+    "project.infrastructure.adapters.cache",
+    "project.infrastructure.adapters.acache",
+    "project.settings",
+    "project.infrastructure.apps.api",
+    "project.infrastructure.apps.bot",
+    "project.components.*.ai.*",
+]

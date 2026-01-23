@@ -1,0 +1,137 @@
+# Changelog
+
+Все значимые изменения в этом проекте будут документироваться в этом файле.
+
+Формат основан на [Keep a Changelog](https://keepachangelog.com/ru/1.0.0/),
+и этот проект придерживается [Semantic Versioning](https://semver.org/lang/ru/).
+
+## [Unreleased]
+
+## [0.5.0] - 2025-12-10
+
+### Added
+#### LLM: добавлен клиент для reranking на базе Cohere
+- Создана функция `reranker_client()` в `project/infrastructure/adapters/llm.py`
+- Интегрирован с LLMHttpClient для мониторинга
+
+#### Chat: добавлен новый тип сообщения INSTRUCTION
+- Добавлено значение `MessageTypeEnum.INSTRUCTION` в `project/components/chat/enums.py`
+
+### Changed
+#### LLM: улучшены клиенты для работы с языковыми моделями
+- Добавлены параметры конфигурации в `llm_chat_client()` (model, temperature, max_tokens, streaming, timeout)
+- Добавлена настройка `LLM_TIMEOUT` в Settings
+- Переименована функция `llm_aclient()` в `llm_client()` для унификации
+
+### Fixed
+#### Tests: улучшен httpx fixture для тестирования HTTP запросов
+- Изменен параметр `status_code` на `status` в httpx responses
+#### Infrastructure: переименован Redis клиент
+
+## [0.4.0] - 2025-12-01
+
+### Added
+#### User: добавлено кеширование данных пользователя
+- Создан `UserCacheRepository` для работы с Redis
+- Добавлена схема `UserCacheSchema` для данных пользователя в кеше
+- Реализованы методы сохранения и получения данных пользователя из кеша
+
+#### Cache Repository: добавлена спецификация для создания кеш-репозиториев
+- Создана документация `specs/rules/create-redis-repository.md` с правилами создания CacheRepository
+- Добавлены примеры использования и лучшие практики
+- Обновлена документация AGENTS.md и llms.txt
+
+### Changed
+#### Refactoring: переименованы классы use case в компоненте user
+- Изменены имена классов use case для соответствия конвенции
+- Обновлены ссылки в `project/container.py`
+
+#### Refactoring: переименованы функции в адаптерах Redis
+- Изменены имена функций в `acache.py` и `cache.py` для улучшения читаемости
+- Обновлены соответствующие тесты
+
+#### Dependencies: обновлена конфигурация dependency injection
+- Изменен файл `di.toml` для корректной работы с dependency injection
+- Добавлены правила использования внешних пакетов в слоях
+
+#### Architecture: улучшен интерфейс IClient в base_client
+- Указаны исключения в интерфейсе IClient
+
+#### Architecture: обновлена конфигурация архитектурных слоев
+- Изменен файл `layers.toml` для корректной работы слоистой архитектуры
+- Настроены границы между слоями для новых компонентов
+
+### Fixed
+#### API: исправлена токен-аутентификация в локальных настройках
+- Разрешено использование токена аутентификации в локальной среде разработки
+- Обновлены настройки API в `api.py`
+
+#### Telegram: исправлена поддержка декораторов без аргументов
+- Исправлено использование декораторов из `telegram.py` без параметров
+- Улучшена совместимость с различными способами вызова
+
+### Tests
+- Обновлены фикстуры в `conftest.py`
+- Исправлены тесты интеграции с Keycloak
+
+## [0.3.0] - 2025-11-24
+
+### Added
+#### Генерация промптов для LLM: добавлен скрипт для генерации промптов из файлов проекта
+- Создан `scripts/project_prompt.py` для автоматического создания промптов
+- Добавлен конфигурационный файл `project-prompt.toml`
+- Создана спецификация `specs/features/project-prompt-script.md`
+- Обновлена документация `specs/rules/development.md`
+
+#### UI для сбора файлов: добавлен интерфейс на Textual
+- Создано консольное приложение `scripts/project_prompt_ui.py` - интерактивный TUI для выбора файлов для создания
+  промпта
+
+### Changed
+#### CHANGELOG: улучшено форматирование CHANGELOG.md
+- Изменен промпт команды claude /changelog `.claude/commands/changelog.md`
+- Обновлен CHANGELOG.md
+
+### Fixed
+#### Документация: исправлено название файла документации
+- Переименован `CLAUDE.md` в `CLAUDE.local.md` в `.gitignore`
+- Изменена спецификация `specs/rules/create-orm-model.md`
+- Удалена устаревшая спецификация `specs/rules/alembic-db-migration.md`
+- Обновлена спецификация, добавлены правила по работе с исключениями `specs/rules/anti-patterns.md`
+
+## [0.2.0] - 2025-11-17
+
+### Added
+#### Claude команды: добавлена команда /commit для генерации сообщений коммитов
+- Создан файл `.claude/commands/commit.md` с правилами генерации commit messages
+- Команда анализирует git diff и генерирует сообщения в формате conventional commits
+
+#### Система версионирования: добавлен CHANGELOG.md для проекта
+- Создан файл CHANGELOG.md в соответствии со стандартом Keep a Changelog
+- Создан файл claude команды `.claude/commands/changelog.md`
+
+#### Автоматическая генерация документации: добавлена генерация файла CLAUDE.md
+- Обновлен скрипт `scripts/update_agents.py` для автоматической генерации `CLAUDE.md`
+- Файл содержит полную документацию для работы с Claude AI
+
+#### Автоматическая генерация llms.txt: добавлена генерация файла llms.txt
+- Обновлен скрипт `scripts/update_agents.py` для автоматической генерации `llms.txt`
+- Файл содержит структурированную информацию для LLM моделей
+
+#### Форматирование кода: добавлен и настроен Black для форматирования кода
+- Добавлен Black в `requirements.dev.txt`
+- Настроен Black в `pyproject.toml`
+- Обновлен `.pre-commit-config.yaml` для использования Black
+- Применено форматирование к существующим файлам:
+  - `project/libs/structures.py`
+  - `tests/conftest.py`
+  - `tests/test_domains/test_chat/test_endpoints.py`
+  - `tests/test_domains/test_chat/test_use_case.py`
+
+## [0.1.0] - 2025-11-11
+
+### Added
+- Начальная версия проекта с базовой архитектурой
+- Инфраструктурные настройки для развертывания
+- Интеграции с внешними сервисами
+- Базовые компоненты и утилиты

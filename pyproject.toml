@@ -1,0 +1,121 @@
+[project]
+name = "python-project-template"
+version = "0.5.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+authors = [
+  {name = "Pavel Maksimov", email = "vur21@ya.ru"}
+]
+keywords = [
+  "project-template",
+  "styleguide",
+  "vibecoding",
+  "vibecode",
+]
+
+dependencies = [
+    "orjson~=3.10.12",
+    "pydantic-settings~=2.7.1",
+    "aiohttp~=3.11.14",
+    "httpx~=0.28.1",
+    "prometheus-client>=0.23.1",
+    "llm-common>=2.2.0",
+    "redis>=7.1.0",
+    "langchain-openai>=0.3.35",
+    "langgraph>=0.6.10",
+    "openai>=2.4.0",
+    "cohere>=5.20.0",
+    "langfuse==3.10.1",
+    "langchain>=1.2.0",
+]
+
+[dependency-groups]
+dev = [
+    "aioresponses~=0.7.8",
+    "di-linter==1.3.0",
+    "factory-boy~=3.3.1",
+    "freezegun~=1.5.1",
+    "layers-linter>=3.2.2",
+    "pre-commit>=4.2.0",
+    "pytest~=8.3.4",
+    "pytest-archon~=0.0.6",
+    "pytest-asyncio>=0.25.3",
+    "pytest-cov>=6.0.0",
+    "responses>=0.25.7",
+    "respx>=0.21.1",
+    "ruff~=0.8.2",
+    "testcontainers>=4.10.0",
+    "black>=25.11.0",
+    "textual>=6.6.0",
+]
+voice = [
+    "pydub>=0.25.1",
+]
+telegram = [
+    "python-telegram-bot[job-queue,rate-limiter]>=22.5",
+    "uvloop>=0.22.1",
+    "flask>=3.1.2",
+]
+restapi = [
+    "fastapi>=0.115.12",
+    "uvicorn>=0.34.0",
+]
+database = [
+    "alembic>=1.15.2",
+    "psycopg2-binary>=2.9.10",
+    "sqlalchemy>=2.0.41",
+]
+
+[project.urls]
+Homepage = "https://github.com/pavelmaksimov/project-architecture-template"
+Repository = "https://github.com/pavelmaksimov/project-architecture-template"
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+target-version = "py312"
+include = [
+    "project/**/*.py",
+    "tests/**/*.py",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+ignore = [
+    "E731", "PYI001", "SIM117", "ARG001", "E731", "E741", "UP035", "UP028", "RET504", "S101", "RUF002", "C901",
+    "BLE001", "UP038", "RUF003", "COM812", "RUF001", "RUF003", "BLE001", "UP038", "EM101", "ICN003", "FBT001",
+    "FBT002",
+]
+select = [
+    "E", "E4", "E7", "E9", "F", "B", "ERA", "FAST", "YTT", "UP", "FURB", "RUF", "PLC", "PLE",
+    "ASYNC", "S", "BLE", "FBT", "A", "COM", "C", "EM", "FA", "INT", "ISC", "ICN", "LOG", "G", "INP", "PIE", "T20",
+    "PYI", "PT", "Q", "RSE", "RET", "SLF", "SIM", "SLOT", "TID", "TC", "ARG", "PTH", "FLY", "C90", "NPY", "N", "PERF",
+    "D201", "D204", "D206", "D207", "D208", "D209", "D210", "D211", "D213", "D300", "D402", "D403", "D418", "D419",
+    "PLW0245", "PLW0128", "PLW0127", "PLW0406", "PLW0602", "PLW0603", "PLW0642", "PLW0711",
+    "PLW1501", "PLW1508", "PLW1509", "PLW1510", "PLW2101", "PLW2901", "PLW3301",
+    "TRY004", "TRY201", "TRY203", "TRY300", "TRY301", "TRY401",
+    "TD004", "TD005", "TD006", "TD007",
+    # "W", "DOC", "D", "PGH, "DJ", "EXE", "FIX", "DTZ", "CPY", "I", "PD", "ANN", "PLR", PLW
+]
+
+[tool.ruff.lint.flake8-builtins]
+builtins-ignorelist = ["id", "type", "filter"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+force-sort-within-sections = true
+lines-after-imports = 2
+force-wrap-aliases = false
+known-first-party = ["project"]
+
+[tool.black]
+line-length = 120
+target-version = ['py312']
+include = '(project/.*\.py|tests/.*\.py)$'
