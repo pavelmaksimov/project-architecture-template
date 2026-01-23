@@ -4,12 +4,12 @@ from logging import getLogger
 
 from fastapi import FastAPI, Depends, Header, status
 from fastapi.exception_handlers import request_validation_exception_handler, http_exception_handler
-from fastapi.exceptions import RequestValidationError, StarletteHTTPException, HTTPException
+from fastapi.exceptions import RequestValidationError, HTTPException
 from fastapi.responses import ORJSONResponse
 from llm_common.prometheus import fastapi_tracking_middleware, fastapi_endpoint_for_prometheus
 from starlette.requests import Request
-from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 
+from project import exceptions
 from project.components.chat.endpoints import router as chat_router
 from project.logger import setup_logging
 from project.settings import Settings, API_ROOT_PATH
@@ -48,36 +48,63 @@ app.get("/prometheus")(fastapi_endpoint_for_prometheus)
 
 @app.exception_handler(Exception)
 async def custom_exception_handler(request, exc: Exception):
-    logger.exception("Unexpected Error: %s", str(exc))
-    return exc
-
-
-@app.exception_handler(StarletteHTTPException)
-async def custom_http_exception_handler(request, exc: StarletteHTTPException):
-    logger.error(
-        "%s %s, detail=%s, method=%s, url=%s, headers=%s",
-        repr(exc.status_code),
-        exc.__class__.__name__,
-        repr(exc.detail),
-        request.method,
-        request.url,
-        request.headers,
+    message = f"Unexpected Error: {exc}"
+    logger.exception(message)
+    return ORJSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": "Internal Server Error"},
     )
+
+
+@app.exception_handler(HTTPException)
+async def custom_http_exception_handler(request, exc: HTTPException):
+    message = f"{request.method} {request.url} {exc.status_code}"
+    if exc.detail:
+        message = f"{message} ({exc.detail})"
+
+    if Settings().is_local():
+        message = f"{message} headers={request.headers}"
+
+    logger.error(message)
+
     return await http_exception_handler(request, exc)
 
 
 @app.exception_handler(RequestValidationError)
 async def custom_validation_exception_handler(request: Request, exc: RequestValidationError):
-    logger.error(
-        "%s %s detail=%s method=%s url=%s headers=%s",
-        HTTP_422_UNPROCESSABLE_ENTITY,
-        exc.__class__.__name__,
-        exc.errors(),
-        request.method,
-        request.url,
-        request.headers,
-    )
+    message = f"{request.method} {request.url} {status.HTTP_422_UNPROCESSABLE_ENTITY} ({exc.errors()})"
+    logger.error(message)
     return await request_validation_exception_handler(request, exc)
+
+
+@app.exception_handler(exceptions.NotFoundError)
+async def not_found_error_handler(request: Request, exc: exceptions.NotFoundError):
+    message = f"{request.method} {request.url} {status.HTTP_404_NOT_FOUND} ({exc})"
+    logger.error(message)
+    return ORJSONResponse(
+        status_code=status.HTTP_404_NOT_FOUND,
+        content={"detail": str(exc)},
+    )
+
+
+@app.exception_handler(exceptions.AuthError)
+async def auth_error_handler(request: Request, exc: exceptions.NotFoundError):
+    message = f"{request.method} {request.url} {status.HTTP_401_UNAUTHORIZED} ({exc})"
+    logger.error(message)
+    return ORJSONResponse(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        content={"detail": str(exc)},
+    )
+
+
+@app.exception_handler(exceptions.ApiError)
+async def integration_error_handler(request: Request, exc: exceptions.NotFoundError):
+    message = f"{request.method} {request.url} {status.HTTP_500_INTERNAL_SERVER_ERROR} ({exc})"
+    logger.error(message)
+    return ORJSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": str(exc)},
+    )
 
 
 @app.middleware("http")
@@ -88,7 +115,7 @@ async def process_time(request: Request, call_next):
 
     process_time = round(time.perf_counter() - start_time, 3)
     response.headers["X-Process-Time"] = str(process_time)
-    logger.info("Response: %s %s %s", request.method, request.url, process_time)
+    logger.info("%s %s %s %s", request.method, request.url, response.status_code, process_time)
 
     return response
 
