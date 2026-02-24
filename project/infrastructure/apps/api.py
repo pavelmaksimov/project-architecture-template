@@ -12,7 +12,7 @@ from starlette.requests import Request
 from project import exceptions
 from project.components.chat.endpoints import router as chat_router
 from project.logger import setup_logging
-from project.settings import Settings, API_ROOT_PATH
+from project.settings import Constants, Settings
 
 logger = getLogger(__name__)
 
@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(root_path=API_ROOT_PATH, lifespan=lifespan, dependencies=[Depends(auth_by_token)])
+app = FastAPI(root_path=Constants.API_ROOT_PATH, lifespan=lifespan, dependencies=[Depends(auth_by_token)])
 app.include_router(chat_router)
 
 app.middleware("http")(fastapi_tracking_middleware)

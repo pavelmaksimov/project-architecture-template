@@ -8,17 +8,17 @@ from flask import Flask, jsonify
 from flask import Response
 from prometheus_client import generate_latest, REGISTRY, CONTENT_TYPE_LATEST
 
-from project.settings import Settings, API_ROOT_PATH
+from project.settings import Constants, Settings
 
 app = Flask(__name__)
 
 
-@app.route(f"{API_ROOT_PATH}/health")
+@app.route(f"{Constants.API_ROOT_PATH}/health")
 def healthcheck():
     return jsonify({"status": "ok"})
 
 
-@app.route(f"{API_ROOT_PATH}/prometheus")
+@app.route(f"{Constants.API_ROOT_PATH}/prometheus")
 def prometheus():
     return Response(generate_latest(REGISTRY), mimetype=CONTENT_TYPE_LATEST)
 

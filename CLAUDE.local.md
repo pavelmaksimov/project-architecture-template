@@ -2004,6 +2004,7 @@ with Settings.local(MAX_TOKENS=1000, TEMPERATURE=0.5):
 
 ## Переменные окружение проекта
 ```py
+import os
 import typing as t
 from enum import Enum
 from pathlib import Path
@@ -2012,8 +2013,6 @@ from pydantic import PostgresDsn, AfterValidator, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from project.libs.structures import LazyInit
-
-__all__ = ["Settings"]
 
 
 def not_empty_validator(value):
@@ -2026,8 +2025,10 @@ def not_empty_validator(value):
 NotEmptyStrT = t.Annotated[str, AfterValidator(not_empty_validator)]
 NotEmptySecretStrT = t.Annotated[SecretStr, AfterValidator(not_empty_validator)]
 
-MONITORING_APP_NAME = ""
-API_ROOT_PATH = "/api"
+
+class Constants:
+    MONITORING_APP_NAME = ""
+    API_ROOT_PATH = os.getenv("API_ROOT_PATH", "/api")
 
 
 class Envs(Enum):
