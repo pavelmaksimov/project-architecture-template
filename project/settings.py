@@ -77,7 +77,7 @@ class SettingsValidator(BaseSettings):
     LANGFUSE_HOST: str | None = None
 
     # Logging
-    WRITE_LOGS_TO_FILE: bool = True
+    WRITE_LOGS_TO_FILE: bool = False
     LOG_LEVEL: str = "INFO"
     FASTAPI_LOG_LEVEL: str = "INFO"
     TELEGRAM_LOG_LEVEL: str = "INFO"
