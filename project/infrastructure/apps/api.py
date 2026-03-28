@@ -11,6 +11,7 @@ from starlette.requests import Request
 
 from project import exceptions
 from project.components.chat.endpoints import router as chat_router
+from project.infrastructure.utils.disconnect import DisconnectMiddleware
 from project.logger import setup_logging
 from project.settings import Constants, Settings
 
@@ -41,6 +42,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(root_path=Constants.API_ROOT_PATH, lifespan=lifespan, dependencies=[Depends(auth_by_token)])
 app.include_router(chat_router)
 
+app.add_middleware(DisconnectMiddleware)
 app.middleware("http")(fastapi_tracking_middleware)
 
 app.get("/prometheus")(fastapi_endpoint_for_prometheus)

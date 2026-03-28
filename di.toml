@@ -13,4 +13,6 @@ exclude-modules = [
     "project.infrastructure.apps.api",
     "project.infrastructure.apps.bot",
     "project.components.*.ai.*",
+    "*.utils.*",
+    "*.libs.*",
 ]

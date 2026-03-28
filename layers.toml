@@ -75,6 +75,7 @@ contains_modules = [
     "project.infrastructure.apps.api",
     "project.infrastructure.apps.flask",
     "project.components.*.endpoints",
+    "project.infrastructure.utils.disconnect",
 ]
 depends_on = ["rest", "common", "dicontainer", "usecases"]
 
