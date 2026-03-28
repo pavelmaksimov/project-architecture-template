@@ -31,7 +31,22 @@ app = FastAPI()
 app.add_middleware(DisconnectMiddleware)
 ```
 
-**Примечание:** Для стриминговых эндпоинтов (StreamingResponse, EventSourceResponse) middleware пропускает обработку, так как они имеют встроенную логику отмены. Для стриминга используйте `detect_disconnect()` или полагайтесь на `sse-starlette`.
+### Как работает middleware
+
+Middleware запускает две задачи параллельно:
+1. `handler_task` — выполнение эндпоинта
+2. `disconnect_task` — ожидание события `http.disconnect` от клиента
+
+Затем ждёт **первую** завершённую задачу:
+- Если эндпоинт выполнился быстрее — возвращает результат
+- Если клиент отключился первым — отменяет эндпоинт и освобождает ресурсы
+
+Для стриминговых ответов middleware пропускает обработку, так как `StreamingResponse` и `EventSourceResponse` имеют встроенную логику отмены через task groups. Вместо этого используйте `detect_disconnect()` или полагайтесь на `sse-starlette`.
+
+### Ограничения
+
+- Не работает с `StreamingResponse` и `EventSourceResponse` — нужно использовать другие инструменты
+- Требует, чтобы эндпоинты были async
 
 ## Утилиты для ручной обработки
 
@@ -104,18 +119,27 @@ async def stream_response():
 
 ### 4. Функция `safe_async_generator_cleanup`
 
-Безопасная очистка асинхронных генераторов через `aclosing()`.
+Безопасная очистка вложенных асинхронных генераторов через `aclosing()`.
+Используется внутри стриминговых эндпоинтов для корректного освобождения ресурсов вложенного генератора.
 
 ```python
 from project.infrastructure.utils.disconnect import safe_async_generator_cleanup
 from contextlib import aclosing
 
-async def generate_llm_response():
-    async with aclosing(llm_stream()) as stream:
-        async for chunk in stream:
+async def sse_endpoint():
+    # Внутренний генератор от LLM
+    async def llm_stream():
+        async for chunk in llm_client.stream(prompt):
             yield chunk
-        # aclosing() гарантирует немедленное освобождение ресурсов
+
+    # Прокидываем через safe_async_generator_cleanup
+    async for chunk in safe_async_generator_cleanup(llm_stream()):
+        yield {"data": chunk}
 ```
+
+**Зачем нужно:**
+- Немедленное освобождение ресурсов (без ожидания garbage collection)
+- Правильная очистка контекстных переменных в async-контексте
 
 ## Особенности реализации
 
@@ -162,6 +186,7 @@ except asyncio.CancelledError:
 | Простой endpoint без стриминга (без middleware) | `@with_cancellation` |
 | Нужна защита БД-операций | `detect_disconnect` |
 | Стриминговый ответ (SSE) | `shield_cancel_scope` + `aclosing()` |
+| Вложенные генераторы в стриме | `safe_async_generator_cleanup` |
 | Сложная логика с несколькими этапами | Комбинация инструментов |
 
 ## Ссылки
